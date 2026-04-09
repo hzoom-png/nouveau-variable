@@ -734,43 +734,20 @@
 </footer>
 
 <script>
-  // ─────────────────────────────────────────────
-  // ⚙️  CONFIG — remplace ces 3 valeurs
-  // ─────────────────────────────────────────────
-  const BREVO_API_KEY   = 'COLLE_TA_CLE_API_BREVO_ICI';
-  const BREVO_LIST_ID   = 0;      // → ID de ta liste Brevo (ex: 3)
-  const CALENDLY_LINK   = 'https://calendly.com/ton-nom/20min'; // ton lien Calendly
-  // ─────────────────────────────────────────────
-
-  // Labels lisibles pour l'attribut Brevo
-  const PROFIL_LABELS = { b2b: 'BtoB', b2c: 'BtoC', both: 'BtoB + BtoC' };
-
   // Scroll reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Envoi vers Brevo
-  async function sendToBrevo(email, profil) {
-    const payload = {
-      email,
-      listIds: BREVO_LIST_ID ? [BREVO_LIST_ID] : [],
-      attributes: {
-        PROFIL_COMMERCIAL: PROFIL_LABELS[profil] || profil,
-        SOURCE: 'Nouveau Variable — Landing'
-      },
-      updateEnabled: true  // met à jour si le contact existe déjà
-    };
-    const res = await fetch('https://api.brevo.com/v3/contacts', {
+  // Envoi via Edge Function (clé Brevo côté serveur)
+  async function subscribe(email, profil) {
+    const res = await fetch('/api/subscribe', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': BREVO_API_KEY
-      },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, profil }),
     });
-    return res;
+    return res.ok ? res.json() : null;
   }
 
   // Hero form
@@ -785,18 +762,14 @@
     btn.textContent = '…';
     btn.disabled = true;
 
-    try {
-      await sendToBrevo(email, profil);
-    } catch(e) {
-      console.error('Brevo error', e);
-    }
+    const data = await subscribe(email, profil).catch(() => null);
+    const calendlyLink = data?.calendlyLink || '#';
 
-    // Affiche le succès avec lien Calendly
     document.querySelector('.hero-form-row').style.display = 'none';
     document.getElementById('hero-select-wrap').style.display = 'none';
     document.querySelector('.hero-form-note').style.display = 'none';
     const s = document.getElementById('hero-success');
-    s.innerHTML = `✓ &nbsp;C'est noté ! <a href="${CALENDLY_LINK}" target="_blank" style="color:var(--blue);text-decoration:underline;margin-left:8px;font-weight:800;">Réserve ton créneau →</a>`;
+    s.innerHTML = `✓ &nbsp;C'est noté ! <a href="${calendlyLink}" target="_blank" style="color:var(--blue);text-decoration:underline;margin-left:8px;font-weight:800;">Réserve ton créneau →</a>`;
     s.style.display = 'flex';
   }
 
@@ -810,16 +783,13 @@
     btn.textContent = '…';
     btn.disabled = true;
 
-    try {
-      await sendToBrevo(email, 'non renseigné');
-    } catch(err) {
-      console.error('Brevo error', err);
-    }
+    const data = await subscribe(email, '').catch(() => null);
+    const calendlyLink = data?.calendlyLink || '#';
 
     document.getElementById('cta-form').innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 0;">
         <p style="color:var(--blue);font-family:'Jost',sans-serif;font-weight:700;font-size:15px;">✓ Parfait, on te rappelle dans les 24h.</p>
-        <a href="${CALENDLY_LINK}" target="_blank" style="background:var(--blue);color:#fff;padding:12px 28px;border-radius:100px;font-family:'Jost',sans-serif;font-size:13px;font-weight:700;text-decoration:none;">
+        <a href="${calendlyLink}" target="_blank" style="background:var(--blue);color:#fff;padding:12px 28px;border-radius:100px;font-family:'Jost',sans-serif;font-size:13px;font-weight:700;text-decoration:none;">
           Réserver ton créneau maintenant →
         </a>
       </div>`;
