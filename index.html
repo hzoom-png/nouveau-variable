@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouveau Variable — Pour les commerciaux qui méritent mieux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Jost:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #FFFFFF;
+    --off-white: #F7F8FA;
+    --blue: #1A3CFF;
+    --blue-dark: #0F2499;
+    --blue-pale: #E8EEFF;
+    --black: #0D1117;
+    --grey: #7A849A;
+    --grey-light: #C0C8D8;
+    --border: #E4E9F2;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+  .nav-dot { width: 8px; height: 8px; background: var(--blue); border-radius: 50%; }
+  .nav-name { font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 700; color: var(--black); letter-spacing: 0.03em; }
+  .nav-cta {
+    background: var(--blue); color: var(--white);
+    padding: 10px 26px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+    text-decoration: none; border-radius: 100px; transition: background 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 130px 40px 80px;
+    position: relative; overflow: hidden;
+  }
+  #hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(26,60,255,0.045) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--blue-pale); color: var(--blue);
+    padding: 6px 16px; border-radius: 100px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+    margin-bottom: 36px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards;
+  }
+  .hero-tag-dot {
+    width: 6px; height: 6px; background: var(--blue); border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }
+
+  h1 {
+    font-family: 'Jost', sans-serif;
+    font-size: clamp(44px, 6vw, 84px);
+    font-weight: 800; line-height: 1.04;
+    letter-spacing: -0.025em; color: var(--black);
+    max-width: 860px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.25s forwards;
+  }
+  h1 .accent { color: var(--blue); }
+  h1 .line-muted { color: var(--grey-light); position: relative; display: inline-block; }
+  h1 .line-muted::after {
+    content: ''; position: absolute;
+    left: 0; right: 100%; top: 52%;
+    height: 4px; background: var(--blue); border-radius: 2px;
+    animation: strikeAnim 0.5s ease 1.3s forwards;
+  }
+  @keyframes strikeAnim { to { right: 0; } }
+
+  .hero-sub {
+    margin-top: 28px;
+    font-size: 18px; line-height: 1.72; color: var(--grey);
+    max-width: 540px; font-weight: 400;
+    opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+
+  /* Pill form */
+  .hero-form-wrap {
+    margin-top: 48px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.55s forwards;
+  }
+  .hero-form-row {
+    display: flex; gap: 0;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 100px; overflow: hidden;
+    box-shadow: 0 2px 16px rgba(26,60,255,0.07), 0 1px 3px rgba(0,0,0,0.04);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%; max-width: 480px;
+  }
+  .hero-form-row:focus-within {
+    border-color: var(--blue);
+    box-shadow: 0 2px 20px rgba(26,60,255,0.13);
+  }
+  .hero-form-row input {
+    flex: 1; padding: 14px 22px; border: none; background: transparent;
+    font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--black); outline: none;
+  }
+  .hero-form-row input::placeholder { color: var(--grey-light); font-weight: 400; }
+  .hero-form-row button {
+    margin: 5px; padding: 10px 24px;
+    background: var(--blue); color: var(--white); border: none;
+    border-radius: 100px;
+    font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; white-space: nowrap; transition: background 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .hero-form-row button:hover { background: var(--blue-dark); }
+
+  .hero-form-select-wrap {
+    width: 100%;
+    max-width: 480px;
+  }
+  .hero-form-select {
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 100px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--black);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%23C0C8D8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    transition: border-color 0.2s;
+  }
+  .hero-form-select:focus { border-color: var(--blue); }
+  .hero-form-select option { color: var(--black); font-weight: 500; }
+
+  .hero-form-note {
+    font-size: 12px; color: var(--grey-light);
+    display: flex; align-items: center; gap: 6px; font-weight: 500;
+  }
+  .hero-success {
+    display: none; align-items: center; gap: 10px;
+    background: #F0FFF4; border: 1px solid #C6F6D5;
+    border-radius: 100px; padding: 12px 24px;
+    font-size: 14px; font-weight: 700; color: #276749;
+  }
+
+  /* Social proof */
+  .hero-proof {
+    margin-top: 44px;
+    display: flex; align-items: center; gap: 18px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.7s forwards;
+  }
+  .proof-divider { width: 1px; height: 30px; background: var(--border); }
+  .proof-avatars { display: flex; }
+  .proof-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%; border: 2px solid var(--white);
+    background: var(--blue-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; margin-left: -8px;
+    color: var(--blue-dark); font-weight: 800;
+    font-family: 'Jost', sans-serif;
+  }
+  .proof-avatar:first-child { margin-left: 0; }
+  .proof-text { font-size: 13px; color: var(--grey); line-height: 1.4; font-weight: 500; }
+  .proof-text strong { color: var(--black); font-weight: 700; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+  /* PAIN */
+  #pain {
+    background: var(--black); padding: 100px 60px;
+    position: relative; overflow: hidden;
+  }
+  #pain::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(26,60,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .pain-inner { max-width: 1100px; margin: 0 auto; }
+
+  .section-eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: #4D6AFF; margin-bottom: 20px;
+  }
+
+  h2 {
+    font-family: 'Jost', sans-serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
+  }
+  h2.on-dark { color: var(--white); }
+  h2.on-light { color: var(--black); }
+  h2 em { font-style: normal; color: var(--blue); }
+
+  .pain-grid {
+    margin-top: 54px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  }
+  .pain-card {
+    background: #0F1420; padding: 44px 36px;
+    border: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.3s;
+  }
+  .pain-card:hover { background: #141B2E; }
+  .pain-card-num {
+    font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 700;
+    color: var(--blue); letter-spacing: 0.1em; margin-bottom: 20px;
+  }
+  .pain-card-icon { font-size: 28px; margin-bottom: 18px; display: block; }
+  .pain-card-title {
+    font-family: 'Jost', sans-serif; font-size: 17px; font-weight: 700;
+    color: var(--white); margin-bottom: 12px; line-height: 1.3;
+  }
+  .pain-card-desc { font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.42); }
+
+  .pain-highlight {
+    margin-top: 56px;
+    background: rgba(26,60,255,0.07); border: 1px solid rgba(26,60,255,0.18);
+    border-radius: 14px; padding: 40px 48px;
+    display: flex; align-items: center; gap: 48px;
+  }
+  .pain-highlight-quote {
+    font-family: 'Jost', sans-serif; font-size: 21px; font-weight: 600;
+    color: var(--white); line-height: 1.45; flex: 1;
+  }
+  .pain-highlight-quote span { color: #4D6AFF; }
+  .pain-highlight-stat {
+    text-align: center; flex-shrink: 0;
+    padding: 0 40px; border-left: 1px solid rgba(255,255,255,0.07);
+  }
+  .pain-highlight-num {
+    font-family: 'Jost', sans-serif; font-size: 54px; font-weight: 800;
+    color: var(--blue); line-height: 1;
+  }
+  .pain-highlight-label {
+    font-size: 12px; color: rgba(255,255,255,0.35);
+    margin-top: 7px; max-width: 140px; line-height: 1.45;
+  }
+
+  /* SOLUTION */
+  #solution { padding: 100px 60px; max-width: 1200px; margin: 0 auto; }
+  .solution-header {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: end; margin-bottom: 60px;
+  }
+  .solution-header p { font-size: 15px; line-height: 1.85; color: var(--grey); margin-top: 20px; }
+  .solution-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .solution-card {
+    background: var(--off-white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 34px 30px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .solution-card:hover { border-color: var(--blue); box-shadow: 0 4px 20px rgba(26,60,255,0.07); }
+  .solution-card:first-child { grid-column: 1 / -1; background: var(--blue); border-color: var(--blue); }
+  .solution-card:first-child .solution-card-title { color: var(--white); }
+  .solution-card:first-child .solution-card-desc { color: rgba(255,255,255,0.68); }
+  .solution-card:first-child .solution-tag { background: rgba(255,255,255,0.15); color: var(--white); }
+  .solution-tag {
+    display: inline-block; background: var(--blue-pale); color: var(--blue);
+    font-family: 'Jost', sans-serif; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 100px; margin-bottom: 16px;
+  }
+  .solution-card-title {
+    font-family: 'Jost', sans-serif; font-size: 19px; font-weight: 700;
+    color: var(--black); margin-bottom: 10px; line-height: 1.3;
+  }
+  .solution-card-desc { font-size: 14px; line-height: 1.75; color: var(--grey); }
+
+  /* FOR WHO */
+  #forwho {
+    background: var(--off-white); padding: 100px 60px;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .forwho-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center;
+  }
+  .forwho-list { margin-top: 40px; display: flex; flex-direction: column; }
+  .forwho-item {
+    padding: 20px 0; border-bottom: 1px solid var(--border);
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .forwho-item:first-child { border-top: 1px solid var(--border); }
+  .forwho-check {
+    width: 22px; height: 22px; background: var(--blue); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px; color: white; font-size: 11px; font-weight: 800;
+  }
+  .forwho-item-title { font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 700; color: var(--black); margin-bottom: 3px; }
+  .forwho-item-desc { font-size: 13px; color: var(--grey); line-height: 1.55; }
+  .forwho-visual {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 40px 36px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.05);
+  }
+  .forwho-visual-title {
+    font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 700; color: var(--black);
+    margin-bottom: 24px; padding-bottom: 18px; border-bottom: 1px solid var(--border);
+  }
+  .profile-list { display: flex; flex-direction: column; gap: 14px; }
+  .profile-item { display: flex; align-items: center; gap: 12px; }
+  .profile-avatar {
+    width: 40px; height: 40px; border-radius: 10px; background: var(--blue-pale);
+    display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+  }
+  .profile-info-name { font-size: 13px; font-weight: 700; color: var(--black); }
+  .profile-info-role { font-size: 11px; color: var(--grey); }
+  .profile-badge {
+    margin-left: auto; background: #E8F5E9; color: #2E7D32;
+    font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 100px;
+    font-family: 'Jost', sans-serif;
+  }
+  .profile-badge.pending { background: #FFF3E0; color: #E65100; }
+
+  /* CTA BOTTOM */
+  #cta-bottom { padding: 120px 60px; text-align: center; max-width: 700px; margin: 0 auto; }
+  .cta-bottom-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue-pale); color: var(--blue);
+    padding: 6px 16px; border-radius: 100px;
+    font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.04em; margin-bottom: 28px;
+  }
+  .cta-bottom-title {
+    font-family: 'Jost', sans-serif;
+    font-size: clamp(28px, 3.5vw, 46px); font-weight: 800;
+    line-height: 1.1; letter-spacing: -0.02em; color: var(--black); margin-bottom: 18px;
+  }
+  .cta-bottom-title em { font-style: normal; color: var(--blue); }
+  .cta-bottom-sub { font-size: 16px; color: var(--grey); line-height: 1.75; margin-bottom: 44px; }
+
+  /* same pill form */
+  .cta-form-inline {
+    display: flex; gap: 0;
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: 100px; overflow: hidden;
+    box-shadow: 0 2px 16px rgba(26,60,255,0.07);
+    max-width: 460px; margin: 0 auto;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .cta-form-inline:focus-within { border-color: var(--blue); box-shadow: 0 2px 20px rgba(26,60,255,0.12); }
+  .cta-form-inline input {
+    flex: 1; padding: 14px 22px; border: none; background: transparent;
+    font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 500;
+    color: var(--black); outline: none;
+  }
+  .cta-form-inline input::placeholder { color: var(--grey-light); font-weight: 400; }
+  .cta-form-inline button {
+    margin: 5px; padding: 10px 24px;
+    background: var(--blue); color: var(--white); border: none;
+    border-radius: 100px; font-family: 'Jost', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+    transition: background 0.2s; letter-spacing: 0.02em;
+  }
+  .cta-form-inline button:hover { background: var(--blue-dark); }
+  .cta-privacy { margin-top: 14px; font-size: 12px; color: var(--grey-light); font-weight: 500; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border); padding: 28px 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+  .footer-name { font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 700; color: var(--black); }
+  .footer-copy { font-size: 12px; color: var(--grey-light); font-weight: 500; }
+
+  .nav-name em, .footer-name em {
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  /* PERKS */
+  .perk-card {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 28px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  }
+  .perk-card:hover {
+    border-color: var(--blue);
+    box-shadow: 0 6px 24px rgba(26,60,255,0.08);
+    transform: translateY(-3px);
+  }
+  .perk-icon { font-size: 30px; margin-bottom: 16px; display: block; }
+  .perk-title {
+    font-family: 'Jost', sans-serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--black); margin-bottom: 10px; line-height: 1.3;
+  }
+  .perk-desc { font-size: 13px; line-height: 1.75; color: var(--grey); }
+
+  @media (max-width: 900px) {
+    #perks { padding: 70px 24px !important; }
+    #perks > div:last-child { grid-template-columns: 1fr 1fr !important; }
+  }
+  @media (max-width: 600px) {
+    #perks > div:last-child { grid-template-columns: 1fr !important; }
+  }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; }
+    #hero { padding: 120px 24px 70px; }
+    h1 { font-size: 38px; }
+    .hero-sub { font-size: 16px; }
+    .hero-form-row { max-width: 100%; }
+    .pain-grid { grid-template-columns: 1fr; }
+    .solution-header { grid-template-columns: 1fr; gap: 16px; }
+    .solution-grid { grid-template-columns: 1fr; }
+    .forwho-inner { grid-template-columns: 1fr; gap: 50px; }
+    .pain-highlight { flex-direction: column; gap: 24px; }
+    .pain-highlight-stat { border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding: 24px 0 0; }
+    footer { flex-direction: column; gap: 14px; text-align: center; }
+    #pain, #forwho, #solution, #cta-bottom { padding: 70px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-dot"></div>
+    <span class="nav-name">Nouveau <em>Variable</em></span>
+  </a>
+  <a href="#cta-bottom" class="nav-cta">Réserver ma place →</a>
+</nav>
+
+<!-- HERO CENTRÉ -->
+<section id="hero">
+  <div class="hero-tag">
+    <div class="hero-tag-dot"></div>
+    Pour les commerciaux qui méritent mieux
+  </div>
+
+  <h1>
+    Tu vends très bien.<br>
+    Mais tu vis encore<br>
+    <span class="line-muted">selon leur grille.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Tu dépasses tes objectifs, tu portes ton équipe — et ton salaire, lui, n'a pas bougé. Il existe une autre façon de valoriser ce que tu sais déjà faire.
+  </p>
+
+  <div class="hero-form-wrap" id="hero-form-wrap">
+    <div class="hero-form-row">
+      <input type="email" placeholder="Ton adresse email" id="h-email" />
+      <button onclick="handleHeroSubmit()">Je veux en savoir plus</button>
+    </div>
+    <div class="hero-form-select-wrap" id="hero-select-wrap">
+      <select id="h-profil" class="hero-form-select">
+        <option value="" disabled selected>Tu vends plutôt à des entreprises ou des particuliers ?</option>
+        <option value="b2b">Des entreprises — je fais du BtoB</option>
+        <option value="b2c">Des particuliers — je fais du BtoC</option>
+        <option value="both">Les deux</option>
+      </select>
+    </div>
+    <p class="hero-form-note">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L1.5 3v3c0 2.485 1.94 4.81 4.5 5.37C8.56 10.81 10.5 8.485 10.5 6V3L6 1z" stroke="#C0C8D8" stroke-width="1.2" fill="none"/></svg>
+      Rappel sous 24h · Sans engagement · Zéro spam
+    </p>
+    <div class="hero-success" id="hero-success">
+      ✓ &nbsp;Parfait ! On te rappelle dans les 24h.
+    </div>
+  </div>
+
+  <div class="hero-proof">
+    <div class="proof-avatars">
+      <div class="proof-avatar">JM</div>
+      <div class="proof-avatar">SR</div>
+      <div class="proof-avatar">KC</div>
+      <div class="proof-avatar">TB</div>
+    </div>
+    <div class="proof-divider"></div>
+    <p class="proof-text"><strong>+2 000 commerciaux</strong><br>ont déjà rejoint la communauté</p>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section id="pain">
+  <div class="pain-inner">
+    <p class="section-eyebrow reveal">Ce que tu ressens chaque mois</p>
+    <h2 class="on-dark reveal reveal-delay-1">Les 6 frustrations<br>que <em>tout bon commercial</em> connaît</h2>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <p class="pain-card-num">01</p>
+        <span class="pain-card-icon">📊</span>
+        <h3 class="pain-card-title">Le plafond de verre invisible</h3>
+        <p class="pain-card-desc">Peu importe combien tu surperformes, ta variable stagne. L'entreprise recalibre les objectifs dès que tu les dépasses. Tu cours plus vite sur un tapis roulant.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-1">
+        <p class="pain-card-num">02</p>
+        <span class="pain-card-icon">🎯</span>
+        <h3 class="pain-card-title">100% de tes revenus sur 1 seul employeur</h3>
+        <p class="pain-card-desc">Si demain ton entreprise restructure — tu repars de zéro. Aucun filet, aucune diversification. Juste une dépendance totale.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <p class="pain-card-num">03</p>
+        <span class="pain-card-icon">🧠</span>
+        <h3 class="pain-card-title">Tu formes les autres, tu t'oublies toi</h3>
+        <p class="pain-card-desc">Tu accompagnes les juniors, tu partages ta méthode — mais ta vraie valeur n'est pas reconnue dans ton bulletin de salaire.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-1">
+        <p class="pain-card-num">04</p>
+        <span class="pain-card-icon">⏳</span>
+        <h3 class="pain-card-title">Le temps contre de l'argent, pour toujours</h3>
+        <p class="pain-card-desc">Tu échanges des heures contre des euros. Aucun de tes revenus ne travaille pendant que tu dors. Le dimanche soir, l'angoisse revient.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <p class="pain-card-num">05</p>
+        <span class="pain-card-icon">✈️</span>
+        <h3 class="pain-card-title">La liberté, toujours remise à plus tard</h3>
+        <p class="pain-card-desc">Ce rythme de vie que tu veux — toujours « dans 2 ans, quand j'aurai économisé assez ». Sauf que dans 2 ans, il se passe la même chose.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-3">
+        <p class="pain-card-num">06</p>
+        <span class="pain-card-icon">🔁</span>
+        <h3 class="pain-card-title">Changer d'employeur pour 200 € de plus</h3>
+        <p class="pain-card-desc">Tous les 18 mois, CV, entretiens, négociation symbolique. Un hamster wheel déguisé en évolution de carrière.</p>
+      </div>
+    </div>
+    <div class="pain-highlight reveal">
+      <p class="pain-highlight-quote">Les bons commerciaux ne manquent pas de compétences. Ils manquent d'un <span>système qui travaille pour eux</span> pendant qu'ils font ce qu'ils font déjà bien.</p>
+      <div class="pain-highlight-stat">
+        <div class="pain-highlight-num">73%</div>
+        <div class="pain-highlight-label">des commerciaux se disent sous-payés par rapport à leur performance réelle</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section>
+  <div id="solution">
+    <div class="solution-header">
+      <div>
+        <p class="section-eyebrow reveal">La solution</p>
+        <h2 class="on-light reveal reveal-delay-1">Ce que les commerciaux<br>qui <em>s'en sortent</em> ont compris</h2>
+      </div>
+      <p class="reveal reveal-delay-2">Ils n'ont pas attendu une promotion. Ils ont diversifié leurs sources de revenus en exploitant ce qu'ils savent déjà faire — et en rejoignant un réseau qui leur a ouvert des portes concrètes.</p>
+    </div>
+    <div class="solution-grid">
+      <div class="solution-card reveal">
+        <span class="solution-tag">Multi-sources</span>
+        <h3 class="solution-card-title">Plusieurs canaux de revenus, construits avec tes compétences</h3>
+        <p class="solution-card-desc">BtoB, BtoC, événementiel, services web — tu peux activer plusieurs leviers en parallèle sans quitter ton poste. La diversification, c'est la vraie augmentation.</p>
+      </div>
+      <div class="solution-card reveal reveal-delay-1">
+        <span class="solution-tag">Événements</span>
+        <h3 class="solution-card-title">Un réseau qui se construit en dehors des écrans</h3>
+        <p class="solution-card-desc">Des événements de réseautage réguliers pour rencontrer, co-créer et signer. Parce que les meilleures opportunités naissent encore autour d'une table, pas sur LinkedIn.</p>
+      </div>
+      <div class="solution-card reveal reveal-delay-2">
+        <span class="solution-tag">Services partenaires</span>
+        <h3 class="solution-card-title">Un accès privilégié à des services sélectionnés pour toi</h3>
+        <p class="solution-card-desc">La communauté négocie pour ses membres. Tu accèdes à des services partenaires exclusifs — outils, accompagnement, avantages — que tu n'aurais pas obtenus seul.</p>
+      </div>
+      <div class="solution-card reveal reveal-delay-3">
+        <span class="solution-tag">Réseau</span>
+        <h3 class="solution-card-title">S'entourer de gens qui jouent à un niveau supérieur</h3>
+        <p class="solution-card-desc">Rejoindre une communauté d'entrepreneurs et de commerciaux qui ont déjà franchi le cap change la perspective — et le plafond.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section id="forwho">
+  <div class="forwho-inner">
+    <div>
+      <p class="section-eyebrow reveal">C'est fait pour toi si…</p>
+      <h2 class="on-light reveal reveal-delay-1">Tu te reconnais<br>dans <em>ce profil</em></h2>
+      <div class="forwho-list">
+        <div class="forwho-item reveal">
+          <div class="forwho-check">✓</div>
+          <div>
+            <p class="forwho-item-title">Tu as déjà passé un coup de fil commercial</p>
+            <p class="forwho-item-desc">Peu importe le secteur. Si t'as déjà décroché un téléphone pour convaincre quelqu'un, t'as le profil.</p>
+          </div>
+        </div>
+        <div class="forwho-item reveal reveal-delay-1">
+          <div class="forwho-check">✓</div>
+          <div>
+            <p class="forwho-item-title">Tu as déjà envisagé d'ouvrir au moins 1 micro-entreprise #urssaf</p>
+            <p class="forwho-item-desc">T'as eu l'idée, t'as peut-être même regardé le formulaire. On s'occupe de te donner une vraie raison de finir l'inscription.</p>
+          </div>
+        </div>
+        <div class="forwho-item reveal reveal-delay-2">
+          <div class="forwho-check">✓</div>
+          <div>
+            <p class="forwho-item-title">Tu es prêt à faire quelques heures supp'</p>
+            <p class="forwho-item-desc">Pas 60h/semaine. Juste assez pour que dans 6 mois, ton compte en banque reflète enfin ce que tu vaux vraiment.</p>
+          </div>
+        </div>
+        <div class="forwho-item reveal reveal-delay-3">
+          <div class="forwho-check">✓</div>
+          <div>
+            <p class="forwho-item-title">Tu aimes les interactions humaines</p>
+            <p class="forwho-item-desc">Tu préfères une bonne conversation à un tableau Excel. Bonne nouvelle — c'est exactement comme ça qu'on travaille ici.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="forwho-visual reveal reveal-delay-2">
+      <p class="forwho-visual-title">Membres récemment rejoints</p>
+      <div class="profile-list">
+        <div class="profile-item">
+          <div class="profile-avatar">💼</div>
+          <div><p class="profile-info-name">Julien M.</p><p class="profile-info-role">Account Executive · SaaS</p></div>
+          <span class="profile-badge">Actif</span>
+        </div>
+        <div class="profile-item">
+          <div class="profile-avatar">📱</div>
+          <div><p class="profile-info-name">Sarah R.</p><p class="profile-info-role">Business Developer · Télécom</p></div>
+          <span class="profile-badge">Actif</span>
+        </div>
+        <div class="profile-item">
+          <div class="profile-avatar">🏠</div>
+          <div><p class="profile-info-name">Kevin C.</p><p class="profile-info-role">Conseiller · Immobilier</p></div>
+          <span class="profile-badge pending">En cours</span>
+        </div>
+        <div class="profile-item">
+          <div class="profile-avatar">🛡️</div>
+          <div><p class="profile-info-name">Tiphaine B.</p><p class="profile-info-role">Chargée de comptes · Assurance</p></div>
+          <span class="profile-badge">Actif</span>
+        </div>
+        <div class="profile-item">
+          <div class="profile-avatar">🎓</div>
+          <div><p class="profile-info-name">Marc-Antoine D.</p><p class="profile-info-role">Sales Manager · EdTech</p></div>
+          <span class="profile-badge">Actif</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CE QUE TU OBTIENS -->
+<section id="perks" style="padding: 100px 60px; max-width: 1200px; margin: 0 auto;">
+  <div style="text-align:center; margin-bottom: 60px;">
+    <p class="section-eyebrow reveal" style="justify-content:center;">Concrètement</p>
+    <h2 class="on-light reveal reveal-delay-1" style="margin-top:0;">Ce que tu obtiens<br>en rejoignant <em>la communauté</em></h2>
+  </div>
+  <div style="display:grid; grid-template-columns: repeat(4,1fr); gap: 24px;">
+    <div class="perk-card reveal">
+      <div class="perk-icon">🤝</div>
+      <h4 class="perk-title">Réseautage & événements</h4>
+      <p class="perk-desc">Des rencontres physiques organisées régulièrement — afterworks, meetups, ateliers — pour créer des connexions qui débouchent sur des opportunités réelles.</p>
+    </div>
+    <div class="perk-card reveal reveal-delay-1">
+      <div class="perk-icon">💡</div>
+      <h4 class="perk-title">Nouvelles sources de revenus</h4>
+      <p class="perk-desc">BtoB, BtoC, événementiel, services web — tu actives plusieurs canaux en parallèle, avec les bonnes personnes autour de toi pour te guider.</p>
+    </div>
+    <div class="perk-card reveal reveal-delay-2">
+      <div class="perk-icon">🎁</div>
+      <h4 class="perk-title">Services partenaires exclusifs</h4>
+      <p class="perk-desc">La communauté a négocié pour ses membres un accès privilégié à des services soigneusement sélectionnés : outils, accompagnement, avantages du quotidien.</p>
+    </div>
+    <div class="perk-card reveal reveal-delay-3">
+      <div class="perk-icon">🎓</div>
+      <h4 class="perk-title">Formations & coaching</h4>
+      <p class="perk-desc">Des contenus structurés et des coachs experts pour t'aider à développer ton activité complémentaire — du débutant jusqu'aux premiers résultats concrets.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section>
+  <div id="cta-bottom">
+    <div class="cta-bottom-tag reveal">
+      <div style="width:6px;height:6px;background:var(--blue);border-radius:50%;animation:pulse 2s ease-in-out infinite;"></div>
+      Gratuit & sans engagement
+    </div>
+    <h2 class="cta-bottom-title reveal reveal-delay-1">Prends 20 minutes.<br>Change <em>ton équation financière.</em></h2>
+    <p class="cta-bottom-sub reveal reveal-delay-2">Un conseiller t'appelle, analyse ta situation et te présente un plan concret. Pas de pitch agressif — une vraie conversation entre professionnels.</p>
+    <form class="cta-form-inline reveal reveal-delay-3" onsubmit="handleCtaSubmit(event)" id="cta-form">
+      <input type="email" placeholder="Ton adresse email" id="cta-email" required />
+      <button type="submit">Je réserve ma place →</button>
+    </form>
+    <p class="cta-privacy reveal reveal-delay-4">🔒 Aucun spam · Rappel sous 24h · Sans engagement</p>
+  </div>
+</section>
+
+<footer>
+  <a href="#" class="footer-brand">
+    <div class="nav-dot"></div>
+    <span class="footer-name">Nouveau <em>Variable</em></span>
+  </a>
+  <p class="footer-copy">© 2025 — Tous droits réservés</p>
+</footer>
+
+<script>
+  // ─────────────────────────────────────────────
+  // ⚙️  CONFIG — remplace ces 3 valeurs
+  // ─────────────────────────────────────────────
+  const BREVO_API_KEY   = 'COLLE_TA_CLE_API_BREVO_ICI';
+  const BREVO_LIST_ID   = 0;      // → ID de ta liste Brevo (ex: 3)
+  const CALENDLY_LINK   = 'https://calendly.com/ton-nom/20min'; // ton lien Calendly
+  // ─────────────────────────────────────────────
+
+  // Labels lisibles pour l'attribut Brevo
+  const PROFIL_LABELS = { b2b: 'BtoB', b2c: 'BtoC', both: 'BtoB + BtoC' };
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Envoi vers Brevo
+  async function sendToBrevo(email, profil) {
+    const payload = {
+      email,
+      listIds: BREVO_LIST_ID ? [BREVO_LIST_ID] : [],
+      attributes: {
+        PROFIL_COMMERCIAL: PROFIL_LABELS[profil] || profil,
+        SOURCE: 'Nouveau Variable — Landing'
+      },
+      updateEnabled: true  // met à jour si le contact existe déjà
+    };
+    const res = await fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'api-key': BREVO_API_KEY
+      },
+      body: JSON.stringify(payload)
+    });
+    return res;
+  }
+
+  // Hero form
+  async function handleHeroSubmit() {
+    const email  = document.getElementById('h-email').value.trim();
+    const profil = document.getElementById('h-profil').value;
+    const btn    = document.querySelector('.hero-form-row button');
+
+    if (!email || !email.includes('@')) { document.getElementById('h-email').focus(); return; }
+    if (!profil) { document.getElementById('h-profil').style.borderColor = 'var(--blue)'; return; }
+
+    btn.textContent = '…';
+    btn.disabled = true;
+
+    try {
+      await sendToBrevo(email, profil);
+    } catch(e) {
+      console.error('Brevo error', e);
+    }
+
+    // Affiche le succès avec lien Calendly
+    document.querySelector('.hero-form-row').style.display = 'none';
+    document.getElementById('hero-select-wrap').style.display = 'none';
+    document.querySelector('.hero-form-note').style.display = 'none';
+    const s = document.getElementById('hero-success');
+    s.innerHTML = `✓ &nbsp;C'est noté ! <a href="${CALENDLY_LINK}" target="_blank" style="color:var(--blue);text-decoration:underline;margin-left:8px;font-weight:800;">Réserve ton créneau →</a>`;
+    s.style.display = 'flex';
+  }
+
+  // CTA bottom form
+  async function handleCtaSubmit(e) {
+    e.preventDefault();
+    const email = document.getElementById('cta-email').value.trim();
+    const btn   = document.querySelector('#cta-form button');
+    if (!email) return;
+
+    btn.textContent = '…';
+    btn.disabled = true;
+
+    try {
+      await sendToBrevo(email, 'non renseigné');
+    } catch(err) {
+      console.error('Brevo error', err);
+    }
+
+    document.getElementById('cta-form').innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 0;">
+        <p style="color:var(--blue);font-family:'Jost',sans-serif;font-weight:700;font-size:15px;">✓ Parfait, on te rappelle dans les 24h.</p>
+        <a href="${CALENDLY_LINK}" target="_blank" style="background:var(--blue);color:#fff;padding:12px 28px;border-radius:100px;font-family:'Jost',sans-serif;font-size:13px;font-weight:700;text-decoration:none;">
+          Réserver ton créneau maintenant →
+        </a>
+      </div>`;
+  }
+</script>
+</body>
+</html>
