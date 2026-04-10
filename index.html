@@ -41,6 +41,7 @@
   .nav-brand { display: flex; align-items: center; gap: 9px; text-decoration: none; }
   .nav-dot { width: 8px; height: 8px; background: var(--blue); border-radius: 50%; }
   .nav-name { font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 700; color: var(--black); letter-spacing: 0.03em; }
+  .nav-name em { font-style: italic; font-weight: 700; }
   .nav-cta {
     background: var(--blue); color: var(--white);
     padding: 10px 26px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
@@ -52,8 +53,7 @@
   #hero {
     min-height: 100vh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center;
-    padding: 130px 40px 80px;
+    text-align: center; padding: 130px 40px 80px;
     position: relative; overflow: hidden;
   }
   #hero::before {
@@ -62,7 +62,6 @@
     background: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(26,60,255,0.045) 0%, transparent 70%);
     pointer-events: none;
   }
-
   .hero-tag {
     display: inline-flex; align-items: center; gap: 7px;
     background: var(--blue-pale); color: var(--blue);
@@ -71,10 +70,7 @@
     margin-bottom: 36px;
     opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards;
   }
-  .hero-tag-dot {
-    width: 6px; height: 6px; background: var(--blue); border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-  }
+  .hero-tag-dot { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.4)} }
 
   h1 {
@@ -102,7 +98,6 @@
     opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards;
   }
 
-  /* Pill form */
   .hero-form-wrap {
     margin-top: 48px;
     display: flex; flex-direction: column; align-items: center; gap: 12px;
@@ -137,30 +132,18 @@
   }
   .hero-form-row button:hover { background: var(--blue-dark); }
 
-  .hero-form-select-wrap {
-    width: 100%;
-    max-width: 480px;
-  }
+  .hero-form-select-wrap { width: 100%; max-width: 480px; }
   .hero-form-select {
-    width: 100%;
-    padding: 12px 20px;
-    background: var(--white);
-    border: 1.5px solid var(--border);
+    width: 100%; padding: 12px 20px;
+    background: var(--white); border: 1.5px solid var(--border);
     border-radius: 100px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--black);
-    outline: none;
-    cursor: pointer;
-    appearance: none;
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--black); outline: none; cursor: pointer; appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%23C0C8D8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 20px center;
+    background-repeat: no-repeat; background-position: right 20px center;
     transition: border-color 0.2s;
   }
   .hero-form-select:focus { border-color: var(--blue); }
-  .hero-form-select option { color: var(--black); font-weight: 500; }
 
   .hero-form-note {
     font-size: 12px; color: var(--grey-light);
@@ -173,7 +156,6 @@
     font-size: 14px; font-weight: 700; color: #276749;
   }
 
-  /* Social proof */
   .hero-proof {
     margin-top: 44px;
     display: flex; align-items: center; gap: 18px;
@@ -214,8 +196,9 @@
     font-family: 'Jost', sans-serif;
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.18em; text-transform: uppercase;
-    color: #4D6AFF; margin-bottom: 20px;
+    color: var(--blue); margin-bottom: 20px;
   }
+  .section-eyebrow.light { color: #6B8AFF; }
 
   h2 {
     font-family: 'Jost', sans-serif;
@@ -245,7 +228,7 @@
     font-family: 'Jost', sans-serif; font-size: 17px; font-weight: 700;
     color: var(--white); margin-bottom: 12px; line-height: 1.3;
   }
-  .pain-card-desc { font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.42); }
+  .pain-card-desc { font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.5); }
 
   .pain-highlight {
     margin-top: 56px;
@@ -257,17 +240,17 @@
     font-family: 'Jost', sans-serif; font-size: 21px; font-weight: 600;
     color: var(--white); line-height: 1.45; flex: 1;
   }
-  .pain-highlight-quote span { color: #4D6AFF; }
+  .pain-highlight-quote span { color: #6B8AFF; }
   .pain-highlight-stat {
     text-align: center; flex-shrink: 0;
-    padding: 0 40px; border-left: 1px solid rgba(255,255,255,0.07);
+    padding: 0 40px; border-left: 1px solid rgba(255,255,255,0.1);
   }
   .pain-highlight-num {
     font-family: 'Jost', sans-serif; font-size: 54px; font-weight: 800;
     color: var(--blue); line-height: 1;
   }
   .pain-highlight-label {
-    font-size: 12px; color: rgba(255,255,255,0.35);
+    font-size: 12px; color: rgba(255,255,255,0.5);
     margin-top: 7px; max-width: 140px; line-height: 1.45;
   }
 
@@ -347,6 +330,24 @@
   }
   .profile-badge.pending { background: #FFF3E0; color: #E65100; }
 
+  /* PERKS */
+  .perk-card {
+    background: var(--off-white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 32px 28px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+  }
+  .perk-card:hover {
+    border-color: var(--blue);
+    box-shadow: 0 6px 24px rgba(26,60,255,0.08);
+    transform: translateY(-3px);
+  }
+  .perk-icon { font-size: 30px; margin-bottom: 16px; display: block; }
+  .perk-title {
+    font-family: 'Jost', sans-serif; font-size: 16px; font-weight: 700;
+    color: var(--black); margin-bottom: 10px; line-height: 1.3;
+  }
+  .perk-desc { font-size: 13px; line-height: 1.75; color: var(--grey); }
+
   /* CTA BOTTOM */
   #cta-bottom { padding: 120px 60px; text-align: center; max-width: 700px; margin: 0 auto; }
   .cta-bottom-tag {
@@ -363,8 +364,6 @@
   }
   .cta-bottom-title em { font-style: normal; color: var(--blue); }
   .cta-bottom-sub { font-size: 16px; color: var(--grey); line-height: 1.75; margin-bottom: 44px; }
-
-  /* same pill form */
   .cta-form-inline {
     display: flex; gap: 0;
     background: var(--white); border: 1.5px solid var(--border);
@@ -397,42 +396,8 @@
   }
   .footer-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
   .footer-name { font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 700; color: var(--black); }
+  .footer-name em { font-style: italic; }
   .footer-copy { font-size: 12px; color: var(--grey-light); font-weight: 500; }
-
-  .nav-name em, .footer-name em {
-    font-style: italic;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-  }
-
-  /* PERKS */
-  .perk-card {
-    background: var(--off-white);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 32px 28px;
-    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
-  }
-  .perk-card:hover {
-    border-color: var(--blue);
-    box-shadow: 0 6px 24px rgba(26,60,255,0.08);
-    transform: translateY(-3px);
-  }
-  .perk-icon { font-size: 30px; margin-bottom: 16px; display: block; }
-  .perk-title {
-    font-family: 'Jost', sans-serif;
-    font-size: 16px; font-weight: 700;
-    color: var(--black); margin-bottom: 10px; line-height: 1.3;
-  }
-  .perk-desc { font-size: 13px; line-height: 1.75; color: var(--grey); }
-
-  @media (max-width: 900px) {
-    #perks { padding: 70px 24px !important; }
-    #perks > div:last-child { grid-template-columns: 1fr 1fr !important; }
-  }
-  @media (max-width: 600px) {
-    #perks > div:last-child { grid-template-columns: 1fr !important; }
-  }
 
   /* REVEAL */
   .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -453,9 +418,14 @@
     .solution-grid { grid-template-columns: 1fr; }
     .forwho-inner { grid-template-columns: 1fr; gap: 50px; }
     .pain-highlight { flex-direction: column; gap: 24px; }
-    .pain-highlight-stat { border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding: 24px 0 0; }
+    .pain-highlight-stat { border-left: none; border-top: 1px solid rgba(255,255,255,0.1); padding: 24px 0 0; }
     footer { flex-direction: column; gap: 14px; text-align: center; }
     #pain, #forwho, #solution, #cta-bottom { padding: 70px 24px; }
+    #perks { padding: 70px 24px !important; }
+    #perks > div:last-child { grid-template-columns: 1fr !important; }
+  }
+  @media (max-width: 600px) {
+    #perks > div:last-child { grid-template-columns: 1fr !important; }
   }
 </style>
 </head>
@@ -469,23 +439,19 @@
   <a href="#cta-bottom" class="nav-cta">Réserver ma place →</a>
 </nav>
 
-<!-- HERO CENTRÉ -->
 <section id="hero">
   <div class="hero-tag">
     <div class="hero-tag-dot"></div>
     Pour les commerciaux qui méritent mieux
   </div>
-
   <h1>
     Tu vends très bien.<br>
     Mais tu vis encore<br>
     <span class="line-muted">selon leur grille.</span>
   </h1>
-
   <p class="hero-sub">
     Tu dépasses tes objectifs, tu portes ton équipe — et ton salaire, lui, n'a pas bougé. Il existe une autre façon de valoriser ce que tu sais déjà faire.
   </p>
-
   <div class="hero-form-wrap" id="hero-form-wrap">
     <div class="hero-form-row">
       <input type="email" placeholder="Ton adresse email" id="h-email" />
@@ -504,10 +470,9 @@
       Rappel sous 24h · Sans engagement · Zéro spam
     </p>
     <div class="hero-success" id="hero-success">
-      ✓ &nbsp;Parfait ! On te rappelle dans les 24h.
+      ✓ &nbsp;C'est noté !
     </div>
   </div>
-
   <div class="hero-proof">
     <div class="proof-avatars">
       <div class="proof-avatar">JM</div>
@@ -520,10 +485,9 @@
   </div>
 </section>
 
-<!-- PAIN POINTS -->
 <section id="pain">
   <div class="pain-inner">
-    <p class="section-eyebrow reveal">Ce que tu ressens chaque mois</p>
+    <p class="section-eyebrow light reveal">Ce que tu ressens chaque mois</p>
     <h2 class="on-dark reveal reveal-delay-1">Les 6 frustrations<br>que <em>tout bon commercial</em> connaît</h2>
     <div class="pain-grid">
       <div class="pain-card reveal">
@@ -573,7 +537,6 @@
   </div>
 </section>
 
-<!-- SOLUTION -->
 <section>
   <div id="solution">
     <div class="solution-header">
@@ -608,7 +571,6 @@
   </div>
 </section>
 
-<!-- FOR WHO -->
 <section id="forwho">
   <div class="forwho-inner">
     <div>
@@ -678,13 +640,12 @@
   </div>
 </section>
 
-<!-- CE QUE TU OBTIENS -->
 <section id="perks" style="padding: 100px 60px; max-width: 1200px; margin: 0 auto;">
   <div style="text-align:center; margin-bottom: 60px;">
-    <p class="section-eyebrow reveal" style="justify-content:center;">Concrètement</p>
-    <h2 class="on-light reveal reveal-delay-1" style="margin-top:0;">Ce que tu obtiens<br>en rejoignant <em>la communauté</em></h2>
+    <p class="section-eyebrow reveal" style="display:block;">Concrètement</p>
+    <h2 class="on-light reveal reveal-delay-1">Ce que tu obtiens<br>en rejoignant <em>la communauté</em></h2>
   </div>
-  <div style="display:grid; grid-template-columns: repeat(4,1fr); gap: 24px;">
+  <div style="display:grid; grid-template-columns: repeat(3,1fr); gap: 24px;">
     <div class="perk-card reveal">
       <div class="perk-icon">🤝</div>
       <h4 class="perk-title">Réseautage & événements</h4>
@@ -700,15 +661,24 @@
       <h4 class="perk-title">Services partenaires exclusifs</h4>
       <p class="perk-desc">La communauté a négocié pour ses membres un accès privilégié à des services soigneusement sélectionnés : outils, accompagnement, avantages du quotidien.</p>
     </div>
-    <div class="perk-card reveal reveal-delay-3">
+    <div class="perk-card reveal reveal-delay-1">
       <div class="perk-icon">🎓</div>
       <h4 class="perk-title">Formations & coaching</h4>
       <p class="perk-desc">Des contenus structurés et des coachs experts pour t'aider à développer ton activité complémentaire — du débutant jusqu'aux premiers résultats concrets.</p>
     </div>
+    <div class="perk-card reveal reveal-delay-2">
+      <div class="perk-icon">📈</div>
+      <h4 class="perk-title">Optimise ce que tu gagnes</h4>
+      <p class="perk-desc">Tu commences à générer des revenus supplémentaires — autant bien les gérer. La communauté te met en relation avec des experts sélectionnés pour t'aider à structurer et faire fructifier ce que tu construis.</p>
+    </div>
+    <div class="perk-card reveal reveal-delay-3">
+      <div class="perk-icon">⚡</div>
+      <h4 class="perk-title">Réductions sur les meilleurs outils</h4>
+      <p class="perk-desc">Les membres accèdent à des tarifs négociés sur une sélection d'outils SaaS pour commerciaux — CRM, prospection, automatisation, gestion de comptes. Moins cher, mieux équipé.</p>
+    </div>
   </div>
 </section>
 
-<!-- CTA BOTTOM -->
 <section>
   <div id="cta-bottom">
     <div class="cta-bottom-tag reveal">
@@ -734,13 +704,11 @@
 </footer>
 
 <script>
-  // Scroll reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // Envoi via Edge Function (clé Brevo côté serveur)
   async function subscribe(email, profil) {
     const res = await fetch('/api/subscribe', {
       method: 'POST',
@@ -750,21 +718,15 @@
     return res.ok ? res.json() : null;
   }
 
-  // Hero form
   async function handleHeroSubmit() {
     const email  = document.getElementById('h-email').value.trim();
     const profil = document.getElementById('h-profil').value;
     const btn    = document.querySelector('.hero-form-row button');
-
     if (!email || !email.includes('@')) { document.getElementById('h-email').focus(); return; }
     if (!profil) { document.getElementById('h-profil').style.borderColor = 'var(--blue)'; return; }
-
-    btn.textContent = '…';
-    btn.disabled = true;
-
+    btn.textContent = '…'; btn.disabled = true;
     const data = await subscribe(email, profil).catch(() => null);
     const calendlyLink = data?.calendlyLink || '#';
-
     document.querySelector('.hero-form-row').style.display = 'none';
     document.getElementById('hero-select-wrap').style.display = 'none';
     document.querySelector('.hero-form-note').style.display = 'none';
@@ -773,19 +735,14 @@
     s.style.display = 'flex';
   }
 
-  // CTA bottom form
   async function handleCtaSubmit(e) {
     e.preventDefault();
     const email = document.getElementById('cta-email').value.trim();
-    const btn   = document.querySelector('#cta-form button');
+    const btn = document.querySelector('#cta-form button');
     if (!email) return;
-
-    btn.textContent = '…';
-    btn.disabled = true;
-
+    btn.textContent = '…'; btn.disabled = true;
     const data = await subscribe(email, '').catch(() => null);
     const calendlyLink = data?.calendlyLink || '#';
-
     document.getElementById('cta-form').innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 0;">
         <p style="color:var(--blue);font-family:'Jost',sans-serif;font-weight:700;font-size:15px;">✓ Parfait, on te rappelle dans les 24h.</p>
