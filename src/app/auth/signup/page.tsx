@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 type Step = 1 | 2 | 3 | 4
@@ -12,14 +11,11 @@ const SECTORS = ['BtoB SaaS','Immobilier','Assurance','MLM / Réseau','Formation
 function SignupForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = createClient()
-
   const [step, setStep] = useState<Step>(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const [referralCode, setReferralCode] = useState(searchParams.get('ref') ?? '')
-  const [referrerId, setReferrerId] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -35,26 +31,19 @@ function SignupForm() {
       return
     }
 
-    // Admin bypass for initial setup
     if (referralCode.trim().toUpperCase() === 'GODMODE') {
-      setReferrerId('')
       setStep(2)
       return
     }
 
     setLoading(true)
-    const { data, error: err } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('referral_code', referralCode.trim().toUpperCase())
-      .single()
-
+    const res = await fetch(`/api/auth/check-referral?code=${encodeURIComponent(referralCode.trim())}`)
     setLoading(false)
-    if (err || !data) {
+
+    if (!res.ok) {
       setError("Code parrain introuvable. Vérifie auprès de la personne qui t'a invité.")
       return
     }
-    setReferrerId(data.id)
     setStep(2)
   }
 
@@ -62,48 +51,27 @@ function SignupForm() {
     setError('')
     setLoading(true)
 
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        password,
+        firstName,
+        lastName,
+        roleTitle,
+        cities: selectedCities,
+        sectors: selectedSectors,
+        refCode: referralCode,
+      }),
     })
 
-    if (authError || !authData.user) {
-      setError(authError?.message ?? 'Erreur lors de la création du compte.')
+    const data = await res.json()
+
+    if (!res.ok) {
+      setError(data.error ?? 'Erreur lors de la création du compte.')
       setLoading(false)
       return
-    }
-
-    const userId = authData.user.id
-    const generatedCode = (firstName.slice(0,1) + lastName).toLowerCase().replace(/[^a-z0-9]/g,'') + Math.floor(Math.random() * 90 + 10)
-
-    const { error: profileError } = await supabase.from('profiles').insert({
-      id: userId,
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      role_title: roleTitle,
-      cities: selectedCities,
-      sectors: selectedSectors,
-      referral_code: generatedCode.toUpperCase(),
-      referred_by: referrerId || null,
-      points_balance: 97,
-      is_active: true,
-      onboarding_completed: true,
-    })
-
-    if (profileError) {
-      setError('Erreur lors de la création du profil : ' + profileError.message)
-      setLoading(false)
-      return
-    }
-
-    if (referrerId) {
-      await supabase.from('referrals').insert({ referrer_id: referrerId, referee_id: userId, level: 1, commission_rate: 40, is_active: true })
-      const { data: grandParent } = await supabase.from('referrals').select('referrer_id').eq('referee_id', referrerId).eq('level', 1).single()
-      if (grandParent) {
-        await supabase.from('referrals').insert({ referrer_id: grandParent.referrer_id, referee_id: userId, level: 2, commission_rate: 5, is_active: true })
-      }
     }
 
     setLoading(false)
@@ -163,7 +131,7 @@ function SignupForm() {
           {step === 2 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                {[{ label: 'Prénom', value: firstName, set: setFirstName, placeholder: 'Gaultier' }, { label: 'Nom', value: lastName, set: setLastName, placeholder: 'H.' }].map(f => (
+                {[{ label: 'Prénom', value: firstName, set: setFirstName, placeholder: 'Prénom' }, { label: 'Nom', value: lastName, set: setLastName, placeholder: 'Nom' }].map(f => (
                   <div key={f.label} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <label style={{ fontSize: '11px', fontWeight: 600, color: '#4B6358', textTransform: 'uppercase', letterSpacing: '.06em' }}>{f.label}</label>
                     <input value={f.value} onChange={e => f.set(e.target.value)} placeholder={f.placeholder}
@@ -186,7 +154,7 @@ function SignupForm() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <label style={{ fontSize: '11px', fontWeight: 600, color: '#4B6358', textTransform: 'uppercase', letterSpacing: '.06em' }}>Titre / Rôle</label>
-                <input value={roleTitle} onChange={e => setRoleTitle(e.target.value)} placeholder="Commercial BtoB · Auguste.io"
+                <input value={roleTitle} onChange={e => setRoleTitle(e.target.value)} placeholder="Ex : Commercial BtoB"
                   style={{ padding: '9px 12px', border: '1.5px solid #E4EEEA', borderRadius: '8px', fontSize: '13px', color: '#0F1C17', outline: 'none' }} />
               </div>
               <div>
