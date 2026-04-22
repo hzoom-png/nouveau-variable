@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --color-green: #2F5446;
+  --color-green-2: #3D6B58;
+  --color-green-3: #EAF2EE;
+  --color-green-4: #C5DDD5;
+  --color-amber: #C8790A;
+  --color-amber-2: #FDF3E0;
+  --color-red: #B91C1C;
+  --color-red-2: #FEF2F2;
+  --color-nv-text: #0F1C17;
+  --color-text-2: #4B6358;
+  --color-text-3: #8FAAA0;
+  --color-border: #E4EEEA;
+  --color-border-2: #D0E4DC;
+  --color-surface: #F7FAF8;
+  --color-surface-2: #EFF5F2;
+
+  --font-jost: 'Jost', sans-serif;
+  --font-inter: 'Inter', system-ui, sans-serif;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+}
+
+:root {
+  --green: #2F5446;
+  --green-2: #3D6B58;
+  --green-3: #EAF2EE;
+  --green-4: #C5DDD5;
+  --amber: #C8790A;
+  --amber-2: #FDF3E0;
+  --red: #B91C1C;
+  --red-2: #FEF2F2;
+  --text: #0F1C17;
+  --text-2: #4B6358;
+  --text-3: #8FAAA0;
+  --border: #E4EEEA;
+  --border-2: #D0E4DC;
+  --surface: #F7FAF8;
+  --surface-2: #EFF5F2;
+  --white: #fff;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 999px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, textarea, select { font-family: inherit; }
+img { display: block; max-width: 100%; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: var(--green-4); border-radius: 10px; }
+
+/* Finput */
+.finput {
+  width: 100%; padding: 10px 13px; border: 1.5px solid var(--border);
+  border-radius: var(--r-sm); font-size: 14px; color: var(--text);
+  background: var(--white); outline: none; transition: .15s;
+}
+.finput:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(47,84,70,.08); }
+.finput::placeholder { color: var(--text-3); }
