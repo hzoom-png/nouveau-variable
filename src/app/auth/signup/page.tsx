@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 
 type Step = 1 | 2 | 3 | 4
 
@@ -9,7 +9,6 @@ const CITIES = ['Lyon','Paris','Marseille','Bordeaux','Toulouse','Nice','Nantes'
 const SECTORS = ['BtoB SaaS','Immobilier','Assurance','MLM / Réseau','Formation','Événementiel','Recrutement','Conseil','Finance','Tech / IT','Marketing','E-commerce']
 
 function SignupForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const [step, setStep] = useState<Step>(1)
   const [loading, setLoading] = useState(false)
@@ -75,8 +74,7 @@ function SignupForm() {
     }
 
     setLoading(false)
-    router.refresh()
-    router.push('/dashboard')
+    window.location.href = '/dashboard'
   }
 
   const toggleCity = (city: string) => setSelectedCities(prev => prev.includes(city) ? prev.filter(c => c !== city) : prev.length < 5 ? [...prev, city] : prev)
