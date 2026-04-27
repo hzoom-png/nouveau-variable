@@ -1,2 +1,2 @@
 import { redirect } from 'next/navigation'
-export default function Dashboard() { redirect('/dashboard/home') }
+export default function Dashboard() { redirect('/dashboard/tools/keyaccount') }

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdmin } from '@supabase/supabase-js'
 import DashboardShell from './DashboardShell'
+import { KaProvider } from '@/contexts/KaContext'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -42,5 +43,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!profile) redirect('/auth/login')
 
-  return <DashboardShell profile={profile}>{children}</DashboardShell>
+  return (
+    <KaProvider>
+      <DashboardShell profile={profile}>{children}</DashboardShell>
+    </KaProvider>
+  )
 }

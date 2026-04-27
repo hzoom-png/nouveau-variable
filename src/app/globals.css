@@ -76,3 +76,129 @@ img { display: block; max-width: 100%; }
 }
 .finput:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(47,84,70,.08); }
 .finput::placeholder { color: var(--text-3); }
+
+/* ── Tool layout ── */
+.tool-header { margin-bottom: 24px; }
+.tool-badge { display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px; border-radius: var(--r-full); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; }
+.tool-h1 { font-family: 'Jost', sans-serif; font-size: clamp(22px, 3vw, 30px); font-weight: 800; letter-spacing: -.02em; color: var(--text); line-height: 1.1; margin-bottom: 8px; }
+.tool-desc { font-size: 14px; color: var(--text-2); line-height: 1.7; max-width: 580px; margin-bottom: 20px; }
+.tool-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.tbtn-primary { background: var(--green); color: #fff; padding: 10px 22px; border-radius: var(--r-sm); font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 700; transition: .15s; display: inline-flex; align-items: center; gap: 6px; }
+.tbtn-primary:hover { background: var(--green-2); }
+.tbtn-secondary { background: var(--surface); color: var(--text-2); padding: 10px 18px; border-radius: var(--r-sm); font-size: 13px; font-weight: 600; border: 1px solid var(--border); transition: .15s; display: inline-flex; align-items: center; gap: 6px; }
+.tbtn-secondary:hover { border-color: var(--border-2); color: var(--text); }
+
+/* ── Keyaccount ── */
+.ka-bubble:hover { box-shadow: 0 4px 14px rgba(47,84,70,.18); }
+.ka-type-pill { padding: 6px 13px; border-radius: var(--r-full); font-size: 12px; font-weight: 500; cursor: pointer; border: 1.5px solid var(--border); color: var(--text-2); background: var(--white); transition: .14s; user-select: none; }
+.ka-type-pill:hover { border-color: var(--green-4); color: var(--green); }
+.ka-list-card:hover { box-shadow: var(--shadow-md); border-color: var(--green-4) !important; }
+.ka-delete-btn:hover { background: var(--red-2) !important; color: var(--red) !important; }
+.ka-picker-row:hover { background: var(--surface) !important; }
+
+/* ── Animations ── */
+@keyframes kaModalIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes kaNodeIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(.6); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Terrain ── */
+.tr-row:hover td { background: var(--surface) !important; }
+.tr-pulse-icon { animation: trPulse 1.4s ease-in-out infinite; }
+@keyframes trPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.08); opacity: .8; }
+}
+
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .6; transform: scale(1.15); } }
+
+/* ── Ka Notes ── */
+.ka-note-row:hover .ka-note-delete { opacity: 1 !important; }
+@keyframes card-enter {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Avatar ── */
+.avatar-wrap { position: relative; display: inline-block; cursor: pointer; }
+.avatar-wrap:hover .avatar-overlay { opacity: 1; }
+.avatar-overlay {
+  position: absolute; inset: 0; border-radius: inherit;
+  background: rgba(0,0,0,.4); display: grid; place-items: center;
+  opacity: 0; transition: .18s; pointer-events: none;
+}
+.avatar-overlay svg { color: #fff; }
+
+/* ── Reveal animations (public profile) ── */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.revealed { opacity: 1; transform: translateY(0); }
+
+/* ── Public profile ── */
+.pub-banner {
+  height: 160px; background: linear-gradient(135deg, var(--green) 0%, var(--green-2) 100%);
+  position: relative; overflow: hidden;
+}
+.pub-banner::after {
+  content: ''; position: absolute; right: -60px; top: -60px;
+  width: 240px; height: 240px; background: rgba(255,255,255,.05); border-radius: 50%;
+}
+.pub-av {
+  position: absolute; bottom: -24px; left: 28px;
+  width: 60px; height: 60px; border-radius: var(--r-md);
+  border: 3px solid var(--white); box-shadow: var(--shadow-md);
+  display: grid; place-items: center;
+  font-family: 'Jost', sans-serif; font-size: 20px; font-weight: 800; color: #fff;
+  background: var(--green); overflow: hidden;
+}
+.pub-av img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── Member drawer ── */
+.drawer-backdrop {
+  position: fixed; inset: 0; background: rgba(15,28,23,.4);
+  backdrop-filter: blur(2px); z-index: 80;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+.member-drawer {
+  position: fixed; top: 0; right: -400px; width: 380px; height: 100vh;
+  background: var(--white); z-index: 90; overflow-y: auto;
+  box-shadow: var(--shadow-lg); transition: right .25s cubic-bezier(.16,1,.3,1);
+  display: flex; flex-direction: column;
+}
+.member-drawer.open { right: 0; }
+.drawer-banner {
+  height: 80px; position: relative; flex-shrink: 0;
+}
+.drawer-av {
+  position: absolute; bottom: -20px; left: 20px;
+  width: 48px; height: 48px; border-radius: var(--r-sm);
+  border: 3px solid var(--white); display: grid; place-items: center;
+  font-family: 'Jost', sans-serif; font-size: 15px; font-weight: 800; color: #fff;
+  overflow: hidden;
+}
+.drawer-av img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── Member card (annuaire) ── */
+.mc-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden; cursor: pointer;
+  transition: all .18s cubic-bezier(.16,1,.3,1);
+}
+.mc-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--green-4); }
+.mc-card-banner { height: 56px; position: relative; }
+.mc-card-av {
+  position: absolute; bottom: -18px; left: 14px;
+  width: 40px; height: 40px; border-radius: var(--r-sm);
+  border: 2.5px solid var(--white); display: grid; place-items: center;
+  font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 800; color: #fff;
+  overflow: hidden;
+}
+.mc-card-av img { width: 100%; height: 100%; object-fit: cover; }

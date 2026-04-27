@@ -1,4 +1,44 @@
 export type MeetingType = 'dinner' | 'lunch' | 'afterwork' | 'coffee' | 'work' | 'event'
+
+export interface ServiceItem {
+  title: string
+  description: string
+}
+
+export interface LinkItem {
+  label: string
+  url: string
+}
+
+export interface TrackRecord {
+  title: string
+  value: string
+  year?: string
+}
+
+export interface AvailabilitySlot {
+  id?: string
+  day_of_week: number
+  time_label: string
+}
+
+export interface MemberProfile {
+  id: string
+  first_name: string
+  last_name: string
+  role_title?: string
+  rank: Rank
+  cities: string[]
+  sectors: string[]
+  meeting_types: string[]
+  missions_count: number
+  rating: number
+  avatar_url?: string
+  tagline?: string
+  bio?: string
+  slug?: string
+  profile_visible?: boolean
+}
 export type MeetingStatus = 'pending' | 'accepted' | 'confirmed' | 'declined' | 'cancelled' | 'completed'
 export type Rank = 'explorateur' | 'connecteur' | 'amplificateur'
 
@@ -30,6 +70,28 @@ export interface Profile {
   notif_new_referral: boolean
   notif_commission: boolean
   notif_newsletter: boolean
+  tokens_balance?: number
+  tokens_total_used?: number
+  commercial_context?: CommercialContext
+  slug?: string
+  display_name?: string
+  avatar_url?: string
+  tagline?: string
+  role_type?: 'salarie' | 'freelance' | 'entrepreneur' | 'dirigeant'
+  services?: ServiceItem[]
+  links?: LinkItem[]
+  track_record?: TrackRecord[]
+  profile_visible?: boolean
+}
+
+export interface CommercialContext {
+  product?: string
+  icp?: string
+  value_prop?: string
+  typical_objections?: string
+  sector?: string
+  location?: string
+  tone?: string
 }
 
 export interface MeetingSlot {

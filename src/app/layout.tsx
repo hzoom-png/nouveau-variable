@@ -16,8 +16,11 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Nouveau Variable — Espace membre',
-  description: 'Club privé des commerciaux ambitieux.',
+  title: 'Nouveau Variable',
+  description: 'Le club des commerciaux ambitieux.',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Profile, MeetingSlot } from '@/lib/types'
+import { useState } from 'react'
+import { MemberProfile, MeetingSlot } from '@/lib/types'
 import { MEETING_TYPES } from '@/lib/constants'
 
 interface Props {
-  recipient: Profile
+  recipient: MemberProfile
   currentUserPoints: number
   isOpen: boolean
   onClose: () => void
