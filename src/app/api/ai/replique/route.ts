@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import Anthropic from '@anthropic-ai/sdk'
 import type { RepliqueConfig } from '@/app/dashboard/tools/replique/types'
+import { rateLimit } from '@/lib/rate-limit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -26,6 +27,11 @@ export async function POST(req: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new Response(JSON.stringify({ error: 'Non autorisé' }), { status: 401 })
+
+  const allowed = await rateLimit(`ai:${user.id}`, 10, 60)
+  if (!allowed) {
+    return new Response(JSON.stringify({ error: 'Limite atteinte — 10 générations par minute maximum.' }), { status: 429 })
+  }
 
   const { consumeTokens } = await import('@/lib/tokens')
   const tokenCheck = await consumeTokens(user.id, 'replique')
@@ -102,8 +108,9 @@ Génère 3 à 5 objections probables avec leurs rebonds.`
     async start(controller) {
       try {
         const anthropicStream = anthropic.messages.stream({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 3000,
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 4000,
+          system: 'Tu es un expert en techniques de vente BtoB. Tu réponds UNIQUEMENT en JSON valide, sans aucun texte avant ni après, sans balises markdown, sans backticks. Commence directement par { et termine par }.',
           messages: [{ role: 'user', content: prompt }],
         })
 
@@ -127,7 +134,9 @@ Génère 3 à 5 objections probables avec leurs rebonds.`
             estimated_duration: result.estimated_duration,
             difficulty: result.difficulty,
           })
-        } catch {}
+        } catch (e) {
+          console.error('[Réplique API] Échec sauvegarde DB — JSON invalide:', e instanceof Error ? e.message : 'parse error')
+        }
 
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`))
         controller.close()

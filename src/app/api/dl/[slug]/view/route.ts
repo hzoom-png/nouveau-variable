@@ -10,11 +10,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ sl
   const { slug } = await params
   if (!slug) return NextResponse.json({ ok: false }, { status: 400 })
 
-  await admin
-    .from('deallinks')
-    .update({ opened_at: new Date().toISOString() })
-    .eq('slug', slug)
-    .is('opened_at', null)
+  await admin.rpc('increment_deallink_views', { p_slug: slug })
 
   return NextResponse.json({ ok: true })
 }

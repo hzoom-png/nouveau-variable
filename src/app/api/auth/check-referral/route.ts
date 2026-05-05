@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await admin
     .from('profiles')
     .select('id')
-    .eq('referral_code', code.toLowerCase())
+    .eq('referral_code', code.toUpperCase())
     .single()
 
   if (error || !data) return NextResponse.json({ error: 'Introuvable' }, { status: 404 })

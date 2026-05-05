@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
   const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
 
-  await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', user.id)
+  await supabase.from('profiles').update({ avatar_url: publicUrl, avatar_path: path }).eq('id', user.id)
 
   return NextResponse.json({ url: publicUrl })
 }

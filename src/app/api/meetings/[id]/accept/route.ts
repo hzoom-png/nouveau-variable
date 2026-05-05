@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
+import { escHtml } from '@/lib/html-escape'
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -35,42 +36,39 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const newBalance = recipientProfile.points_balance + pointsEarned
 
-  // Update meeting
   await service.from('meeting_requests')
     .update({ status: 'accepted', chosen_slot, points_earned: pointsEarned })
     .eq('id', id)
 
-  // Transaction
   await service.from('points_transactions').insert({
-    profile_id: user.id,
-    amount: pointsEarned,
-    balance_after: newBalance,
-    transaction_type: 'meeting_accept_credit',
+    profile_id:         user.id,
+    amount:             pointsEarned,
+    balance_after:      newBalance,
+    transaction_type:   'meeting_accept_credit',
     related_meeting_id: id,
   })
 
-  // Update balance
   await service.from('profiles')
     .update({ points_balance: newBalance })
     .eq('id', user.id)
 
-  // Email to requester
   try {
     const { data: requester } = await service.from('profiles').select('email, first_name').eq('id', meeting.requester_id).single()
     if (requester?.email && process.env.BREVO_API_KEY) {
+      const safeName = escHtml(recipientProfile.first_name ?? '')
       await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          sender: { name: 'Nouveau Variable', email: 'noreply@nouveauvariable.fr' },
-          to: [{ email: requester.email }],
-          subject: '[NV] Ta demande de rencontre a été acceptée !',
-          htmlContent: `<h2>Bonne nouvelle !</h2><p>${recipientProfile.first_name} a accepté ta demande de rencontre.</p><p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/meetings">Voir les détails →</a></p>`,
+          sender:      { name: 'Nouveau Variable', email: 'noreply@nouveauvariable.fr' },
+          to:          [{ email: requester.email }],
+          subject:     '[NV] Ta demande de rencontre a été acceptée !',
+          htmlContent: `<h2>Bonne nouvelle !</h2><p>${safeName} a accepté ta demande de rencontre.</p><p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/meetings">Voir les détails →</a></p>`,
         }),
       })
     }
   } catch (e) {
-    console.error('Email error:', e)
+    console.error('[meetings/accept] Erreur email:', e instanceof Error ? e.message : e)
   }
 
   return NextResponse.json({ success: true })

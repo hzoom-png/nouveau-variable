@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { useKa } from '@/contexts/KaContext'
 import { getScore, KA_STYLES, getNextAction } from './meddicc'
-import type { ContactType, Stage } from './types'
+import type { ContactType, Stage, KaAccount } from './types'
 import { Toast } from '@/components/ui/Toast'
 import KaMap from './components/KaMap'
 import KaMeddiccPanel from './components/KaMeddiccPanel'
@@ -13,23 +13,27 @@ import KaListView from './components/KaListView'
 import KaAccountPicker from './components/KaAccountPicker'
 import KaModalAccount from './components/KaModalAccount'
 import KaModalContact from './components/KaModalContact'
+import KaAccountSheet from './components/KaAccountSheet'
 import { useKaNotes } from './hooks/useKaNotes'
 
 export default function KeyaccountClient() {
   const { accounts, loading, error, activeAccount, activeAccountIdx, dispatch, view, reload } = useKa()
   const score = activeAccount ? getScore(activeAccount.contacts) : 0
   const searchParams = useSearchParams()
+  const router = useRouter()
 
-  const [pickerOpen,       setPickerOpen]       = useState(false)
-  const [showModalAccount, setShowModalAccount] = useState(false)
-  const [showModalContact, setShowModalContact] = useState(false)
-  const [contactAccountId, setContactAccountId] = useState<string>('')
-  const [activeContactId,  setActiveContactId]  = useState<string | null>(null)
-  const [newContactId,     setNewContactId]     = useState<string | null>(null)
-  const [toast,            setToast]            = useState<{ msg: string; variant: 'success' | 'error' | 'info' } | null>(null)
-  const [prefillName,      setPrefillName]      = useState('')
-  const [prefillSector,    setPrefillSector]    = useState('')
-  const [activePanel,      setActivePanel]      = useState<'meddicc' | 'journal'>('meddicc')
+  const [pickerOpen,        setPickerOpen]        = useState(false)
+  const [showModalAccount,  setShowModalAccount]  = useState(false)
+  const [showModalContact,  setShowModalContact]  = useState(false)
+  const [showAccountSheet,  setShowAccountSheet]  = useState(false)
+  const [sheetAccount,      setSheetAccount]      = useState<KaAccount | null>(null)
+  const [contactAccountId,  setContactAccountId]  = useState<string>('')
+  const [activeContactId,   setActiveContactId]   = useState<string | null>(null)
+  const [newContactId,      setNewContactId]      = useState<string | null>(null)
+  const [toast,             setToast]             = useState<{ msg: string; variant: 'success' | 'error' | 'info' } | null>(null)
+  const [prefillName,       setPrefillName]       = useState('')
+  const [prefillSector,     setPrefillSector]     = useState('')
+  const [activePanel,       setActivePanel]       = useState<'meddicc' | 'journal'>('meddicc')
 
   const showToast = useCallback((msg: string, variant: 'success' | 'error' | 'info' = 'success') => {
     setToast({ msg, variant })
@@ -186,6 +190,22 @@ export default function KeyaccountClient() {
             <div style={{ background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '4px 12px', fontSize: '12px', fontWeight: 600, color: 'var(--green)' }}>
               Score MEDDICC {score}%
             </div>
+            {activeAccount.phone_standard && (
+              <button
+                onClick={() => router.push(
+                  `/dashboard/tools/replique?objective=barrage` +
+                  `&company_sector=${encodeURIComponent(activeAccount.sector)}` +
+                  `&context=${encodeURIComponent(`Barrage secrétaire pour ${activeAccount.name}`)}` +
+                  `&contact_type=secretary` +
+                  `&account_name=${encodeURIComponent(activeAccount.name)}`
+                )}
+                style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '4px 12px', borderRadius: 'var(--r-full)', background: 'var(--amber-2)', border: '1px solid rgba(200,121,10,.3)', color: 'var(--amber)', fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: '.14s' }}
+                onMouseOver={e => { e.currentTarget.style.background = 'var(--amber)'; e.currentTarget.style.color = '#fff' }}
+                onMouseOut={e => { e.currentTarget.style.background = 'var(--amber-2)'; e.currentTarget.style.color = 'var(--amber)' }}
+              >
+                📞 Barrage · Préparer le script →
+              </button>
+            )}
             <button
               onClick={handleResetLayout}
               className="tbtn-secondary"
@@ -234,6 +254,7 @@ export default function KeyaccountClient() {
             activeContactId={activeContactId}
             onContactClick={id => setActiveContactId(prev => prev === id ? null : id)}
             newContactId={newContactId}
+            onOpenAccount={acc => { setSheetAccount(acc); setShowAccountSheet(true) }}
           />
 
           {/* Panel tabs */}
@@ -251,6 +272,7 @@ export default function KeyaccountClient() {
               account={activeAccount}
               dispatch={dispatch}
               onClose={() => setActiveContactId(null)}
+              showToast={showToast}
             />
           )}
 
@@ -290,6 +312,13 @@ export default function KeyaccountClient() {
           dispatch={dispatch}
           onClose={() => setShowModalContact(false)}
           onCreated={handleContactCreated}
+        />
+      )}
+      {showAccountSheet && sheetAccount && (
+        <KaAccountSheet
+          account={accounts.find(a => a.id === sheetAccount.id) ?? sheetAccount}
+          onClose={() => { setShowAccountSheet(false); setSheetAccount(null) }}
+          showToast={showToast}
         />
       )}
 

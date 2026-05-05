@@ -3,12 +3,13 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Profile, AvailabilitySlot, ServiceItem, LinkItem, TrackRecord } from '@/lib/types'
-import { SECTORS, CITIES_FR, MEETING_TYPES, MAX_CITIES, MAX_SECTORS } from '@/lib/constants'
+import { Profile, ServiceItem, LinkItem, TrackRecord } from '@/lib/types'
+import { SECTORS, CITIES_FR, MAX_CITIES, MAX_SECTORS } from '@/lib/constants'
 import { createClient } from '@/lib/supabase/client'
+import { useTheme } from '@/lib/theme'
+import { ThemeToggle } from '@/components/ThemeToggle'
+import { WelcomeTour } from '@/components/onboarding/WelcomeTour'
 
-const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
-const TIME_SLOTS = ['Matin', 'Midi', 'Soir']
 const ROLE_TYPES = [
   { value: 'salarie',      label: 'Salarié'      },
   { value: 'freelance',    label: 'Freelance'     },
@@ -18,11 +19,9 @@ const ROLE_TYPES = [
 
 type DeleteStep = 'warning' | 'confirm'
 
-interface Props { profile: Profile; slots: AvailabilitySlot[] }
+interface Props { profile: Profile }
 
-function slotKey(day: number, time: string) { return `${day}_${time}` }
-
-export default function ProfileClient({ profile, slots: initialSlots }: Props) {
+export default function ProfileClient({ profile }: Props) {
   const router = useRouter()
   const fileRef = useRef<HTMLInputElement>(null)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -37,20 +36,6 @@ export default function ProfileClient({ profile, slots: initialSlots }: Props) {
   // ── Avatar ──
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url ?? '')
   const [avatarLoading, setAvatarLoading] = useState(false)
-
-  // ── Availability slots ──
-  const [slotSet, setSlotSet] = useState<Set<string>>(
-    new Set(initialSlots.map(s => slotKey(s.day_of_week, s.time_label)))
-  )
-  function toggleSlot(day: number, time: string) {
-    const key = slotKey(day, time)
-    setSlotSet(prev => {
-      const next = new Set(prev)
-      if (next.has(key)) next.delete(key)
-      else next.add(key)
-      return next
-    })
-  }
 
   // ── Main form ──
   const [form, setForm] = useState({
@@ -78,12 +63,16 @@ export default function ProfileClient({ profile, slots: initialSlots }: Props) {
   const [cityInput, setCityInput] = useState('')
   const [saving, setSaving] = useState(false)
 
+  // ── Welcome Tour ──
+  const [showTour, setShowTour] = useState(false)
+
   // ── Delete modal ──
   const [deleteStep, setDeleteStep] = useState<DeleteStep | null>(null)
   const [deleteInput, setDeleteInput] = useState('')
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState('')
 
+  const { theme } = useTheme()
   const initials = `${form.first_name[0] ?? ''}${form.last_name[0] ?? ''}`.toUpperCase()
   const citySuggestions = CITIES_FR.filter(
     c => c.toLowerCase().includes(cityInput.toLowerCase()) && !form.cities.includes(c)
@@ -172,18 +161,14 @@ export default function ProfileClient({ profile, slots: initialSlots }: Props) {
 
   async function handleSave() {
     setSaving(true)
-    const availability_slots = Array.from(slotSet).map(key => {
-      const [day, time] = key.split('_')
-      return { day_of_week: parseInt(day), time_label: time }
-    })
     const res = await fetch('/api/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, availability_slots }),
+      body: JSON.stringify(form),
     })
     setSaving(false)
     if (res.ok) {
-      showToast('Profil sauvegardé ✓')
+      showToast('Profil mis à jour ✓')
       router.refresh()
     } else {
       const data = await res.json()
@@ -266,16 +251,6 @@ export default function ProfileClient({ profile, slots: initialSlots }: Props) {
             <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
           </div>
           <div style={{ padding: '32px 22px 22px' }}>
-            {profile.slug && (
-              <Link
-                href={`/p/${profile.slug}`}
-                target="_blank"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, color: 'var(--green)', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-full)', padding: '4px 11px', marginBottom: '16px', textDecoration: 'none' }}
-              >
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M4 1H2a1 1 0 00-1 1v6a1 1 0 001 1h6a1 1 0 001-1V6M6 1h3v3M5 5l4-4"/></svg>
-                Voir mon profil public
-              </Link>
-            )}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
               {([['Prénom', 'first_name'], ['Nom', 'last_name']] as const).map(([l, k]) => (
                 <div key={k}>
@@ -451,68 +426,21 @@ export default function ProfileClient({ profile, slots: initialSlots }: Props) {
           ))}
         </div>
 
-        {/* 7. Disponibilités */}
+        {/* 7. Apparence */}
         <div style={card}>
-          <div style={sectionTitle}>Disponibilités</div>
-          <div style={{ overflowX: 'auto', marginBottom: '18px' }}>
-            <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: '340px' }}>
-              <thead>
-                <tr>
-                  <th style={{ fontSize: '11px', color: 'var(--text-3)', fontWeight: 600, textAlign: 'left', padding: '0 0 6px', width: '80px' }}></th>
-                  {TIME_SLOTS.map(t => (
-                    <th key={t} style={{ fontSize: '11px', color: 'var(--text-2)', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', padding: '0 8px 6px', textAlign: 'center' }}>{t}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {DAYS.map((day, di) => (
-                  <tr key={day}>
-                    <td style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-2)', padding: '4px 0', whiteSpace: 'nowrap' }}>{day}</td>
-                    {TIME_SLOTS.map(time => {
-                      const active = slotSet.has(slotKey(di, time))
-                      return (
-                        <td key={time} style={{ textAlign: 'center', padding: '4px 8px' }}>
-                          <button
-                            onClick={() => toggleSlot(di, time)}
-                            style={{
-                              width: '28px', height: '28px', borderRadius: 'var(--r-sm)',
-                              border: `1.5px solid ${active ? 'var(--green)' : 'var(--border)'}`,
-                              background: active ? 'var(--green-3)' : 'var(--surface)',
-                              cursor: 'pointer', transition: '.14s',
-                            }}
-                          />
-                        </td>
-                      )
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div style={{ marginBottom: '16px' }}>
-            <div style={{ ...sectionTitle, fontSize: '13px', marginBottom: '10px' }}>Types de rencontres</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {Object.entries(MEETING_TYPES).map(([key, mt]) => (
-                <button key={key} onClick={() => toggleArray('meeting_types', key)} style={pill(form.meeting_types.includes(key))}>
-                  {mt.emoji} {mt.label}
-                </button>
-              ))}
+          <div style={sectionTitle}>Apparence</div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0' }}>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>Thème</p>
+              <p style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 2 }}>
+                {theme === 'dark' ? 'Mode sombre activé' : 'Mode clair activé'}
+              </p>
             </div>
+            <ThemeToggle />
           </div>
         </div>
 
-        {/* 8. Lien profil public */}
-        {profile.slug && (
-          <div style={card}>
-            <div style={sectionTitle}>Profil public</div>
-            <div style={{ background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '9px 12px', fontSize: '12px', color: 'var(--green)', fontWeight: 600 }}>
-              /p/{profile.slug}
-            </div>
-          </div>
-        )}
-
-        {/* 9. Notifications */}
+        {/* 8. Notifications */}
         <div style={card}>
           <div style={sectionTitle}>Notifications</div>
           {([
@@ -559,6 +487,10 @@ export default function ProfileClient({ profile, slots: initialSlots }: Props) {
         <div style={card}>
           <div style={sectionTitle}>Compte</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <button onClick={() => setShowTour(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 14px', borderRadius: 'var(--r-sm)', background: 'var(--white)', border: '1.5px solid var(--green)', color: 'var(--green)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', width: 'fit-content' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+              Revoir la présentation du club
+            </button>
             <button onClick={handleSignOut} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 14px', borderRadius: 'var(--r-sm)', background: 'var(--surface)', border: '1.5px solid var(--border)', color: 'var(--text-2)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', width: 'fit-content' }}>
               <svg width="13" height="13" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6 13H3a1 1 0 01-1-1V3a1 1 0 011-1h3M10 10l3-3-3-3M13 7.5H6"/></svg>
               Se déconnecter
@@ -615,6 +547,14 @@ export default function ProfileClient({ profile, slots: initialSlots }: Props) {
         <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 999, background: toast.ok ? 'var(--green)' : 'var(--red)', color: '#fff', padding: '11px 18px', borderRadius: 'var(--r-md)', fontSize: '13px', fontWeight: 600, boxShadow: '0 4px 16px rgba(0,0,0,.18)' }}>
           {toast.msg}
         </div>
+      )}
+
+      {showTour && (
+        <WelcomeTour
+          firstName={profile.first_name ?? 'toi'}
+          forceOpen={true}
+          onDone={() => setShowTour(false)}
+        />
       )}
 
       {/* ── Delete modal ── */}

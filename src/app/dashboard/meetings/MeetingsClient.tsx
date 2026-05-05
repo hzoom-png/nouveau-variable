@@ -82,7 +82,7 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
         </h2>
 
         {!pendingRequests.length && (
-          <div style={{ background: 'white', borderRadius: '14px', padding: '32px', textAlign: 'center', color: 'var(--muted)', fontSize: '14px' }}>
+          <div style={{ background: 'var(--white)', borderRadius: '14px', padding: '32px', textAlign: 'center', color: 'var(--muted)', fontSize: '14px' }}>
             Aucune demande en attente
           </div>
         )}
@@ -95,7 +95,7 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
             const firstSlot = req.proposed_slots?.[0]
 
             return (
-              <div key={req.id} style={{ background: 'white', borderRadius: '14px', padding: '20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
+              <div key={req.id} style={{ background: 'var(--white)', borderRadius: '14px', padding: '20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
                   <div style={{
                     width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,
@@ -153,7 +153,7 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
                       <button
                         onClick={() => handleDecline(req.id)}
                         disabled={loadingId === req.id}
-                        style={{ padding: '8px 16px', borderRadius: '8px', background: 'white', color: '#991B1B', fontWeight: 600, fontSize: '13px', border: '1.5px solid #FCA5A5', cursor: 'pointer' }}
+                        style={{ padding: '8px 16px', borderRadius: '8px', background: 'var(--white)', color: '#991B1B', fontWeight: 600, fontSize: '13px', border: '1.5px solid #FCA5A5', cursor: 'pointer' }}
                       >
                         Décliner
                       </button>
@@ -173,7 +173,7 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
         </h2>
 
         {!confirmedMeetings.length && (
-          <div style={{ background: 'white', borderRadius: '14px', padding: '32px', textAlign: 'center', color: 'var(--muted)', fontSize: '14px' }}>
+          <div style={{ background: 'var(--white)', borderRadius: '14px', padding: '32px', textAlign: 'center', color: 'var(--muted)', fontSize: '14px' }}>
             Aucune rencontre confirmée
           </div>
         )}
@@ -186,7 +186,7 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
             const initials = `${other?.first_name?.[0] ?? ''}${other?.last_name?.[0] ?? ''}`.toUpperCase()
 
             return (
-              <div key={req.id} style={{ background: 'white', borderRadius: '14px', padding: '20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
+              <div key={req.id} style={{ background: 'var(--white)', borderRadius: '14px', padding: '20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                   <div style={{
                     width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,

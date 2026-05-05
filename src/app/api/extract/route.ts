@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     const truncated = text.slice(0, 15000)
     return NextResponse.json({ text: truncated, chars: truncated.length, truncated: text.length > 15000 })
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur extraction'
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error('[extract] Erreur:', err instanceof Error ? err.message : err)
+    return NextResponse.json({ error: 'Erreur interne', code: 'INTERNAL_ERROR' }, { status: 500 })
   }
 }

@@ -38,6 +38,7 @@ export interface MemberProfile {
   bio?: string
   slug?: string
   profile_visible?: boolean
+  member_number?: number
 }
 export type MeetingStatus = 'pending' | 'accepted' | 'confirmed' | 'declined' | 'cancelled' | 'completed'
 export type Rank = 'explorateur' | 'connecteur' | 'amplificateur'
@@ -82,6 +83,8 @@ export interface Profile {
   links?: LinkItem[]
   track_record?: TrackRecord[]
   profile_visible?: boolean
+  onboarding_completed?: boolean
+  member_number?: number
 }
 
 export interface CommercialContext {

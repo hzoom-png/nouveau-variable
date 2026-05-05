@@ -60,6 +60,12 @@ export function useKeyaccountDB() {
         sector: (a.sector as string) ?? '',
         val: (a.val as string) ?? '',
         stage: a.stage as Stage,
+        website: (a.website as string) ?? '',
+        phone_standard: (a.phone_standard as string) ?? '',
+        address: (a.address as string) ?? '',
+        notes_context: (a.notes_context as string) ?? '',
+        next_action: (a.next_action as string) ?? '',
+        next_action_date: (a.next_action_date as string) ?? '',
         contacts: ((dbContacts ?? []) as Record<string, unknown>[])
           .filter(c => c.account_id === a.id)
           .map(c => ({
@@ -67,6 +73,8 @@ export function useKeyaccountDB() {
             name: c.name as string,
             role: (c.role as string) ?? '',
             email: (c.email as string) ?? '',
+            phone: (c.phone as string) ?? '',
+            linkedin: (c.linkedin as string) ?? '',
             notes: (c.notes as string) ?? '',
             type: c.type as KaContact['type'],
             x: (c.pos_x as number) ?? 0.5,
@@ -214,16 +222,71 @@ export function useKeyaccountDB() {
 
   const updateAccount = useCallback(async (
     accountId: string,
-    fields: Partial<Pick<KaAccount, 'name' | 'sector' | 'val' | 'stage'>>
+    fields: Partial<Omit<KaAccount, 'id' | 'contacts'>>
   ) => {
     setAccounts(prev => prev.map(a => a.id === accountId ? { ...a, ...fields } : a))
 
     const supabase = createClient()
+    const dbFields: Record<string, unknown> = { ...fields }
+    // next_action_date must be null (not '') for DB date column
+    if ('next_action_date' in dbFields && !dbFields.next_action_date) {
+      dbFields.next_action_date = null
+    }
     const { error } = await supabase
       .from('ka_accounts')
-      .update(fields)
+      .update(dbFields)
       .eq('id', accountId)
     if (error) console.error('updateAccount error:', error)
+  }, [])
+
+  const updateContact = useCallback(async (
+    accountId: string,
+    contactId: string,
+    fields: Partial<KaContact>
+  ) => {
+    const dbFields: Record<string, unknown> = {}
+    if ('name'     in fields) dbFields.name     = fields.name
+    if ('role'     in fields) dbFields.role     = fields.role
+    if ('email'    in fields) dbFields.email    = fields.email
+    if ('phone'    in fields) dbFields.phone    = fields.phone
+    if ('linkedin' in fields) dbFields.linkedin = fields.linkedin
+    if ('notes'    in fields) dbFields.notes    = fields.notes
+    if ('type'     in fields) dbFields.type     = fields.type
+
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('ka_contacts')
+      .update(dbFields)
+      .eq('id', contactId)
+    if (error) { console.error('updateContact:', error); return }
+
+    setAccounts(prev => prev.map(a =>
+      a.id !== accountId ? a : {
+        ...a,
+        contacts: a.contacts.map(c =>
+          c.id !== contactId ? c : { ...c, ...fields }
+        ),
+      }
+    ))
+  }, [])
+
+  const deleteContact = useCallback(async (
+    accountId: string,
+    contactId: string
+  ) => {
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('ka_contacts')
+      .delete()
+      .eq('id', contactId)
+    if (error) { console.error('deleteContact:', error); return }
+
+    setAccounts(prev => prev.map(a =>
+      a.id !== accountId ? a : {
+        ...a,
+        contacts: a.contacts.filter(c => c.id !== contactId),
+      }
+    ))
   }, [])
 
   const activeAccount = accounts[activeAccountIdx] ?? null
@@ -236,6 +299,7 @@ export function useKeyaccountDB() {
     addAccount, deleteAccount,
     addContact, moveContact,
     toggleCheck, updateAccount,
+    updateContact, deleteContact,
     reload: load,
   }
 }

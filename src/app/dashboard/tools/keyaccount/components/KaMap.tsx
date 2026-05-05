@@ -12,6 +12,7 @@ interface Props {
   activeContactId: string | null
   onContactClick: (id: string) => void
   newContactId?: string | null
+  onOpenAccount?: (account: KaAccount) => void
 }
 
 interface DragState {
@@ -23,7 +24,7 @@ interface DragState {
   moved: boolean
 }
 
-export default function KaMap({ account, dispatch, activeContactId: _activeContactId, onContactClick, newContactId }: Props) {
+export default function KaMap({ account, dispatch, activeContactId: _activeContactId, onContactClick, newContactId, onOpenAccount }: Props) {
   const canvasRef = useRef<HTMLDivElement>(null)
   const [dims, setDims] = useState({ w: 700, h: 520 })
   const dragRef = useRef<DragState | null>(null)
@@ -176,11 +177,16 @@ export default function KaMap({ account, dispatch, activeContactId: _activeConta
       </svg>
 
       {/* Central account circle */}
-      <div style={{
-        position: 'absolute', left: CX, top: CY,
-        transform: 'translate(-50%, -50%)',
-        zIndex: 1, pointerEvents: 'none',
-      }}>
+      <div
+        className="ka-center-node"
+        onClick={() => onOpenAccount?.(account)}
+        style={{
+          position: 'absolute', left: CX, top: CY,
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1,
+        }}
+        title="Ouvrir la fiche compte"
+      >
         <div style={{
           width: '92px', height: '92px', borderRadius: '50%',
           background: 'var(--green)', border: '3px solid var(--green-2)',

@@ -30,7 +30,7 @@ export default async function N1Page() {
       </div>
 
       {!referrals?.length && (
-        <div style={{ background: 'white', borderRadius: '14px', padding: '48px', textAlign: 'center', color: 'var(--muted)' }}>
+        <div style={{ background: 'var(--white)', borderRadius: '14px', padding: '48px', textAlign: 'center', color: 'var(--muted)' }}>
           <div style={{ fontSize: '32px', marginBottom: '12px' }}>👥</div>
           <p style={{ fontWeight: 600 }}>Pas encore de filleuls N1</p>
           <p style={{ fontSize: '14px' }}>Partage ton lien d&apos;affiliation depuis la page Mon affiliation</p>
@@ -46,7 +46,7 @@ export default async function N1Page() {
           const createdAt = profile.created_at as string
 
           return (
-            <div key={String(r.id)} style={{ background: 'white', borderRadius: '14px', padding: '16px 20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)', display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div key={String(r.id)} style={{ background: 'var(--white)', borderRadius: '14px', padding: '16px 20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)', display: 'flex', alignItems: 'center', gap: '14px' }}>
               <div style={{
                 width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,
                 background: '#43695A', display: 'flex', alignItems: 'center', justifyContent: 'center',

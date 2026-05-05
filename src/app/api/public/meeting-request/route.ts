@@ -67,7 +67,10 @@ export async function POST(request: Request) {
     meeting_type: meetingType ?? 'coffee',
   })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('[public/meeting-request] Erreur insert:', error.message)
+    return NextResponse.json({ error: 'Erreur interne', code: 'INTERNAL_ERROR' }, { status: 500 })
+  }
 
   return NextResponse.json({ success: true })
 }

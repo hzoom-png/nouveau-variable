@@ -52,7 +52,30 @@
   --shadow-lg: 0 12px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ============ DARK MODE ============ */
+[data-theme="dark"] {
+  --green:    #3D6B58;
+  --green-2:  #4A8C6F;
+  --green-3:  #1A2E26;
+  --green-4:  #1E3A30;
+  --amber:    #D4860F;
+
+  --text:     #F0F5F2;
+  --text-2:   #6B9E86;
+  --text-3:   #4A7A63;
+
+  --surface:  #111D18;
+  --white:    #151F1A;
+  --border:   #1E3028;
+
+  --bg:       #0B1612;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+/* Transition douce sur changement de thème (hors animations existantes) */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease; }
 html { font-size: 16px; -webkit-text-size-adjust: 100%; }
 body {
   font-family: 'Inter', system-ui, sans-serif;
@@ -95,6 +118,8 @@ img { display: block; max-width: 100%; }
 .ka-list-card:hover { box-shadow: var(--shadow-md); border-color: var(--green-4) !important; }
 .ka-delete-btn:hover { background: var(--red-2) !important; color: var(--red) !important; }
 .ka-picker-row:hover { background: var(--surface) !important; }
+.ka-center-node { transition: filter .15s, transform .15s; cursor: pointer; }
+.ka-center-node:hover { filter: brightness(1.08); transform: translate(-50%, -50%) scale(1.03) !important; }
 
 /* ── Animations ── */
 @keyframes kaModalIn {
@@ -119,6 +144,12 @@ img { display: block; max-width: 100%; }
 }
 
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .6; transform: scale(1.15); } }
+@keyframes shimmer { from { background-position: -400px 0; } to { background-position: 400px 0; } }
+.sk {
+  background: linear-gradient(90deg, var(--border) 25%, var(--surface-2) 50%, var(--border) 75%) !important;
+  background-size: 800px 100% !important;
+  animation: shimmer 1.4s ease-in-out infinite !important;
+}
 
 /* ── Ka Notes ── */
 .ka-note-row:hover .ka-note-delete { opacity: 1 !important; }
@@ -202,3 +233,49 @@ img { display: block; max-width: 100%; }
   overflow: hidden;
 }
 .mc-card-av img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ── Projects ── */
+.project-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden; cursor: pointer;
+  transition: all .18s cubic-bezier(.16,1,.3,1);
+  display: flex; flex-direction: column;
+}
+.project-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--green-4); }
+
+.project-modal-backdrop {
+  position: fixed; inset: 0; background: rgba(15,28,23,.4);
+  backdrop-filter: blur(2px); z-index: 80;
+  animation: fadeIn .2s ease;
+}
+.project-modal {
+  position: fixed; top: 0; right: 0; width: 480px; max-width: 100vw; height: 100vh;
+  background: var(--white); z-index: 90;
+  box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
+  animation: drawerIn .25s cubic-bezier(.16,1,.3,1);
+}
+.my-projects-panel {
+  position: fixed; top: 0; right: 0; width: 600px; max-width: 100vw; height: 100vh;
+  background: var(--white); z-index: 90;
+  box-shadow: var(--shadow-lg); display: flex; flex-direction: column;
+  animation: drawerIn .25s cubic-bezier(.16,1,.3,1);
+}
+.project-match-banner:hover { border-color: var(--green-2) !important; background: var(--green-4) !important; }
+
+@keyframes drawerIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes drawerUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .project-modal { width: 100vw; }
+  .my-projects-panel { width: 100vw; }
+}

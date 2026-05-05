@@ -32,7 +32,7 @@ export default async function N2Page() {
   return (
     <div style={{ maxWidth: '800px' }}>
       {/* Rate banner */}
-      <div style={{ background: 'white', borderRadius: '14px', padding: '20px 24px', marginBottom: '24px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
+      <div style={{ background: 'var(--white)', borderRadius: '14px', padding: '20px 24px', marginBottom: '24px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
           <div>
             <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '16px', color: 'var(--text)' }}>
@@ -63,7 +63,7 @@ export default async function N2Page() {
       </div>
 
       {!referrals?.length && (
-        <div style={{ background: 'white', borderRadius: '14px', padding: '48px', textAlign: 'center', color: 'var(--muted)' }}>
+        <div style={{ background: 'var(--white)', borderRadius: '14px', padding: '48px', textAlign: 'center', color: 'var(--muted)' }}>
           <div style={{ fontSize: '32px', marginBottom: '12px' }}>🌐</div>
           <p style={{ fontWeight: 600 }}>Pas encore de filleuls N2</p>
           <p style={{ fontSize: '14px' }}>Tes filleuls N1 doivent à leur tour parrainer des membres</p>
@@ -79,7 +79,7 @@ export default async function N2Page() {
           const createdAt = r.created_at as string
 
           return (
-            <div key={String(r.id)} style={{ background: 'white', borderRadius: '14px', padding: '16px 20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)', display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div key={String(r.id)} style={{ background: 'var(--white)', borderRadius: '14px', padding: '16px 20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)', display: 'flex', alignItems: 'center', gap: '14px' }}>
               <div style={{
                 width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,
                 background: '#4B7BF5', display: 'flex', alignItems: 'center', justifyContent: 'center',

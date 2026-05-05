@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createAdmin } from '@supabase/supabase-js'
+import { createServiceClient } from '@/lib/supabase/service'
 import DashboardShell from './DashboardShell'
-import { KaProvider } from '@/contexts/KaContext'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -16,27 +15,39 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .eq('id', user.id)
     .single()
 
-  // Auto-create a minimal profile if it doesn't exist yet
   if (!profile) {
-    const admin = createAdmin(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const admin = createServiceClient()
     const email = user.email ?? ''
-    const namePart = email.split('@')[0]
-    const fallback = {
+
+    // Try to pre-fill from an accepted candidature matching this email
+    const { data: cand } = await admin
+      .from('candidatures')
+      .select('full_name, city, role, phone, referral_code')
+      .eq('email', email)
+      .eq('status', 'accepted')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    const nameParts = (cand?.full_name as string | null)?.trim().split(' ') ?? []
+    const firstName = nameParts[0] || email.split('@')[0]
+    const lastName = nameParts.slice(1).join(' ')
+    const generatedCode = `${firstName}${lastName}`.toLowerCase().replace(/[^a-z0-9]/g, '') || email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '')
+
+    await admin.from('profiles').insert({
       id: user.id,
       email,
-      first_name: namePart,
-      last_name: '',
-      role_title: '',
-      cities: [],
-      sectors: [],
-      referral_code: namePart.toLowerCase().replace(/[^a-z0-9]/g, ''),
-      points_balance: 97,
+      first_name: firstName,
+      last_name:  lastName,
+      role_title: (cand?.role as string | null) ?? '',
+      cities:     (cand?.city as string | null) ? [cand!.city] : [],
+      sectors:    [],
+      phone:      (cand?.phone as string | null) ?? '',
+      referred_by:   (cand?.referral_code as string | null) ?? '',
+      referral_code: generatedCode,
+      points_balance:       97,
       onboarding_completed: false,
-    }
-    await admin.from('profiles').insert(fallback)
+    })
     const { data: created } = await admin.from('profiles').select('*').eq('id', user.id).single()
     profile = created
   }
@@ -44,8 +55,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!profile) redirect('/auth/login')
 
   return (
-    <KaProvider>
-      <DashboardShell profile={profile}>{children}</DashboardShell>
-    </KaProvider>
+    <DashboardShell profile={profile} stripeUrl={process.env.STRIPE_PAYMENT_BASE_URL ?? ''}>
+      {children}
+    </DashboardShell>
   )
 }

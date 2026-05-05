@@ -63,7 +63,10 @@ export async function PATCH(request: Request) {
     .select()
     .single()
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('[profile] Erreur:', error.message)
+    return NextResponse.json({ error: 'Erreur interne', code: 'INTERNAL_ERROR' }, { status: 500 })
+  }
 
   // Handle availability slots (separate table)
   if (Array.isArray(body.availability_slots)) {

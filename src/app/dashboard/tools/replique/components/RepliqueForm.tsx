@@ -5,6 +5,7 @@ import type { RepliqueConfig, ContactType, CallObjective } from '../types'
 
 interface Props {
   initial?: Partial<RepliqueConfig>
+  initialStep?: 1 | 2
   onSubmit: (config: RepliqueConfig) => void
   onCancel?: () => void
 }
@@ -37,8 +38,8 @@ const lbl: React.CSSProperties = {
   letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '5px',
 }
 
-export default function RepliqueForm({ initial = {}, onSubmit, onCancel }: Props) {
-  const [step, setStep] = useState<1 | 2>(1)
+export default function RepliqueForm({ initial = {}, initialStep = 1, onSubmit, onCancel }: Props) {
+  const [step, setStep] = useState<1 | 2>(initialStep)
   const [product, setProduct] = useState(initial.product ?? '')
   const [valueprop, setValueprop] = useState(initial.valueprop ?? '')
   const [contactType, setContactType] = useState<ContactType>(initial.contact_type ?? 'decision_maker')

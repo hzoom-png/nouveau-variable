@@ -7,6 +7,7 @@ export default function RepliqueProgress({ steps, currentStep }: Props) {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '340px' }}>
+      <style>{`@keyframes rplBlink { 0%, 100% { opacity: 1 } 50% { opacity: 0.3 } }`}</style>
       <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-xl)', padding: '40px 48px', width: '100%', maxWidth: '480px', textAlign: 'center', boxShadow: 'var(--shadow-sm)' }}>
         <div style={{ width: '52px', height: '52px', background: 'var(--green-3)', borderRadius: 'var(--r-lg)', display: 'grid', placeItems: 'center', margin: '0 auto 20px' }}>
           <svg width="24" height="24" viewBox="0 0 14 14" fill="none" stroke="var(--green)" strokeWidth="1.5" strokeLinecap="round">
@@ -23,6 +24,10 @@ export default function RepliqueProgress({ steps, currentStep }: Props) {
         </div>
         <div style={{ height: '5px', background: 'var(--surface-2)', borderRadius: 'var(--r-full)' }}>
           <div style={{ height: '5px', background: 'var(--green)', borderRadius: 'var(--r-full)', width: progress + '%', transition: 'width 0.8s ease' }} />
+        </div>
+        <div style={{ marginTop: '16px', fontSize: '12px', color: '#9BB5AA', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#9BB5AA', flexShrink: 0, animation: 'rplBlink 1.2s ease infinite' }} />
+          Génération en cours — ne quitte pas cet écran
         </div>
       </div>
     </div>

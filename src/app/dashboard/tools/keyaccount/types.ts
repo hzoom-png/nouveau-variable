@@ -17,6 +17,8 @@ export interface KaContact {
   name: string
   role: string
   email: string
+  phone?: string
+  linkedin?: string
   notes: string
   type: ContactType
   x: number
@@ -31,6 +33,12 @@ export interface KaAccount {
   val: string
   stage: Stage
   contacts: KaContact[]
+  website?: string
+  phone_standard?: string
+  address?: string
+  notes_context?: string
+  next_action?: string
+  next_action_date?: string
 }
 
 export type NoteType = 'note' | 'call' | 'email' | 'meeting' | 'alert'

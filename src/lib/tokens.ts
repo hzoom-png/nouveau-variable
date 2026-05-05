@@ -1,16 +1,12 @@
-import { createClient } from '@supabase/supabase-js'
+import { createServiceClient } from './supabase/service'
 
-const admin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
-export type ToolName = 'terrain' | 'deallink' | 'replique'
+export type ToolName = 'terrain' | 'deallink' | 'replique' | 'sidehustle'
 
 const COSTS: Record<ToolName, number> = {
-  terrain: 30,
-  deallink: 20,
-  replique: 25,
+  terrain:    30,
+  deallink:   20,
+  replique:   25,
+  sidehustle: 40,
 }
 
 export async function consumeTokens(userId: string, tool: ToolName): Promise<{
@@ -18,44 +14,26 @@ export async function consumeTokens(userId: string, tool: ToolName): Promise<{
   tokensLeft: number
   error?: string
 }> {
-  const cost = COSTS[tool]
+  const cost  = COSTS[tool]
+  const admin = createServiceClient()
 
-  const { data: profile, error: fetchErr } = await admin
-    .from('profiles')
-    .select('tokens_balance, tokens_total_used')
-    .eq('id', userId)
-    .single()
-
-  if (fetchErr || !profile) {
-    // Migration may not be applied yet — allow through
-    return { success: true, tokensLeft: 0 }
-  }
-
-  const balance: number = profile.tokens_balance ?? 0
-  const totalUsed: number = profile.tokens_total_used ?? 0
-
-  if (balance < cost) {
-    return {
-      success: false,
-      tokensLeft: balance,
-      error: `Solde insuffisant — il te reste ${balance} tokens (coût : ${cost}). Visite Mon affiliation pour en gagner.`,
-    }
-  }
-
-  const newBalance = balance - cost
-
-  await admin.from('tokens_transactions').insert({
-    user_id: userId,
-    tool,
-    tokens_used: cost,
-    tokens_before: balance,
-    tokens_after: newBalance,
+  // Appel atomique via RPC — évite la race condition read-then-write
+  const { data, error } = await admin.rpc('consume_tokens', {
+    p_user_id: userId,
+    p_cost:    cost,
+    p_tool:    tool,
   })
 
-  await admin.from('profiles').update({
-    tokens_balance: newBalance,
-    tokens_total_used: totalUsed + cost,
-  }).eq('id', userId)
+  if (error) {
+    console.error('[tokens] Erreur RPC consume_tokens:', error.message)
+    // En production, une erreur DB bloque la requête (ne pas laisser passer gratuitement)
+    return { success: false, tokensLeft: 0, error: 'Erreur serveur — réessaie dans un instant.' }
+  }
 
-  return { success: true, tokensLeft: newBalance }
+  const result = data as { success: boolean; error?: string; tokens_left: number }
+  return {
+    success:    result.success,
+    tokensLeft: result.tokens_left ?? 0,
+    error:      result.error,
+  }
 }

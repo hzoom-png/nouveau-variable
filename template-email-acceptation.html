@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ta candidature est acceptée — Nouveau Variable</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #F7FAF8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      color: #0F1C17;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    /* HEADER */
+    .header {
+      text-align: center;
+      padding-bottom: 32px;
+    }
+    .logo {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #2F5446;
+    }
+    /* CARD */
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #E4EEEA;
+      overflow: hidden;
+    }
+    /* HERO BAND */
+    .hero-band {
+      background: #2F5446;
+      padding: 40px 40px 36px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 99px;
+      margin-bottom: 18px;
+    }
+    .hero-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .hero-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+    }
+    /* BODY */
+    .body {
+      padding: 36px 40px;
+    }
+    .greeting {
+      font-size: 17px;
+      font-weight: 600;
+      color: #0F1C17;
+      margin-bottom: 16px;
+    }
+    .text {
+      font-size: 15px;
+      color: #4B6358;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid #E4EEEA;
+      margin: 28px 0;
+    }
+    /* WHAT YOU GET */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #9BB5AA;
+      margin-bottom: 16px;
+    }
+    .access-list {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+    .access-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      color: #4B6358;
+      padding: 8px 0;
+      border-bottom: 1px solid #F0F5F2;
+      line-height: 1.5;
+    }
+    .access-list li:last-child { border-bottom: none; }
+    .access-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      min-width: 8px;
+      border-radius: 50%;
+      background: #2F5446;
+      margin-top: 5px;
+    }
+    /* CTA */
+    .cta-wrap {
+      text-align: center;
+      padding: 8px 0 4px;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: #2F5446;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px 40px;
+      border-radius: 99px;
+      letter-spacing: 0.02em;
+    }
+    .cta-note {
+      font-size: 12px;
+      color: #9BB5AA;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    /* URGENCY */
+    .urgency-box {
+      background: #FEF3E2;
+      border: 1px solid #F9CB75;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin: 24px 0 0;
+      font-size: 13px;
+      color: #854F0B;
+      line-height: 1.5;
+      text-align: center;
+    }
+    /* FOOTER */
+    .footer {
+      padding: 28px 40px;
+      background: #F7FAF8;
+      border-top: 1px solid #E4EEEA;
+    }
+    .footer-text {
+      font-size: 12px;
+      color: #9BB5AA;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .footer-text a {
+      color: #9BB5AA;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <span class="logo">Nouveau Variable</span>
+  </div>
+
+  <div class="card">
+
+    <!-- HERO -->
+    <div class="hero-band">
+      <div class="hero-badge">Candidature acceptée</div>
+      <div class="hero-title">{{params.prenom}}, tu es dedans.</div>
+      <div class="hero-sub">Ta place dans le club est réservée.<br>Il reste une étape pour l'activer.</div>
+    </div>
+
+    <!-- BODY -->
+    <div class="body">
+
+      <p class="greeting">Bonjour {{params.prenom}},</p>
+
+      <p class="text">
+        On a examiné ta candidature et on t'a sélectionné pour rejoindre Nouveau Variable. 
+        Le club est resté petit par choix — chaque membre est là parce qu'il a quelque chose à apporter et à construire.
+      </p>
+
+      <p class="text">
+        Pour finaliser ton accès, il te suffit de compléter ton inscription en quelques secondes ci-dessous.
+      </p>
+
+      <hr class="divider" />
+
+      <p class="section-label">Ce que tu débloquesimmédiatement</p>
+      <ul class="access-list">
+        <li><span class="access-dot"></span><span><strong>Projets</strong> — Opportunités et deals en cours partagés par les membres</span></li>
+        <li><span class="access-dot"></span><span><strong>Outils</strong> — Ressources, templates et process validés terrain</span></li>
+        <li><span class="access-dot"></span><span><strong>Annuaire</strong> — Accès direct aux profils de tous les membres</span></li>
+        <li><span class="access-dot"></span><span><strong>Affiliation</strong> — Ton lien personnel pour parrainer et générer des revenus récurrents</span></li>
+        <li><span class="access-dot"></span><span><strong>Invitations RDV</strong> — Invite des membres en direct pour collaborer</span></li>
+      </ul>
+
+      <div class="cta-wrap">
+        <a href="{{params.lien_paiement}}" class="cta-btn">Finaliser mon accès →</a>
+        <p class="cta-note">Paiement sécurisé · Résiliation en 1 clic · Sans engagement</p>
+      </div>
+
+      <div class="urgency-box">
+        ⏳ Ta place est réservée 48h. Passé ce délai, elle sera remise en circulation.
+      </div>
+
+    </div>
+
+    <!-- FOOTER CARD -->
+    <div class="footer">
+      <p class="footer-text">
+        Tu reçois cet email car tu as candidaté sur <a href="https://nouveauvariable.fr">nouveauvariable.fr</a>.<br />
+        Si tu penses recevoir cet email par erreur, <a href="{{unsubscribe}}">clique ici</a>.<br /><br />
+        Nouveau Variable · Club privé pour commerciaux ambitieux
+      </p>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>
