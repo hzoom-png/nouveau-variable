@@ -261,9 +261,11 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         @media (max-width: 768px) {
           .two-grid  { grid-template-columns: 1fr !important; }
           .three-grid { grid-template-columns: 1fr 1fr !important; }
+        .four-grid  { grid-template-columns: 1fr 1fr !important; }
         }
         @media (max-width: 560px) {
           .three-grid { grid-template-columns: 1fr !important; }
+          .four-grid  { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
@@ -494,7 +496,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             </h2>
           </div>
 
-          <div className="three-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+          <div className="four-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
             {([
               {
                 icon: '💬',
@@ -516,6 +518,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 badge: 'Distribution',
                 desc: 'Crée une page de présentation personnalisée pour tes prospects, en fonction de leurs pain points et de ton offre.',
                 tag: 'Gain de temps',
+              },
+              {
+                icon: '💰',
+                title: 'Side Hustle',
+                badge: 'Revenus complémentaires',
+                desc: "Accès à des opportunités additionnelles : micro-projets, jobs freelance, apports d'affaires ponctuels. Monétise tes connaissances et ton réseau sans engagement de temps long.",
+                tag: 'Engagement flexible',
               },
             ] as const).map(card => (
               <div
