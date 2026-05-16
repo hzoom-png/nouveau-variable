@@ -1061,32 +1061,44 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                     </div>
 
                     {/* ── BLOC PROJETS ── */}
-                    <div>
-                      <label style={{
-                        display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer',
-                        padding: '12px 16px',
-                        background: showProjectFields ? 'var(--green-3)' : 'var(--surface)',
-                        borderRadius: 12,
-                        border: '1.5px solid var(--border)',
-                        transition: 'background 0.2s',
-                      }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                      <label
+                        htmlFor="project-toggle"
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer',
+                          padding: '14px 18px',
+                          background: showProjectFields ? '#EAF2EE' : '#F7FAF8',
+                          borderRadius: showProjectFields ? '12px 12px 0 0' : 12,
+                          border: '1.5px solid #E4EEEA',
+                          borderBottom: showProjectFields ? 'none' : '1.5px solid #E4EEEA',
+                          transition: 'background 0.25s, border-radius 0.15s',
+                          userSelect: 'none',
+                        }}
+                      >
                         <input
+                          id="project-toggle"
                           type="checkbox"
                           checked={showProjectFields}
                           onChange={e => setShowProjectFields(e.target.checked)}
-                          style={{ accentColor: 'var(--green)', width: 16, height: 16, flexShrink: 0, cursor: 'pointer' }}
+                          style={{ accentColor: '#2F5446', width: 17, height: 17, flexShrink: 0, cursor: 'pointer', margin: 0 }}
                         />
-                        <span style={{ fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 14, color: 'var(--text)' }}>
+                        <span style={{ fontFamily: 'var(--fi)', fontWeight: 600, fontSize: 14, color: '#0F1C17' }}>
                           Tu as un projet ? Dis-nous en plus !
                         </span>
+                        <span style={{
+                          marginLeft: 'auto', fontSize: 12, color: '#4B6358',
+                          transition: 'transform 0.2s',
+                          transform: showProjectFields ? 'rotate(180deg)' : 'rotate(0deg)',
+                          display: 'inline-block',
+                        }}>▾</span>
                       </label>
 
                       {showProjectFields && (
-                        <div className="step-content" style={{
-                          marginTop: 12,
+                        <div style={{
                           background: '#F7FAF8',
                           border: '1.5px solid #E4EEEA',
-                          borderRadius: 12,
+                          borderTop: 'none',
+                          borderRadius: '0 0 12px 12px',
                           padding: 20,
                           display: 'flex',
                           flexDirection: 'column',
@@ -1107,7 +1119,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                           <div>
                             <label style={lbl}>
                               Site web{' '}
-                              <span style={{ color: 'var(--text-3)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
+                              <span style={{ color: '#8FAAA0', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
                                 — optionnel
                               </span>
                             </label>
@@ -1127,7 +1139,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                               className="lp-input"
                               value={project.projet_concept}
                               onChange={e => setProject(p => ({ ...p, projet_concept: e.target.value }))}
-                              placeholder="Description brève (150-500 car)"
+                              placeholder="Décris ton projet en quelques lignes (min. 10 car.)"
                               rows={3}
                               style={{ ...inp, resize: 'vertical' }}
                               maxLength={500}
@@ -1154,26 +1166,29 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                           <div>
                             <label style={lbl}>Besoin du moment *</label>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
-                              {([
+                              {[
                                 { label: 'Investisseur', value: 'investisseur' },
                                 { label: 'Clients',      value: 'clients'      },
                                 { label: 'Partenaires',  value: 'partenaires'  },
                                 { label: 'Expertise',    value: 'expertise'    },
                                 { label: 'Autre',        value: 'autre'        },
-                              ] as const).map(opt => (
+                              ].map(opt => (
                                 <label key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
                                   <input
                                     type="checkbox"
                                     checked={project.projet_besoins.includes(opt.value)}
-                                    onChange={e => setProject(p => ({
-                                      ...p,
-                                      projet_besoins: e.target.checked
-                                        ? [...p.projet_besoins, opt.value]
-                                        : p.projet_besoins.filter(b => b !== opt.value),
-                                    }))}
-                                    style={{ accentColor: 'var(--green)', width: 16, height: 16, cursor: 'pointer' }}
+                                    onChange={e => {
+                                      const v = opt.value
+                                      setProject(p => ({
+                                        ...p,
+                                        projet_besoins: e.target.checked
+                                          ? [...p.projet_besoins, v]
+                                          : p.projet_besoins.filter(b => b !== v),
+                                      }))
+                                    }}
+                                    style={{ accentColor: '#2F5446', width: 16, height: 16, cursor: 'pointer', flexShrink: 0 }}
                                   />
-                                  <span style={{ fontFamily: 'var(--fi)', fontSize: 14, color: 'var(--text)' }}>
+                                  <span style={{ fontFamily: 'var(--fi)', fontSize: 14, color: '#0F1C17' }}>
                                     {opt.label}
                                   </span>
                                 </label>
