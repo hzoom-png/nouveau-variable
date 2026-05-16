@@ -6,6 +6,7 @@ import { MemberProfile } from '@/lib/types'
 import { MeetingRequestModal } from '@/components/meetings/MeetingRequestModal'
 import { useDashboard } from '@/lib/dashboard-context'
 import MeetingsTab from './MeetingsTab'
+import MobileSwipeFeed from '@/components/MobileSwipeFeed'
 
 interface Props {
   members: MemberProfile[]
@@ -67,7 +68,11 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
           gap: 16px;
         }
         @media (max-width: 900px) { .mc-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 560px) { .mc-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 560px) { .mc-grid { display: none; } }
+        .mc-swipe { display: none; }
+        @media (max-width: 560px) { .mc-swipe { display: flex; flex-direction: column; min-height: calc(100vh - 200px); } }
+        .mc-pc-warn { display: none; }
+        @media (max-width: 560px) { .mc-pc-warn { display: flex; } }
 
         .mc-card {
           background: var(--white);
@@ -148,13 +153,91 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
         </span>
       </div>
 
+      {/* PC warning mobile only */}
+      <div className="mc-pc-warn" style={{
+        alignItems: 'center', gap: 10,
+        padding: '10px 14px', marginBottom: 12,
+        background: '#EFF6FF', border: '1px solid #BFDBFE',
+        borderRadius: 10, fontSize: 13, color: '#1E40AF',
+      }}>
+        <span>ℹ️</span>
+        <span style={{ flex: 1 }}>L&apos;annuaire est plus pratique sur ordinateur.</span>
+      </div>
+
       {!filtered.length && (
         <div style={{ background: 'var(--white)', borderRadius: 'var(--r-lg)', padding: '48px', textAlign: 'center', color: 'var(--text-3)', border: '1px solid var(--border)' }}>
           <p style={{ fontWeight: 600 }}>Aucun membre trouvé</p>
         </div>
       )}
 
-      {/* Grid */}
+      {/* Mobile swipe feed */}
+      <div className="mc-swipe">
+        <MobileSwipeFeed
+          items={filtered}
+          total={filtered.length}
+          emptyLabel="Aucun membre trouvé"
+          renderCard={(m) => {
+            const initials = `${m.first_name?.[0] ?? ''}${m.last_name?.[0] ?? ''}`.toUpperCase()
+            const avColor  = RANK_COLOR[m.rank] ?? 'var(--green)'
+            const tags     = [...(m.sectors ?? []), ...(m.cities ?? [])]
+            return (
+              <div style={{
+                background: 'var(--white)', borderRadius: 16,
+                border: '1px solid var(--border)', padding: 24,
+                display: 'flex', flexDirection: 'column', gap: 16,
+              }}>
+                {/* Avatar + nom */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div style={{
+                    width: 64, height: 64, borderRadius: '50%', flexShrink: 0,
+                    background: m.avatar_url ? 'transparent' : 'var(--green-3)',
+                    border: '2px solid var(--green-4)',
+                    overflow: 'hidden', display: 'grid', placeItems: 'center',
+                  }}>
+                    {m.avatar_url
+                      ? <img src={m.avatar_url} alt={initials} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <span style={{ fontFamily: 'Jost, sans-serif', fontSize: 20, fontWeight: 800, color: avColor }}>{initials}</span>
+                    }
+                  </div>
+                  <div>
+                    <p style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: 17, color: 'var(--text)', marginBottom: 2 }}>
+                      {m.first_name} {m.last_name}
+                    </p>
+                    {m.role_title && (
+                      <p style={{ fontSize: 13, color: 'var(--text-2)' }}>{m.role_title}</p>
+                    )}
+                  </div>
+                </div>
+                {/* Tags */}
+                {tags.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {tags.slice(0, 4).map(t => (
+                      <span key={t} style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 99, background: 'var(--green-3)', color: 'var(--green)' }}>{t}</span>
+                    ))}
+                  </div>
+                )}
+                {/* Bio */}
+                {m.tagline && (
+                  <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6, fontStyle: 'italic' }}>"{m.tagline}"</p>
+                )}
+                {/* CTA */}
+                <button
+                  onClick={() => setDrawerMember(m)}
+                  style={{
+                    width: '100%', padding: '12px', borderRadius: 99,
+                    background: 'var(--green)', color: '#fff', border: 'none',
+                    fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                  }}
+                >
+                  Voir le profil
+                </button>
+              </div>
+            )
+          }}
+        />
+      </div>
+
+      {/* Desktop grid */}
       <div className="mc-grid">
         {filtered.map(m => {
           const initials = `${m.first_name?.[0] ?? ''}${m.last_name?.[0] ?? ''}`.toUpperCase()

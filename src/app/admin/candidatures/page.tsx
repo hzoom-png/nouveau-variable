@@ -33,6 +33,8 @@ type Candidature = {
   status: Status
   admin_note: string | null
   created_at: string
+  is_founder?: boolean
+  founder_activated_at?: string | null
 }
 
 const COLUMNS: { key: Status; label: string; color: string; bgHex: string }[] = [
@@ -133,6 +135,26 @@ export default function CandidaturesPage() {
       setSuccessMsg(`Email et SMS envoyés à ${firstName}`)
       await load()
       setSelected(prev => prev?.id === c.id ? { ...prev, status: 'accepted' } : prev)
+    } else {
+      const d = await res.json()
+      setError(d.error ?? 'Erreur')
+    }
+    setWorking(false)
+  }
+
+  async function toggleFounder(c: Candidature, enable: boolean) {
+    setWorking(true)
+    setError('')
+    setSuccessMsg('')
+    const res = await fetch('/api/admin/candidatures/toggle-founder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ candidatureId: c.id, is_founder: enable }),
+    })
+    if (res.ok) {
+      await load()
+      setSelected(prev => prev?.id === c.id ? { ...prev, is_founder: enable } : prev)
+      setSuccessMsg(enable ? '🌟 Mode founder activé' : 'Mode founder révoqué')
     } else {
       const d = await res.json()
       setError(d.error ?? 'Erreur')
@@ -429,6 +451,41 @@ export default function CandidaturesPage() {
                   Refuser
                 </button>
               )}
+            </div>
+
+            {/* ── MODE FOUNDER ── */}
+            <div style={{
+              marginTop: 20, paddingTop: 20,
+              borderTop: `1px solid ${C.border}`,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+                <div>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: selected.is_founder ? '#F59E0B' : C.text2, letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 2 }}>
+                    {selected.is_founder ? '🌟 Mode Founder — ACTIF' : 'Mode Founder'}
+                  </p>
+                  <p style={{ fontSize: 11, color: C.text2, lineHeight: 1.4 }}>
+                    Compte gratuit · Tous les avantages · Emails auto désactivés
+                  </p>
+                  {selected.is_founder && selected.founder_activated_at && (
+                    <p style={{ fontSize: 10, color: C.text2, marginTop: 4 }}>
+                      Activé le {new Date(selected.founder_activated_at).toLocaleDateString('fr-FR')}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => toggleFounder(selected, !selected.is_founder)}
+                  disabled={working}
+                  style={{
+                    padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+                    border: 'none', cursor: working ? 'wait' : 'pointer',
+                    background: selected.is_founder ? 'rgba(224,82,82,0.15)' : 'rgba(245,158,11,0.15)',
+                    color: selected.is_founder ? C.error : '#F59E0B',
+                    flexShrink: 0,
+                  }}
+                >
+                  {working ? '…' : selected.is_founder ? 'Révoquer' : 'Activer'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

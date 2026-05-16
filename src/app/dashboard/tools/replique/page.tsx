@@ -1,5 +1,11 @@
 import RepliqueClient from './RepliqueClient'
+import MobilePcWarning from '@/components/MobilePcWarning'
 
 export default function RepliquePage() {
-  return <RepliqueClient />
+  return (
+    <>
+      <MobilePcWarning tool="Réplique" />
+      <RepliqueClient />
+    </>
+  )
 }

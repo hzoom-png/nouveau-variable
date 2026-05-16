@@ -31,11 +31,12 @@ export async function POST(request: NextRequest) {
   const nom = nameParts.slice(1).join(' ')
   const email = cand.email as string
   const telephone = (cand.phone as string | null) ?? ''
+  const isFounder = !!(cand.is_founder as boolean | null)
 
   const expiration = new Date(Date.now() + 48 * 60 * 60 * 1000)
     .toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  await sendEmail({
+  if (!isFounder) await sendEmail({
     to: { email, name: `${prenom} ${nom}`.trim() },
     templateId: TEMPLATE_IDS.CANDIDATURE_ACCEPTEE,
     params: {
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
     tags: ['candidature', 'acceptation'],
   })
 
-  if (telephone) {
+  if (telephone && !isFounder) {
     await sendSMS(
       telephone,
       `Nouveau Variable — Ta candidature a été acceptée, ${prenom} ! Consulte ta boîte email pour finaliser ton accès.`
