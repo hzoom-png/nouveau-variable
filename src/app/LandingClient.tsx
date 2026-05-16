@@ -523,8 +523,8 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 icon: '💰',
                 title: 'Side Hustle',
                 badge: 'Revenus complémentaires',
-                desc: "Accès à des opportunités additionnelles : micro-projets, jobs freelance, apports d'affaires ponctuels. Monétise tes connaissances et ton réseau sans engagement de temps long.",
-                tag: 'Engagement flexible',
+                desc: "Pilote ton projet perso avec une structure pro. Roadmap, Business Model Canvas, prévisionnel — tout en un. Valide ton idée, structure ton plan et partage avec le réseau pour trouver co-fondateurs, investisseurs ou clients.",
+                tag: 'Structurer ton projet',
               },
             ] as const).map(card => (
               <div
