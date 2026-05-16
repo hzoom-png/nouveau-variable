@@ -36,6 +36,8 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
     projet_avancement: '', projet_besoins: [] as string[],
   })
   const [errorMsg, setErrorMsg] = useState('')
+  const [codeParrain, setCodeParrain] = useState('')
+  const [copied, setCopied] = useState(false)
   const [cookieBanner, setCookieBanner] = useState<boolean | null>(null)
   const [progressWidth, setProgressWidth] = useState(0)
 
@@ -123,7 +125,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-      if (res.ok) { setStatus('success'); return }
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}))
+        if (data.code_parrain) setCodeParrain(data.code_parrain)
+        setStatus('success')
+        return
+      }
       const data = await res.json().catch(() => ({}))
       if (data.error === 'already_exists')
         setErrorMsg(data.message ?? 'Une candidature existe déjà pour cet email.')
@@ -835,12 +842,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           }}>
             {status === 'success' ? (
               /* ── SUCCESS ── */
-              <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <div style={{ textAlign: 'center', padding: '32px 0 8px' }}>
                 <div className="check-pop" style={{
                   width: 64, height: 64, borderRadius: '50%',
                   background: 'var(--green-3)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  margin: '0 auto 24px',
+                  margin: '0 auto 20px',
                 }}>
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                     <path
@@ -853,17 +860,75 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 </div>
                 <h3 style={{
                   fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 22,
-                  color: 'var(--text)', marginBottom: 12,
+                  color: 'var(--text)', marginBottom: 10,
                 }}>
                   Candidature reçue, {form.firstname} !
                 </h3>
                 <p style={{
                   fontFamily: 'var(--fi)', fontSize: 15, color: 'var(--text-2)',
-                  lineHeight: 1.7, maxWidth: 400, margin: '0 auto',
+                  lineHeight: 1.7, maxWidth: 400, margin: '0 auto 28px',
                 }}>
                   On examine ta candidature et on te répond sous 48h.
-                  En attendant, n'hésite pas à faire passer le mot à d'autres commerciaux ambitieux.
                 </p>
+
+                {codeParrain && (
+                  <div style={{
+                    background: 'var(--green-3)', borderRadius: 16,
+                    padding: '24px 20px', textAlign: 'left',
+                  }}>
+                    <p style={{
+                      fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 14,
+                      color: 'var(--green)', marginBottom: 4,
+                    }}>
+                      Pendant ce temps, partage ton lien d&apos;affiliation :
+                    </p>
+                    <p style={{
+                      fontFamily: 'var(--fi)', fontSize: 12, color: 'var(--text-2)',
+                      marginBottom: 16, lineHeight: 1.5,
+                    }}>
+                      Chaque membre que tu parraines te rapporte une commission mensuelle récurrente.
+                    </p>
+
+                    <div style={{
+                      background: '#fff', borderRadius: 10,
+                      border: '1.5px solid var(--border-2)',
+                      padding: '10px 14px', marginBottom: 10,
+                      display: 'flex', alignItems: 'center', gap: 8,
+                    }}>
+                      <span style={{
+                        fontFamily: 'var(--fi)', fontSize: 13, color: 'var(--text)',
+                        flex: 1, wordBreak: 'break-all',
+                      }}>
+                        nouveauvariable.fr?ref={codeParrain}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(`https://nouveauvariable.fr?ref=${codeParrain}`)
+                          .then(() => { setCopied(true); setTimeout(() => setCopied(false), 2500) })
+                          .catch(() => null)
+                      }}
+                      style={{
+                        width: '100%', background: copied ? 'var(--green-4)' : 'var(--green)',
+                        color: '#fff', border: 'none', borderRadius: 99,
+                        padding: '12px 20px',
+                        fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 14,
+                        cursor: 'pointer', transition: 'background 0.2s',
+                      }}
+                    >
+                      {copied ? '✓ Lien copié !' : 'Copier mon lien d\'affiliation'}
+                    </button>
+
+                    <p style={{
+                      fontFamily: 'var(--fi)', fontSize: 11, color: 'var(--text-3)',
+                      textAlign: 'center', marginTop: 10,
+                    }}>
+                      Ton code : <strong style={{ color: 'var(--green)', letterSpacing: '.05em' }}>{codeParrain}</strong>
+                    </p>
+                  </div>
+                )}
               </div>
             ) : (
               <>

@@ -72,8 +72,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Données invalides', details: parsed.error.flatten() }, { status: 400, headers: CORS })
   }
 
-  const { firstname, lastname, email, phone, city, role, sector, xp, why, referral,
+  const { firstname, lastname, phone, city, role, sector, xp, why, referral,
           projet_nom, projet_website, projet_concept, projet_avancement, projet_besoins } = parsed.data
+  const email = parsed.data.email.toLowerCase().trim()
   const fullName = `${firstname} ${lastname}`.trim()
 
   const svc = createServiceClient()

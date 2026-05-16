@@ -9,7 +9,7 @@ async function getWaitlistCount(): Promise<number> {
     const { count } = await svc
       .from('candidatures')
       .select('*', { count: 'exact', head: true })
-      .in('status', ['received', 'accepted'])
+      .in('status', ['pending', 'accepted', 'active', 'pending_payment'])
     return count ?? 0
   } catch {
     return 0
