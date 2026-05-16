@@ -131,7 +131,7 @@ export function WelcomeTour({ firstName, onDone, forceOpen = false }: Props) {
           {s.logo ? (
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
               <img
-                src={theme === 'dark' ? '/nv-logo-white.png' : '/nv-logo-black.png'}
+                src="/logo-nv.png"
                 alt="Nouveau Variable"
                 style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
               />

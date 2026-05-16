@@ -1,0 +1,44 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f4f9f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #012722; }
+  .wrapper { max-width: 580px; margin: 0 auto; padding: 40px 20px; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E4EEEA; overflow: hidden; box-shadow: 0 2px 20px rgba(2,79,65,0.06); }
+  .header { background: #024f41; padding: 32px 40px; }
+  .logo { color: #ffffff; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .body { padding: 36px 40px; }
+  .greeting { font-size: 17px; font-weight: 600; color: #012722; margin-bottom: 16px; }
+  .text { font-size: 15px; color: #4B6358; line-height: 1.75; margin-bottom: 16px; }
+  .divider { border: none; border-top: 1px solid #E4EEEA; margin: 24px 0; }
+  .footer-text { font-size: 11px; color: #9BB5AA; line-height: 1.6; text-align: center; padding: 24px 40px; }
+  .footer-text a { color: #9BB5AA; }
+</style>
+<div class="wrapper">
+  <div class="card">
+    <div class="header">
+      <span class="logo">Nouveau Variable</span>
+    </div>
+    <div class="body">
+      <p class="greeting">Bonjour {{params.prenom}},</p>
+      <p class="text">
+        Merci d'avoir pris le temps de candidater à Nouveau Variable.
+      </p>
+      <p class="text">
+        Après lecture de ton dossier, nous ne sommes pas en mesure de retenir
+        ta candidature pour cette session. Le club est construit sur des critères
+        précis et la sélection est exigeante — ce n'est pas un jugement de valeur.
+      </p>
+      <p class="text">
+        Le club évolue. Si ta situation change ou si tu veux retenter ta chance
+        dans quelques mois, ta candidature sera étudiée avec la même attention.
+      </p>
+      <hr class="divider" />
+      <p class="text" style="font-size:13px;color:#9BB5AA;">
+        Merci de l'intérêt que tu portes à NV.
+      </p>
+    </div>
+    <div class="footer-text">
+      Tu reçois cet email car tu as candidaté à Nouveau Variable.<br />
+      <a href="{{unsubscribe}}">Se désinscrire</a> · <a href="https://nouveauvariable.fr/confidentialite">Confidentialité</a>
+    </div>
+  </div>
+</div>

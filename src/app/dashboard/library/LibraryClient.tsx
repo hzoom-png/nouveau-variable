@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { formatRelativeDate } from '@/lib/dateUtils'
+import { useDashboard } from '@/lib/dashboard-context'
+import { LockedSection } from '@/components/LockedSection'
 
 type DLResult = {
   accroche: string
@@ -35,6 +37,7 @@ function formatDate(iso: string): string {
 }
 
 export default function LibraryClient() {
+  const { isInactive, userEmail } = useDashboard()
   const [deallinks, setDeallinks] = useState<DbDealLink[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedDL, setExpandedDL] = useState<string | null>(null)
@@ -66,6 +69,8 @@ export default function LibraryClient() {
     setCopiedId(slug)
     setTimeout(() => setCopiedId(null), 2000)
   }
+
+  if (isInactive) return <LockedSection feature="La Library est réservée aux membres actifs" email={userEmail} />
 
   return (
     <div style={{ maxWidth: '860px' }}>

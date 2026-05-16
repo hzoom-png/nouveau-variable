@@ -3,10 +3,21 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { NvLogo } from '@/components/NvLogo'
+import { RANK_LABELS, type Rank } from '@/lib/types'
+import { createClient } from '@/lib/supabase/client'
 
 interface ServiceItem { title: string; description: string }
 interface LinkItem { label: string; url: string }
 interface TrackRecord { title: string; value: string; year?: string }
+
+interface ReferralProfile {
+  id: string
+  first_name: string
+  last_name: string | null
+  avatar_url: string | null
+  avatar_path: string | null
+  role_title: string | null
+}
 
 interface Profile {
   id: string
@@ -34,13 +45,23 @@ interface Profile {
 interface Props {
   profile: Profile
   avatarUrl: string | null
+  referrals: ReferralProfile[]
+}
+
+const ROLE_TYPE_LABELS: Record<string, string> = {
+  salarie:              'Salarié',
+  salarie_entrepreneur: 'Salarié · Entrepreneur',
+  freelance:            'Freelance',
+  entrepreneur:         'Entrepreneur',
+  dirigeant:            'Dirigeant',
+  autre:                'Autre',
 }
 
 const MEETING_TYPE_OPTIONS = [
-  { value: 'coffee',    label: '☕ Café' },
-  { value: 'lunch',     label: '🍽 Déjeuner' },
-  { value: 'afterwork', label: '🥂 Afterwork' },
-  { value: 'video',     label: '💻 Visio' },
+  { value: 'visio',     label: '💻 Visio',    desc: 'Google Meet, Zoom…' },
+  { value: 'telephone', label: '📞 Téléphone', desc: 'Appel direct' },
+  { value: 'cafe',      label: '☕ Café',       desc: 'En présentiel' },
+  { value: 'autre',     label: '📅 Autre',     desc: 'À définir ensemble' },
 ] as const
 
 type MeetingType = typeof MEETING_TYPE_OPTIONS[number]['value']
@@ -272,9 +293,53 @@ const CSS = `
   @media (min-width: 1024px) {
     .mobile-bar { display: none !important; }
   }
+
+  @keyframes scrollReferrals {
+    0%   { transform: translateY(-50%) translateX(0); }
+    100% { transform: translateY(-50%) translateX(-50%); }
+  }
+  .referrals-track:hover {
+    animation-play-state: paused;
+  }
 `
 
-export default function PublicProfileClient({ profile, avatarUrl }: Props) {
+function ReferralsCarousel({ referrals }: { referrals: ReferralProfile[] }) {
+  const doubled = [...referrals, ...referrals]
+  return (
+    <div style={{ position: 'relative', overflow: 'hidden', height: 80, marginTop: 16 }}>
+      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to right, #ffffff, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: 80, background: 'linear-gradient(to left, #ffffff, transparent)', zIndex: 2, pointerEvents: 'none' }} />
+      <div
+        className="referrals-track"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 12,
+          position: 'absolute',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          animation: 'scrollReferrals 20s linear infinite',
+        }}
+      >
+        {doubled.map((r, i) => (
+          <div
+            key={`${r.id}-${i}`}
+            title={`${r.first_name} ${r.last_name ?? ''}`.trim()}
+            style={{ width: 56, height: 56, minWidth: 56, borderRadius: '50%', overflow: 'hidden', border: '2px solid #e8f5ef', background: '#e8f5ef', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: '#024f41', fontWeight: 700, flexShrink: 0 }}
+          >
+            {r.avatar_url ? (
+              <img src={r.avatar_url} alt={r.first_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              `${r.first_name?.[0] ?? ''}${r.last_name?.[0] ?? ''}`
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function PublicProfileClient({ profile, avatarUrl, referrals }: Props) {
   const name = profile.display_name || `${profile.first_name} ${profile.last_name}`
   const initials = getInitials(name)
   const memberNum = profile.member_number != null ? String(profile.member_number).padStart(3, '0') : null
@@ -285,15 +350,15 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
   const links = profile.links ?? []
 
   const [rdvForm, setRdvForm] = useState({
-    visitorName: '',
-    visitorEmail: '',
-    meetingType: 'coffee' as MeetingType,
-    proposedAvailability: '',
+    meetingType: 'visio' as MeetingType,
+    availabilityNote: '',
     message: '',
   })
   const [rdvStatus, setRdvStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [rdvError, setRdvError] = useState('')
   const [rdvSectionVisible, setRdvSectionVisible] = useState(false)
+  const [hoverReady, setHoverReady] = useState(false)
+  const [session, setSession] = useState<'loading' | 'logged-in' | 'guest'>('loading')
 
   useEffect(() => {
     const el = document.getElementById('section-rdv')
@@ -305,6 +370,38 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
     return () => obs.disconnect()
   }, [])
 
+  useEffect(() => {
+    const t = setTimeout(() => setHoverReady(true), 1200)
+    return () => clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    const sb = createClient()
+    sb.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s ? 'logged-in' : 'guest')
+    })
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'smooth'
+    const sections = document.querySelectorAll('.profile-section')
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          ;(e.target as HTMLElement).style.opacity = '1'
+          ;(e.target as HTMLElement).style.transform = 'translateY(0)'
+          observer.unobserve(e.target)
+        }
+      }),
+      { threshold: 0.1 }
+    )
+    sections.forEach(s => observer.observe(s))
+    return () => {
+      observer.disconnect()
+      document.documentElement.style.scrollBehavior = ''
+    }
+  }, [])
+
   function scrollToRdv() {
     document.getElementById('section-rdv')?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -313,16 +410,14 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
     e.preventDefault()
     setRdvStatus('sending')
     setRdvError('')
-    const res = await fetch('/api/public/meeting-request', {
+    const res = await fetch('/api/meetings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        recipient_slug: profile.slug,
-        visitorName: rdvForm.visitorName,
-        visitorEmail: rdvForm.visitorEmail,
-        meetingType: rdvForm.meetingType,
-        proposedAvailability: rdvForm.proposedAvailability,
-        message: rdvForm.message,
+        recipient_id:      profile.id,
+        meeting_type:      rdvForm.meetingType,
+        message:           rdvForm.message || null,
+        availability_note: rdvForm.availabilityNote || null,
       }),
     })
     if (res.ok) {
@@ -330,7 +425,7 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
     } else {
       const d = await res.json()
       setRdvStatus('error')
-      setRdvError(d.error || 'Erreur lors de l\'envoi')
+      setRdvError(d.error || "Erreur lors de l'envoi")
     }
   }
 
@@ -437,10 +532,17 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
                   )}
                   {profile.rank && (
                     <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 10px', borderRadius: '99px', background: '#EAF2EE', color: '#2F5446' }}>
-                      {profile.rank.charAt(0).toUpperCase() + profile.rank.slice(1)}
+                      {RANK_LABELS[profile.rank as Rank] ?? profile.rank.charAt(0).toUpperCase() + profile.rank.slice(1)}
                     </span>
                   )}
                 </div>
+              )}
+
+              {/* Role type */}
+              {profile.role_type && ROLE_TYPE_LABELS[profile.role_type] && (
+                <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 10px', borderRadius: '99px', background: '#F7FAF8', color: '#4B6358', border: '1px solid #E4EEEA' }}>
+                  {ROLE_TYPE_LABELS[profile.role_type]}
+                </span>
               )}
 
               {/* Member since */}
@@ -485,7 +587,12 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
             {/* À propos */}
             {profile.bio && (
               <RevealSection delay={0}>
-                <div className="section-card">
+                <div
+                  className="section-card profile-section"
+                  style={{ opacity: 0, transform: 'translateY(20px)', transition: 'opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.3s ease, border-color 0.3s ease, box-shadow 0.35s cubic-bezier(0.16,1,0.3,1)', transitionDelay: '0ms' }}
+                  onMouseEnter={hoverReady ? e => { e.currentTarget.style.borderColor = '#56b791'; e.currentTarget.style.boxShadow = '0 8px 48px rgba(2,79,65,0.10), 0 0 0 1.5px #56b791'; e.currentTarget.style.transform = 'translateY(-2px)' } : undefined}
+                  onMouseLeave={hoverReady ? e => { e.currentTarget.style.borderColor = '#E4EEEA'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' } : undefined}
+                >
                   <div className="section-label">À propos</div>
                   <p style={{ fontSize: '15px', color: '#4B6358', lineHeight: 1.7, margin: 0 }}>{profile.bio}</p>
                 </div>
@@ -495,7 +602,12 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
             {/* Services */}
             {services.length > 0 && (
               <RevealSection delay={100}>
-                <div className="section-card">
+                <div
+                  className="section-card profile-section"
+                  style={{ opacity: 0, transform: 'translateY(20px)', transition: 'opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.3s ease, border-color 0.3s ease, box-shadow 0.35s cubic-bezier(0.16,1,0.3,1)', transitionDelay: '80ms' }}
+                  onMouseEnter={hoverReady ? e => { e.currentTarget.style.borderColor = '#56b791'; e.currentTarget.style.boxShadow = '0 8px 48px rgba(2,79,65,0.10), 0 0 0 1.5px #56b791'; e.currentTarget.style.transform = 'translateY(-2px)' } : undefined}
+                  onMouseLeave={hoverReady ? e => { e.currentTarget.style.borderColor = '#E4EEEA'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' } : undefined}
+                >
                   <div className="section-label">Services</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
                     {services.map((svc, i) => (
@@ -512,7 +624,12 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
             {/* Track Record */}
             {trackRecord.length > 0 && (
               <RevealSection delay={200}>
-                <div className="section-card">
+                <div
+                  className="section-card profile-section"
+                  style={{ opacity: 0, transform: 'translateY(20px)', transition: 'opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.3s ease, border-color 0.3s ease, box-shadow 0.35s cubic-bezier(0.16,1,0.3,1)', transitionDelay: '160ms' }}
+                  onMouseEnter={hoverReady ? e => { e.currentTarget.style.borderColor = '#56b791'; e.currentTarget.style.boxShadow = '0 8px 48px rgba(2,79,65,0.10), 0 0 0 1.5px #56b791'; e.currentTarget.style.transform = 'translateY(-2px)' } : undefined}
+                  onMouseLeave={hoverReady ? e => { e.currentTarget.style.borderColor = '#E4EEEA'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' } : undefined}
+                >
                   <div className="section-label">Track Record</div>
                   {trackRecord.map((tr, i) => (
                     <div key={i} className="tr-row">
@@ -529,51 +646,58 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
               </RevealSection>
             )}
 
+            {/* Filleuls */}
+            {referrals.length >= 5 && (
+              <div
+                className="section-card profile-section"
+                style={{ opacity: 0, transform: 'translateY(20px)', transition: 'opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.3s ease, border-color 0.3s ease, box-shadow 0.35s cubic-bezier(0.16,1,0.3,1)', transitionDelay: '240ms', marginBottom: 16 }}
+                onMouseEnter={hoverReady ? e => { e.currentTarget.style.borderColor = '#56b791'; e.currentTarget.style.boxShadow = '0 8px 48px rgba(2,79,65,0.10), 0 0 0 1.5px #56b791'; e.currentTarget.style.transform = 'translateY(-2px)' } : undefined}
+                onMouseLeave={hoverReady ? e => { e.currentTarget.style.borderColor = '#E4EEEA'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' } : undefined}
+              >
+                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9BB5AA', marginBottom: 12 }}>
+                  A recommandé Nouveau Variable à
+                </p>
+                <ReferralsCarousel referrals={referrals} />
+                <p style={{ fontSize: 12, color: '#9BB5AA', marginTop: 12 }}>
+                  {referrals.length} membre{referrals.length > 1 ? 's' : ''} parrainé{referrals.length > 1 ? 's' : ''}
+                </p>
+              </div>
+            )}
+
             {/* RDV Form */}
             <RevealSection delay={300}>
-              <div id="section-rdv" className="section-card" style={{ background: '#EAF2EE', borderColor: '#C5DDD5' }}>
+              <div
+                id="section-rdv"
+                className="section-card profile-section"
+                style={{ background: '#EAF2EE', borderColor: '#C5DDD5', opacity: 0, transform: 'translateY(20px)', transition: 'opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.3s ease, border-color 0.3s ease, box-shadow 0.35s cubic-bezier(0.16,1,0.3,1)', transitionDelay: '320ms' }}
+                onMouseEnter={hoverReady ? e => { e.currentTarget.style.borderColor = '#56b791'; e.currentTarget.style.boxShadow = '0 8px 48px rgba(2,79,65,0.10), 0 0 0 1.5px #56b791'; e.currentTarget.style.transform = 'translateY(-2px)' } : undefined}
+                onMouseLeave={hoverReady ? e => { e.currentTarget.style.borderColor = '#C5DDD5'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' } : undefined}
+              >
                 <div className="section-label" style={{ color: '#2F5446' }}>
                   Proposer un rendez-vous à {profile.first_name}
                 </div>
 
                 {rdvStatus === 'success' ? (
-                  <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                    <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#fff', display: 'grid', placeItems: 'center', margin: '0 auto 14px', border: '1px solid #C5DDD5' }}>
-                      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#2F5446" strokeWidth="2"><path d="M4 11l5 5 9-9"/></svg>
-                    </div>
-                    <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '16px', fontWeight: 800, color: '#0F1C17', marginBottom: '6px' }}>Demande envoyée !</div>
-                    <p style={{ fontSize: '13px', color: '#4B6358', lineHeight: 1.6 }}>
-                      {profile.first_name} recevra ta proposition et te répondra par email sous 48h.
+                  <div style={{ textAlign: 'center', padding: '32px 0' }}>
+                    <div style={{ fontSize: 32, marginBottom: 12 }}>✓</div>
+                    <p style={{ fontWeight: 700, fontSize: 16, color: '#024f41', marginBottom: 8 }}>
+                      Demande envoyée à {profile.first_name}
                     </p>
+                    <p style={{ fontSize: 14, color: '#9BB5AA' }}>
+                      Tu recevras un SMS dès que {profile.first_name} répond.
+                    </p>
+                  </div>
+                ) : session === 'loading' ? null : session === 'guest' ? (
+                  <div style={{ textAlign: 'center', padding: '24px 0' }}>
+                    <p style={{ fontSize: 14, color: '#4B6358', marginBottom: 16 }}>
+                      Connecte-toi pour proposer un RDV à {profile.first_name}.
+                    </p>
+                    <a href="/auth" style={{ display: 'inline-block', background: '#2F5446', color: '#fff', padding: '11px 28px', borderRadius: '99px', fontFamily: 'Jost, sans-serif', fontSize: '13px', fontWeight: 700, textDecoration: 'none' }}>
+                      Se connecter →
+                    </a>
                   </div>
                 ) : (
                   <form onSubmit={handleRdvSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div>
-                        <label style={labelStyle}>Ton prénom et nom *</label>
-                        <input
-                          required
-                          className="btn-rdv-input"
-                          style={inputStyle}
-                          placeholder="Marie Dupont"
-                          value={rdvForm.visitorName}
-                          onChange={e => setRdvForm(f => ({ ...f, visitorName: e.target.value }))}
-                        />
-                      </div>
-                      <div>
-                        <label style={labelStyle}>Ton email *</label>
-                        <input
-                          required
-                          type="email"
-                          className="btn-rdv-input"
-                          style={inputStyle}
-                          placeholder="marie@exemple.fr"
-                          value={rdvForm.visitorEmail}
-                          onChange={e => setRdvForm(f => ({ ...f, visitorEmail: e.target.value }))}
-                        />
-                      </div>
-                    </div>
-
                     <div>
                       <label style={labelStyle}>Type de rencontre</label>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -597,27 +721,26 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
                     </div>
 
                     <div>
-                      <label style={labelStyle}>Tes disponibilités proposées *</label>
-                      <textarea
-                        required
-                        rows={3}
-                        className="btn-rdv-input"
-                        style={{ ...inputStyle, resize: 'none', lineHeight: 1.6 }}
-                        placeholder={'Ex : Mardi 3 juin après 17h,\nou jeudi matin avant 10h'}
-                        value={rdvForm.proposedAvailability}
-                        onChange={e => setRdvForm(f => ({ ...f, proposedAvailability: e.target.value }))}
-                      />
-                    </div>
-
-                    <div>
                       <label style={labelStyle}>Message (optionnel)</label>
                       <textarea
                         rows={2}
                         className="btn-rdv-input"
                         style={{ ...inputStyle, resize: 'none', lineHeight: 1.6 }}
-                        placeholder="Contexte de ta demande…"
+                        placeholder="Présente-toi brièvement…"
                         value={rdvForm.message}
                         onChange={e => setRdvForm(f => ({ ...f, message: e.target.value }))}
+                      />
+                    </div>
+
+                    <div>
+                      <label style={labelStyle}>Tes disponibilités</label>
+                      <input
+                        type="text"
+                        className="btn-rdv-input"
+                        style={inputStyle}
+                        placeholder="Ex : disponible en semaine après 18h, ou le weekend"
+                        value={rdvForm.availabilityNote}
+                        onChange={e => setRdvForm(f => ({ ...f, availabilityNote: e.target.value }))}
                       />
                     </div>
 
@@ -633,7 +756,7 @@ export default function PublicProfileClient({ profile, avatarUrl }: Props) {
                       className="btn-primary-full"
                       style={{ background: rdvStatus === 'sending' ? '#C5DDD5' : '#2F5446', cursor: rdvStatus === 'sending' ? 'not-allowed' : 'pointer' }}
                     >
-                      {rdvStatus === 'sending' ? 'Envoi…' : 'Envoyer ma proposition →'}
+                      {rdvStatus === 'sending' ? 'Envoi…' : 'Envoyer ma demande →'}
                     </button>
                   </form>
                 )}

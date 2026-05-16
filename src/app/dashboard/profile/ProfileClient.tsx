@@ -11,10 +11,12 @@ import { ThemeToggle } from '@/components/ThemeToggle'
 import { WelcomeTour } from '@/components/onboarding/WelcomeTour'
 
 const ROLE_TYPES = [
-  { value: 'salarie',      label: 'Salarié'      },
-  { value: 'freelance',    label: 'Freelance'     },
-  { value: 'entrepreneur', label: 'Entrepreneur'  },
-  { value: 'dirigeant',    label: 'Dirigeant'     },
+  { value: 'salarie',              label: 'Salarié'               },
+  { value: 'salarie_entrepreneur', label: 'Salarié & Entrepreneur' },
+  { value: 'freelance',            label: 'Freelance'              },
+  { value: 'entrepreneur',         label: 'Entrepreneur'           },
+  { value: 'dirigeant',            label: 'Dirigeant'              },
+  { value: 'autre',                label: 'Autre'                  },
 ]
 
 type DeleteStep = 'warning' | 'confirm'
@@ -229,6 +231,17 @@ export default function ProfileClient({ profile }: Props) {
         {/* 1. Identité */}
         <div style={{ background: 'var(--white)', borderRadius: 'var(--r-lg)', border: '1px solid var(--border)', overflow: 'hidden' }}>
           <div style={{ height: '72px', background: 'var(--green)', position: 'relative' }}>
+            {profile.slug && (
+              <Link href={`/p/${profile.slug}`} target="_blank" rel="noopener noreferrer" style={{
+                position: 'absolute', top: 10, right: 14, fontSize: '12px', fontWeight: 600,
+                color: 'rgba(255,255,255,0.85)', background: 'rgba(255,255,255,0.15)',
+                border: '1px solid rgba(255,255,255,0.3)', borderRadius: 99,
+                padding: '4px 10px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5,
+              }}>
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M6 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1v-3M9 1h6m0 0v6m0-6L7 9"/></svg>
+                Voir mon profil
+              </Link>
+            )}
             <div className="avatar-wrap" style={{ position: 'absolute', bottom: '-22px', left: '22px' }} onClick={() => fileRef.current?.click()}>
               <div style={{
                 width: '52px', height: '52px', borderRadius: 'var(--r-sm)',

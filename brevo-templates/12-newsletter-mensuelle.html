@@ -1,0 +1,76 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f4f9f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #012722; }
+  .wrapper { max-width: 580px; margin: 0 auto; padding: 40px 20px; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E4EEEA; overflow: hidden; box-shadow: 0 2px 20px rgba(2,79,65,0.06); }
+  .header { background: #024f41; padding: 32px 40px; }
+  .logo { color: #ffffff; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .body { padding: 36px 40px; }
+  .greeting { font-size: 17px; font-weight: 600; color: #012722; margin-bottom: 16px; }
+  .text { font-size: 15px; color: #4B6358; line-height: 1.75; margin-bottom: 16px; }
+  .divider { border: none; border-top: 1px solid #E4EEEA; margin: 24px 0; }
+  .footer-text { font-size: 11px; color: #9BB5AA; line-height: 1.6; text-align: center; padding: 24px 40px; }
+  .footer-text a { color: #9BB5AA; }
+  .badge { display: inline-block; background: #e8f5ef; color: #024f41; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 99px; margin-bottom: 20px; }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9BB5AA; margin-bottom: 12px; }
+</style>
+<div class="wrapper">
+  <div class="card">
+    <div class="header">
+      <span class="logo">Nouveau Variable</span>
+    </div>
+    <div class="body">
+      <div class="badge">{{params.mois}}</div>
+      <p class="greeting">{{params.prenom}},</p>
+      <p class="text">Ce qui s'est passé dans le club ce mois-ci.</p>
+
+      <div style="display:table;width:100%;margin:20px 0;border-collapse:separate;border-spacing:8px;">
+        <div style="display:table-row;">
+          <div style="display:table-cell;background:#e8f5ef;border-radius:12px;padding:16px;text-align:center;width:33%;">
+            <p style="font-size:24px;font-weight:900;color:#024f41;">{{params.nb_nouveaux_membres}}</p>
+            <p style="font-size:12px;color:#4B6358;">nouveaux membres</p>
+          </div>
+          <div style="display:table-cell;background:#e8f5ef;border-radius:12px;padding:16px;text-align:center;width:33%;">
+            <p style="font-size:24px;font-weight:900;color:#024f41;">{{params.nb_rdv}}</p>
+            <p style="font-size:12px;color:#4B6358;">RDV organisés</p>
+          </div>
+          <div style="display:table-cell;background:#e8f5ef;border-radius:12px;padding:16px;text-align:center;width:33%;">
+            <p style="font-size:24px;font-weight:900;color:#024f41;">{{params.nb_missions}}</p>
+            <p style="font-size:12px;color:#4B6358;">missions publiées</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <p class="section-label">Profil du mois</p>
+      <div style="border:1px solid #E4EEEA;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+        <p style="font-size:16px;font-weight:700;color:#012722;margin-bottom:4px;">{{params.profil_prenom}}</p>
+        <p style="font-size:13px;color:#4B6358;margin-bottom:10px;">{{params.profil_role}} · {{params.profil_ville}}</p>
+        <a href="https://app.nouveauvariable.fr/p/{{params.profil_slug}}" style="font-size:13px;color:#024f41;font-weight:600;text-decoration:none;">Voir le profil →</a>
+      </div>
+
+      <hr class="divider" />
+
+      <p class="section-label">Mission à ne pas rater</p>
+      <div style="border:1px solid #E4EEEA;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+        <p style="font-size:15px;font-weight:700;color:#012722;margin-bottom:4px;">{{params.mission_titre}}</p>
+        <p style="font-size:13px;color:#56b791;font-weight:600;margin-bottom:10px;">{{params.mission_remuneration}}</p>
+        <a href="{{params.mission_url}}" style="font-size:13px;color:#024f41;font-weight:600;text-decoration:none;">Voir la mission →</a>
+      </div>
+
+      <hr class="divider" />
+
+      <p class="section-label">Focus outil</p>
+      <p class="text">Cette semaine, explore <strong>{{params.outil_nom}}</strong> si ce n'est pas encore fait.</p>
+      <a href="{{params.outil_lien}}" style="font-size:13px;color:#024f41;font-weight:600;text-decoration:none;">Essayer maintenant →</a>
+
+      <hr class="divider" />
+      <p class="text" style="font-size:13px;">Gaultier</p>
+    </div>
+    <div class="footer-text">
+      Tu reçois cet email car tu es membre de Nouveau Variable.<br />
+      <a href="{{unsubscribe}}">Se désinscrire</a> · <a href="https://nouveauvariable.fr/confidentialite">Confidentialité</a>
+    </div>
+  </div>
+</div>

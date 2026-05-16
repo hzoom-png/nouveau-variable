@@ -33,7 +33,7 @@ export default async function PublicProfilePage({ params }: Props) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, first_name, last_name, display_name, avatar_url, avatar_path, tagline, bio, role_title, role_type, rank, cities, sectors, services, links, track_record, missions_count, rating, is_founder, slug, member_number, created_at, profile_visible')
+    .select('id, first_name, last_name, display_name, avatar_url, avatar_path, tagline, bio, role_title, role_type, rank, cities, sectors, services, links, track_record, missions_count, rating, is_founder, slug, member_number, created_at, profile_visible, referral_code')
     .eq('slug', slug)
     .single()
 
@@ -44,8 +44,16 @@ export default async function PublicProfilePage({ params }: Props) {
     avatar_path: (profile as unknown as Record<string, string | undefined>).avatar_path ?? undefined,
   })
 
-  // Exclude server-only fields from the client component
-  const { avatar_path: _ap, avatar_url: _au, profile_visible: _pv, ...profileForClient } = profile as typeof profile & { avatar_path?: string; avatar_url?: string; profile_visible?: boolean }
+  const profileRecord = profile as unknown as Record<string, string | undefined>
+  const { data: referrals } = await supabase
+    .from('profiles')
+    .select('id, first_name, last_name, avatar_url, avatar_path, role_title')
+    .eq('referred_by', profileRecord.referral_code ?? '')
+    .eq('is_active', true)
+    .limit(20)
 
-  return <PublicProfileClient profile={profileForClient} avatarUrl={avatarUrl} />
+  // Exclude server-only fields from the client component
+  const { avatar_path: _ap, avatar_url: _au, profile_visible: _pv, referral_code: _rc, ...profileForClient } = profile as typeof profile & { avatar_path?: string; avatar_url?: string; profile_visible?: boolean; referral_code?: string }
+
+  return <PublicProfileClient profile={profileForClient} avatarUrl={avatarUrl} referrals={referrals ?? []} />
 }

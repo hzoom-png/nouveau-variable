@@ -8,7 +8,7 @@ const getAdminSecret = () => {
   return new TextEncoder().encode(s)
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ── ADMIN ROUTES ──────────────────────────────────────────────

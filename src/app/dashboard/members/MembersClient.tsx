@@ -4,12 +4,17 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { MemberProfile } from '@/lib/types'
 import { MeetingRequestModal } from '@/components/meetings/MeetingRequestModal'
+import { useDashboard } from '@/lib/dashboard-context'
+import MeetingsTab from './MeetingsTab'
 
 interface Props {
   members: MemberProfile[]
   currentUserId: string
   currentUserPoints: number
+  pendingCount: number
 }
+
+type MainTab = 'membres' | 'rdv'
 
 const RANK_COLOR: Record<string, string> = {
   explorateur:   'var(--green)',
@@ -17,7 +22,9 @@ const RANK_COLOR: Record<string, string> = {
   amplificateur: 'var(--amber)',
 }
 
-export default function MembersClient({ members, currentUserId, currentUserPoints }: Props) {
+export default function MembersClient({ members, currentUserId, currentUserPoints, pendingCount }: Props) {
+  const { isInactive } = useDashboard()
+  const [mainTab, setMainTab] = useState<MainTab>('membres')
   const [cityFilter, setCityFilter]     = useState('')
   const [sectorFilter, setSectorFilter] = useState('')
   const [search, setSearch]             = useState('')
@@ -42,6 +49,14 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
     padding: '8px 13px', borderRadius: 'var(--r-sm)', border: '1.5px solid var(--border)',
     background: 'var(--white)', fontSize: '13px', color: 'var(--text)', cursor: 'pointer', outline: 'none',
   }
+
+  const mainTabBtn = (active: boolean): React.CSSProperties => ({
+    padding: '9px 20px', borderRadius: '99px', fontSize: '13px', fontWeight: 700,
+    border: `1.5px solid ${active ? 'var(--green)' : 'var(--border)'}`,
+    background: active ? 'var(--green)' : 'transparent',
+    color: active ? '#fff' : 'var(--text-2)',
+    cursor: 'pointer', transition: 'all .14s', display: 'flex', alignItems: 'center', gap: 7,
+  })
 
   return (
     <>
@@ -92,6 +107,25 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
           flex-shrink: 0;
         }
       `}</style>
+
+      {/* Main tabs */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+        <button style={mainTabBtn(mainTab === 'membres')} onClick={() => setMainTab('membres')}>
+          Membres
+        </button>
+        <button style={mainTabBtn(mainTab === 'rdv')} onClick={() => setMainTab('rdv')}>
+          Mes RDV
+          {pendingCount > 0 && (
+            <span style={{ background: '#fff', color: 'var(--green)', borderRadius: '99px', padding: '1px 6px', fontSize: 11, fontWeight: 800, lineHeight: 1.4 }}>
+              {pendingCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {mainTab === 'rdv' && <MeetingsTab currentUserId={currentUserId} />}
+
+      {mainTab === 'membres' && <>
 
       {/* Filters */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '22px', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -179,19 +213,35 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
 
               {/* Footer CTA */}
               <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border)' }}>
-                <button
-                  onClick={e => { e.stopPropagation(); setMeetingTarget(m) }}
-                  style={{
-                    width: '100%', background: 'var(--green)', color: '#fff',
-                    padding: '9px', borderRadius: '99px',
-                    fontFamily: 'Jost, sans-serif', fontSize: '12px', fontWeight: 700,
-                    border: 'none', cursor: 'pointer', transition: '.14s',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'var(--green-2)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'var(--green)'}
-                >
-                  Proposer un RDV
-                </button>
+                {isInactive ? (
+                  <a
+                    href="/subscribe"
+                    onClick={e => e.stopPropagation()}
+                    style={{
+                      display: 'block', width: '100%', textAlign: 'center',
+                      padding: '9px', borderRadius: '99px',
+                      fontFamily: 'Jost, sans-serif', fontSize: '12px', fontWeight: 600,
+                      color: 'var(--text-3)', border: '1.5px solid var(--border)',
+                      textDecoration: 'none', boxSizing: 'border-box',
+                    }}
+                  >
+                    Activer pour interagir →
+                  </a>
+                ) : (
+                  <button
+                    onClick={e => { e.stopPropagation(); setMeetingTarget(m) }}
+                    style={{
+                      width: '100%', background: 'var(--green)', color: '#fff',
+                      padding: '9px', borderRadius: '99px',
+                      fontFamily: 'Jost, sans-serif', fontSize: '12px', fontWeight: 700,
+                      border: 'none', cursor: 'pointer', transition: '.14s',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--green-2)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'var(--green)'}
+                  >
+                    Proposer un RDV
+                  </button>
+                )}
               </div>
             </div>
           )
@@ -258,14 +308,23 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
                 </div>
 
                 <div style={{ display: 'flex', gap: '8px' }}>
-                  <button
-                    onClick={() => { setMeetingTarget(m); setDrawerMember(null) }}
-                    style={{ flex: 1, background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', transition: '.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--green-2)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'var(--green)'}
-                  >
-                    Proposer un RDV
-                  </button>
+                  {isInactive ? (
+                    <a
+                      href="/subscribe"
+                      style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px', borderRadius: '99px', border: '1.5px solid var(--border)', fontSize: '13px', fontWeight: 600, color: 'var(--text-3)', textDecoration: 'none' }}
+                    >
+                      Activer pour interagir →
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => { setMeetingTarget(m); setDrawerMember(null) }}
+                      style={{ flex: 1, background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', transition: '.15s' }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'var(--green-2)'}
+                      onMouseLeave={e => e.currentTarget.style.background = 'var(--green)'}
+                    >
+                      Proposer un RDV
+                    </button>
+                  )}
                   {m.slug && (
                     <Link
                       href={`/p/${m.slug}`}
@@ -291,6 +350,8 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
           onSuccess={() => setMeetingTarget(null)}
         />
       )}
+
+      </> /* end membres tab */}
     </>
   )
 }

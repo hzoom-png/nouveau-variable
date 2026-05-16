@@ -1,0 +1,35 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f4f9f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #012722; }
+  .wrapper { max-width: 580px; margin: 0 auto; padding: 40px 20px; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E4EEEA; overflow: hidden; box-shadow: 0 2px 20px rgba(2,79,65,0.06); }
+  /* Header sobre — effet email personnel */
+  .header-plain { padding: 32px 40px 0; }
+  .logo-plain { font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #024f41; }
+  .body { padding: 32px 40px 36px; }
+  .greeting { font-size: 17px; font-weight: 600; color: #012722; margin-bottom: 16px; }
+  .text { font-size: 15px; color: #4B6358; line-height: 1.75; margin-bottom: 16px; }
+  .footer-text { font-size: 11px; color: #9BB5AA; line-height: 1.6; text-align: center; padding: 24px 40px; border-top: 1px solid #E4EEEA; }
+  .footer-text a { color: #9BB5AA; }
+</style>
+<div class="wrapper">
+  <div class="card">
+    <div class="header-plain">
+      <span class="logo-plain">Nouveau Variable</span>
+    </div>
+    <div class="body">
+      <p class="greeting">{{params.prenom}},</p>
+      <p class="text">Ça fait deux semaines que tu as rejoint le club.</p>
+      <p class="text">
+        Est-ce que tu as trouvé ce que tu cherchais ?
+        Est-ce qu'il y a quelque chose qui bloque, qui manque, ou qui pourrait être mieux ?
+      </p>
+      <p class="text">Réponds directement à cet email — je lis tout moi-même.</p>
+      <p class="text">Gaultier</p>
+    </div>
+    <div class="footer-text">
+      Tu reçois cet email car tu es membre de Nouveau Variable.<br />
+      <a href="{{unsubscribe}}">Se désinscrire</a> · <a href="https://nouveauvariable.fr/confidentialite">Confidentialité</a>
+    </div>
+  </div>
+</div>

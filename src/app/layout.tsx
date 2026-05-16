@@ -6,7 +6,7 @@ import { ThemeProvider } from '@/lib/theme'
 const jost = Jost({
   subsets: ['latin'],
   variable: '--font-jost',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   display: 'swap',
 })
 
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
   title: 'Nouveau Variable',
   description: 'Le club des commerciaux ambitieux.',
   icons: {
-    icon: '/nv-logo-black.png',
-    apple: '/nv-logo-black.png',
-    shortcut: '/nv-logo-black.png',
+    icon: '/logo-nv.png',
+    apple: '/logo-nv.png',
+    shortcut: '/logo-nv.png',
   },
 }
 

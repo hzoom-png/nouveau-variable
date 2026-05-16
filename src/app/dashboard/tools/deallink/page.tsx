@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import SectorCloud from '@/components/SectorCloud'
 import { DealLinkReady } from '@/components/DealLinkReady'
+import { useDashboard } from '@/lib/dashboard-context'
+import { LockedSection } from '@/components/LockedSection'
 
 const TONES = ['Professionnel', 'Amical', 'Direct', 'Inspirant', 'Storytelling']
 
@@ -20,6 +22,7 @@ const lbl: React.CSSProperties = {
 type Step = 1 | 2 | 'loading' | 'done'
 
 export default function DealLinkPage() {
+  const { isInactive, userEmail } = useDashboard()
   const searchParams = useSearchParams()
 
   const [step, setStep]     = useState<Step>(1)
@@ -48,6 +51,8 @@ export default function DealLinkPage() {
       }))
     }
   }, [searchParams])
+
+  if (isInactive) return <LockedSection feature="DealLink est réservé aux membres actifs" email={userEmail} />
 
   async function generate() {
     if (!form.prospectName || !form.productName || !form.problem) {

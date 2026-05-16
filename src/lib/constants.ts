@@ -20,8 +20,13 @@ export function getN2Rate(n1Count: number): number {
   return tier ? tier.rate : 5.0
 }
 
-export const N1_RATE      = 0.40
-export const SUBSCRIPTION = 97
+export const N1_RATE              = 0.30
+export const N2_RATE              = 0.05
+export const TVA                  = 1.20
+export const SUBSCRIPTION         = 97          // TTC mensuel
+export const SUBSCRIPTION_ANNUAL  = 899         // TTC annuel
+export const SUBSCRIPTION_HT      = parseFloat((SUBSCRIPTION / TVA).toFixed(2))          // 80.83
+export const SUBSCRIPTION_ANNUAL_HT = parseFloat((SUBSCRIPTION_ANNUAL / TVA).toFixed(2)) // 749.17
 export const MAX_MEMBERS  = 1000
 export const MAX_CITIES   = 5
 export const MAX_SECTORS  = 4

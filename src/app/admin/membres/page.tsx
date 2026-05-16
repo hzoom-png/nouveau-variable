@@ -23,6 +23,7 @@ type Member = {
   tokens: number
   points: number
   is_active: boolean
+  is_manually_activated?: boolean
   profile_visible?: boolean
   plan_id: string | null
   created_at: string
@@ -73,12 +74,18 @@ export default function MembresPage() {
 
   const load = useCallback(async () => {
     setLoading(true)
+    setError('')
     const params = new URLSearchParams()
     if (search) params.set('search', search)
     if (filter !== 'all') params.set('status', filter)
     const r = await fetch(`/api/admin/members/list?${params}`)
     const d = await r.json()
-    setMembers(d.members ?? [])
+    if (!r.ok) {
+      setError(`Erreur ${r.status} : ${d.error ?? 'inconnue'}`)
+      setMembers([])
+    } else {
+      setMembers(d.members ?? [])
+    }
     setLoading(false)
   }, [search, filter])
 
@@ -98,6 +105,17 @@ export default function MembresPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ memberId: m.id, action: 'toggle_active' }),
+    })
+    await load()
+    setWorking(false)
+  }
+
+  async function toggleManualActivation(m: Member) {
+    setWorking(true)
+    await fetch('/api/admin/members/activate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memberId: m.id, activate: !m.is_manually_activated }),
     })
     await load()
     setWorking(false)
@@ -148,19 +166,24 @@ export default function MembresPage() {
     if (!delTarget) return
     setWorking(true)
     setError('')
-    const res = await fetch('/api/admin/members/delete', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ memberId: delTarget.id, confirm: delConfirm }),
-    })
-    if (res.ok) {
-      setDelTarget(null); setDelConfirm('')
-      await load()
-    } else {
+    try {
+      const res = await fetch('/api/admin/members/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ memberId: delTarget.id, confirm: delConfirm }),
+      })
       const d = await res.json()
-      setError(d.error ?? 'Erreur')
+      if (res.ok) {
+        setDelTarget(null); setDelConfirm('')
+        await load()
+      } else {
+        setError(d.error ?? 'Erreur inconnue')
+      }
+    } catch (err: any) {
+      setError(err?.message ?? 'Erreur réseau')
+    } finally {
+      setWorking(false)
     }
-    setWorking(false)
   }
 
   const overlay: React.CSSProperties = {
@@ -252,6 +275,8 @@ export default function MembresPage() {
       <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden' }}>
         {loading ? (
           <div style={{ padding: 40, color: C.text2, textAlign: 'center' }}>Chargement…</div>
+        ) : error ? (
+          <div style={{ padding: 40, color: C.error, textAlign: 'center', fontSize: 13 }}>{error}</div>
         ) : members.length === 0 ? (
           <div style={{ padding: 40, color: C.text2, textAlign: 'center' }}>Aucun membre</div>
         ) : (
@@ -278,6 +303,11 @@ export default function MembresPage() {
                   <td style={{ padding: '12px 16px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       <Badge active={m.is_active} />
+                      {m.is_manually_activated && (
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: 'rgba(47,84,70,0.15)', color: '#2F5446', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                          Accès manuel
+                        </span>
+                      )}
                       {m.profile_visible === false && (
                         <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: 'rgba(180,120,0,0.15)', color: '#B47800', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                           Profil masqué
@@ -298,6 +328,18 @@ export default function MembresPage() {
                         disabled={working}
                       >
                         {m.is_active ? 'Désactiver' : 'Activer'}
+                      </button>
+                      <button
+                        style={{
+                          ...btnGhost, padding: '5px 10px', fontSize: 11,
+                          color: m.is_manually_activated ? '#E05252' : '#2F5446',
+                          borderColor: m.is_manually_activated ? 'rgba(224,82,82,0.3)' : 'rgba(47,84,70,0.3)',
+                        }}
+                        onClick={() => toggleManualActivation(m)}
+                        disabled={working}
+                        title={m.is_manually_activated ? 'Retirer l\'accès manuel' : 'Activer manuellement (sans Stripe)'}
+                      >
+                        {m.is_manually_activated ? 'Retirer accès' : 'Accès manuel'}
                       </button>
                       <button
                         style={{ ...btnGhost, padding: '5px 10px', fontSize: 11, color: m.profile_visible === false ? '#4A8C6F' : '#B47800', borderColor: m.profile_visible === false ? 'rgba(74,140,111,0.3)' : 'rgba(180,120,0,0.3)' }}
@@ -427,7 +469,7 @@ export default function MembresPage() {
                 <button
                   style={{ ...btnPrimary, background: C.error }}
                   onClick={deleteMember}
-                  disabled={working || delConfirm !== `${delTarget.first_name} ${delTarget.last_name}`}
+                  disabled={working || delConfirm.trim() !== `${delTarget.first_name.trim()} ${delTarget.last_name.trim()}`}
                 >
                   {working ? '…' : 'Supprimer définitivement'}
                 </button>

@@ -1,0 +1,54 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f4f9f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; color: #012722; }
+  .wrapper { max-width: 580px; margin: 0 auto; padding: 40px 20px; }
+  .card { background: #ffffff; border-radius: 16px; border: 1px solid #E4EEEA; overflow: hidden; box-shadow: 0 2px 20px rgba(2,79,65,0.06); }
+  .header { background: #024f41; padding: 32px 40px; }
+  .logo { color: #ffffff; font-size: 13px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .body { padding: 36px 40px; }
+  .greeting { font-size: 17px; font-weight: 600; color: #012722; margin-bottom: 16px; }
+  .text { font-size: 15px; color: #4B6358; line-height: 1.75; margin-bottom: 16px; }
+  .btn { display: inline-block; background: #024f41; color: #ffffff !important; text-decoration: none; font-size: 15px; font-weight: 700; padding: 14px 32px; border-radius: 99px; margin: 8px 0; }
+  .divider { border: none; border-top: 1px solid #E4EEEA; margin: 24px 0; }
+  .footer-text { font-size: 11px; color: #9BB5AA; line-height: 1.6; text-align: center; padding: 24px 40px; }
+  .footer-text a { color: #9BB5AA; }
+  .badge { display: inline-block; background: #e8f5ef; color: #024f41; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 99px; margin-bottom: 20px; }
+</style>
+<div class="wrapper">
+  <div class="card">
+    <div class="header">
+      <span class="logo">Nouveau Variable</span>
+    </div>
+    <div class="body">
+      <div class="badge">Bienvenue dans le club</div>
+      <p class="greeting">C'est officiel, {{params.prenom}}. 🤝</p>
+      <p class="text">
+        Ton accès est activé. Tu fais maintenant partie des commerciaux
+        qui ont décidé d'aller plus loin.
+      </p>
+
+      <div style="background:#e8f5ef;border-radius:12px;padding:20px 24px;margin:20px 0;">
+        <p style="font-size:13px;font-weight:700;color:#024f41;margin-bottom:12px;">Par où commencer :</p>
+        <p style="font-size:14px;color:#012722;line-height:2.2;">
+          <a href="{{params.lien_profil}}" style="color:#024f41;font-weight:600;">→ Complète ton profil</a> — il sera visible dans l'annuaire<br />
+          <a href="{{params.lien_dashboard}}" style="color:#024f41;font-weight:600;">→ Explore les membres</a> — 1 000 commerciaux qualifiés<br />
+          <a href="{{params.lien_dashboard}}/tools/replique" style="color:#024f41;font-weight:600;">→ Essaie Réplique</a> — génère ton premier script en 30 secondes
+        </p>
+      </div>
+
+      <div style="text-align:center;margin:28px 0;">
+        <a href="{{params.lien_dashboard}}" class="btn">Accéder au club →</a>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #E4EEEA;margin:24px 0;" />
+      <p class="text" style="font-size:13px;color:#9BB5AA;">
+        Ta facture est disponible dans <a href="{{params.lien_facture}}" style="color:#024f41;">Dashboard → Billing</a>.
+        Des questions ? Réponds à cet email.
+      </p>
+    </div>
+    <div class="footer-text">
+      Tu reçois cet email car tu es membre de Nouveau Variable.<br />
+      <a href="{{unsubscribe}}">Se désinscrire</a> · <a href="https://nouveauvariable.fr/confidentialite">Confidentialité</a>
+    </div>
+  </div>
+</div>

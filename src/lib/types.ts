@@ -41,7 +41,28 @@ export interface MemberProfile {
   member_number?: number
 }
 export type MeetingStatus = 'pending' | 'accepted' | 'confirmed' | 'declined' | 'cancelled' | 'completed'
-export type Rank = 'explorateur' | 'connecteur' | 'amplificateur'
+export type Rank =
+  | 'initiateur'
+  | 'connecteur'
+  | 'catalyseur'
+  | 'architecte'
+  | 'membre_influence'
+
+export function getRankFromReferrals(count: number): Rank {
+  if (count >= 50) return 'membre_influence'
+  if (count >= 25) return 'architecte'
+  if (count >= 10) return 'catalyseur'
+  if (count >= 3)  return 'connecteur'
+  return 'initiateur'
+}
+
+export const RANK_LABELS: Record<Rank, string> = {
+  initiateur:       'Initiateur',
+  connecteur:       'Connecteur',
+  catalyseur:       'Catalyseur',
+  architecte:       'Architecte',
+  membre_influence: 'Membre Influence',
+}
 
 export interface Profile {
   id: string
@@ -78,13 +99,20 @@ export interface Profile {
   display_name?: string
   avatar_url?: string
   tagline?: string
-  role_type?: 'salarie' | 'freelance' | 'entrepreneur' | 'dirigeant'
+  role_type?: 'salarie' | 'freelance' | 'entrepreneur' | 'dirigeant' | 'salarie_entrepreneur' | 'autre'
   services?: ServiceItem[]
   links?: LinkItem[]
   track_record?: TrackRecord[]
   profile_visible?: boolean
   onboarding_completed?: boolean
   member_number?: number
+  stripe_customer_id?:     string
+  stripe_subscription_id?: string
+  subscription_status?:    'active' | 'inactive' | 'past_due'
+  subscription_plan?:      'monthly' | 'annual'
+  subscription_start?:     string
+  subscription_end?:       string
+  is_manually_activated?:  boolean
 }
 
 export interface CommercialContext {
@@ -101,6 +129,23 @@ export interface MeetingSlot {
   date: string
   time: string
   label: string
+}
+
+export interface PipeContact {
+  id:           string
+  created_at:   string
+  updated_at:   string
+  user_id:      string
+  first_name:   string
+  last_name?:   string
+  email?:       string
+  phone?:       string
+  linkedin_url?: string
+  role?:        string
+  has_project:  boolean
+  stage:        'a_contacter' | 'contacte' | 'interresse' | 'inscrit' | 'membre'
+  notes?:       string
+  reminder_at?: string
 }
 
 export interface MeetingRequest {

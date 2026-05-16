@@ -1,13 +1,10 @@
+// v2 — uses Brevo template API
 import { NextResponse, type NextRequest } from 'next/server'
 import { requireAdminAuth, logAdminAction } from '@/lib/admin-auth'
 import { createServiceClient } from '@/lib/supabase/service'
+import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
+import { sendSMS } from '@/lib/sms'
 import { z } from 'zod'
-import { createRequire } from 'module'
-
-const _require = createRequire(import.meta.url)
-const { sendAcceptationSafe } = _require('../../../../../../sendAcceptation') as {
-  sendAcceptationSafe: (c: Record<string, string>) => Promise<{ success: boolean; error?: string }>
-}
 
 const Schema = z.object({ candidatureId: z.string().uuid() })
 
@@ -29,45 +26,35 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Erreur interne', code: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
-  // SMS Twilio (via API REST directe)
-  if (cand.phone) {
-    const firstName = (cand.full_name as string).split(' ')[0]
-    const msg = `Bonjour ${firstName}, ta candidature Nouveau Variable a été acceptée. Ton lien de paiement t'arrive par email sous 24h. À très vite.`
-    const sid  = process.env.TWILIO_ACCOUNT_SID!
-    const auth = process.env.TWILIO_AUTH_TOKEN!
-
-    await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
-      method:  'POST',
-      headers: {
-        Authorization:  `Basic ${Buffer.from(`${sid}:${auth}`).toString('base64')}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        MessagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID!,
-        To:   cand.phone,
-        Body: msg,
-      }).toString(),
-    }).catch(() => null) // non-bloquant
-  }
-
-  // Email d'acceptation au candidat via Brevo (template transactionnel)
   const nameParts = (cand.full_name as string).trim().split(' ')
-  const candidat: Record<string, string> = {
-    id:              cand.id as string,
-    prenom:          nameParts[0] ?? '',
-    nom:             nameParts.slice(1).join(' '),
-    email:           cand.email as string,
-    telephone:       (cand.phone as string | null) ?? '',
-    ville:           (cand.city as string | null) ?? '',
-    role:            (cand.role as string | null) ?? '',
-    secteur:         '',
-    experience:      (cand.experience as string | null) ?? '',
-    motivation:      (cand.motivation as string | null) ?? '',
-    code_parrainage: (cand.referral_code as string | null) ?? '',
-  }
-  await sendAcceptationSafe(candidat)
+  const prenom = nameParts[0] ?? ''
+  const nom = nameParts.slice(1).join(' ')
+  const email = cand.email as string
+  const telephone = (cand.phone as string | null) ?? ''
 
-  await logAdminAction(adminId, 'accept_candidature', 'candidature', parsed.data.candidatureId, { full_name: cand.full_name, email: cand.email })
+  const expiration = new Date(Date.now() + 48 * 60 * 60 * 1000)
+    .toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  await sendEmail({
+    to: { email, name: `${prenom} ${nom}`.trim() },
+    templateId: TEMPLATE_IDS.CANDIDATURE_ACCEPTEE,
+    params: {
+      prenom,
+      lien_paiement: `https://app.nouveauvariable.fr/subscribe?email=${encodeURIComponent(email)}&prenom=${encodeURIComponent(prenom)}`,
+      lien_connexion: `https://app.nouveauvariable.fr/auth?from=acceptance`,
+      expiration,
+    },
+    tags: ['candidature', 'acceptation'],
+  })
+
+  if (telephone) {
+    await sendSMS(
+      telephone,
+      `Nouveau Variable — Ta candidature a été acceptée, ${prenom} ! Consulte ta boîte email pour finaliser ton accès.`
+    )
+  }
+
+  await logAdminAction(adminId, 'accept_candidature', 'candidature', parsed.data.candidatureId, { full_name: cand.full_name, email })
 
   return NextResponse.json({ success: true })
 }

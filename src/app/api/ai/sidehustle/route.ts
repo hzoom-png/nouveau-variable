@@ -88,7 +88,7 @@ Génère 4 à 6 phases dans la roadmap. Chaque phase a 4 à 7 tâches concrètes
         try {
           const aiStream = anthropic.messages.stream({
             model:      'claude-haiku-4-5-20251001',
-            max_tokens: 4000,
+            max_tokens: 8000,
             system:     'Tu es un expert en stratégie entrepreneuriale. Tu réponds UNIQUEMENT en JSON valide, sans aucun texte avant ni après, sans backticks, sans markdown. Commence directement par { et termine par }.',
             messages:   [{ role: 'user', content: prompt }],
           })

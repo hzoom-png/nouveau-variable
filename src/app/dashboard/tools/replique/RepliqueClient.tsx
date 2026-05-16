@@ -9,6 +9,8 @@ import RepliqueScriptView from './components/RepliqueScript'
 import RepliqueEmptyState from './components/RepliqueEmptyState'
 import RepliqueProgress from './components/RepliqueProgress'
 import RepliqueCard from './components/RepliqueCard'
+import { useDashboard } from '@/lib/dashboard-context'
+import { LockedSection } from '@/components/LockedSection'
 
 type View = 'idle' | 'form' | 'loading' | 'result'
 
@@ -33,6 +35,7 @@ function clearSession() {
 }
 
 export default function RepliqueClient() {
+  const { isInactive, userEmail } = useDashboard()
   const [view, setView] = useState<View>('idle')
   const [loadStep, setLoadStep] = useState(0)
   const [config, setConfig] = useState<Partial<RepliqueConfig>>({})
@@ -118,7 +121,7 @@ export default function RepliqueClient() {
 
     let finished = false
     const abortController = new AbortController()
-    const timeoutId = setTimeout(() => { abortController.abort() }, 30000)
+    const timeoutId = setTimeout(() => { abortController.abort() }, 60000)
 
     try {
       const res = await fetch('/api/ai/replique', {
@@ -238,6 +241,8 @@ export default function RepliqueClient() {
     setView('result')
     setHistoryOpen(false)
   }
+
+  if (isInactive) return <LockedSection feature="Réplique est réservé aux membres actifs" email={userEmail} />
 
   return (
     <div>

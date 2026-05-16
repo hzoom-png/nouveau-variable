@@ -33,12 +33,6 @@ export async function requireAdminAuth(): Promise<string | null> {
     const token = cookieStore.get('admin_session')?.value
     if (!token) return null
     const { userId } = await verifyAdminSession(token)
-
-    // Vérification Supabase live — s'assure que le compte est toujours actif
-    const supabase = await createClient()
-    const { data: { user }, error } = await supabase.auth.getUser()
-    if (error || !user || user.id !== userId) return null
-
     return userId
   } catch {
     return null

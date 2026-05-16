@@ -72,6 +72,33 @@ function IconActivity() {
   )
 }
 
+function IconFolder() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 4a1 1 0 0 1 1-1h4l2 2h6a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4z"/>
+    </svg>
+  )
+}
+
+function IconTarget() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8" cy="8" r="7"/>
+      <circle cx="8" cy="8" r="3"/>
+      <circle cx="8" cy="8" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+  )
+}
+
+function IconSettings() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8" cy="8" r="2"/>
+      <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.22 3.22l1.42 1.42M11.36 11.36l1.42 1.42M3.22 12.78l1.42-1.42M11.36 4.64l1.42-1.42"/>
+    </svg>
+  )
+}
+
 function IconMegaphone() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -117,9 +144,22 @@ const NAV = [
     ],
   },
   {
+    group: 'CONTENU',
+    items: [
+      { href: '/admin/projets',      label: 'Projets',            Icon: IconFolder },
+      { href: '/admin/missions',     label: 'Missions',           Icon: IconTarget },
+    ],
+  },
+  {
     group: 'SÉCURITÉ',
     items: [
       { href: '/admin/activite',     label: 'Activité',           Icon: IconActivity },
+    ],
+  },
+  {
+    group: 'PARAMÈTRES',
+    items: [
+      { href: '/admin/parametres',   label: 'Configuration',      Icon: IconSettings },
     ],
   },
 ]
@@ -158,7 +198,9 @@ export function AdminSidebar() {
         borderBottom: `1px solid ${C.border}`,
         display: 'flex', alignItems: 'center', gap: 10,
       }}>
-        <Image src="/nv-logo-white.png" alt="NV" width={28} height={28} style={{ objectFit: 'contain' }} />
+        <div style={{ width: 28, height: 28, background: '#fff', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Image src="/logo-nv.png" alt="NV" width={24} height={24} style={{ objectFit: 'contain' }} />
+        </div>
         <span style={{ fontSize: 11, color: C.text2, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
           Admin
         </span>

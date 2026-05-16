@@ -24,6 +24,9 @@ const securityHeaders = [
 ]
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   serverExternalPackages: ['pdf-parse', 'mammoth'],
   async headers() {
     return [

@@ -38,18 +38,18 @@ function buildHtml(params) {
 }
 
 // ── Générateur de lien de paiement ─────────────────────────
-// Pré-remplit l'email sur la page Stripe et transmet les UTM
-// pour tracker la source dans le dashboard Stripe.
+// Utilise lien_paiement si déjà fourni (ex: route /subscribe?email=…),
+// sinon construit depuis STRIPE_PAYMENT_BASE_URL (fallback legacy).
 function buildPaymentLink(candidat) {
+  if (candidat.lien_paiement) return candidat.lien_paiement;
   const base = process.env.STRIPE_PAYMENT_BASE_URL;
   const params = new URLSearchParams({
     prefilled_email: candidat.email,
-    client_reference_id: candidat.id || candidat.email, // id unique candidature
+    client_reference_id: candidat.id || candidat.email,
     utm_source: 'backoffice',
     utm_medium: 'email_acceptation',
     utm_campaign: 'onboarding',
   });
-  // Si parrainage, passer le code pour validation webhook
   if (candidat.code_parrainage) {
     params.set('metadata[parrain_code]', candidat.code_parrainage);
   }

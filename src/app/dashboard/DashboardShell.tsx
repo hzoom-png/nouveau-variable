@@ -2,12 +2,13 @@
 
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Profile } from '@/lib/types'
 import { TokenBalance } from '@/components/TokenBalance'
 import { useTheme } from '@/lib/theme'
 import { WelcomeTour } from '@/components/onboarding/WelcomeTour'
+import { DashboardContext } from '@/lib/dashboard-context'
 
 type SectionId = 'club' | 'outils' | 'moi'
 
@@ -138,7 +139,6 @@ const PAGE_TITLES: Record<string, string> = {
   '/dashboard/projects':         'Projets',
 }
 
-const SUSPENSION_EXEMPT = ['/dashboard/profile', '/dashboard/affiliation']
 
 interface Props { profile: Profile; children: React.ReactNode; stripeUrl?: string }
 
@@ -149,7 +149,17 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
   const initials = `${profile.first_name?.[0] ?? ''}${profile.last_name?.[0] ?? ''}`.toUpperCase()
   const pageTitle = PAGE_TITLES[pathname] || (pathname === '/dashboard' ? 'Accueil' : 'Dashboard')
   const [showTour, setShowTour] = useState(!profile.onboarding_completed)
-  const isSuspended = profile.is_active === false && !SUSPENSION_EXEMPT.includes(pathname)
+  const [pendingMeetings, setPendingMeetings] = useState(0)
+  const isInactive  = profile.subscription_status !== 'active'
+    && !profile.is_manually_activated
+    && !profile.is_founder
+
+  useEffect(() => {
+    fetch('/api/meetings/pending-count')
+      .then(r => r.json())
+      .then(({ count }) => setPendingMeetings(count ?? 0))
+      .catch(() => {})
+  }, [])
 
   async function handleLogout() {
     const sb = createClient()
@@ -158,6 +168,7 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
   }
 
   return (
+    <DashboardContext.Provider value={{ isInactive, userEmail: profile.email ?? '' }}>
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--surface)' }}>
       {showTour && (
         <WelcomeTour
@@ -167,65 +178,28 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
         />
       )}
 
-      {isSuspended && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 9999,
-          background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(3px)',
-          display: 'grid', placeItems: 'center', padding: '20px',
-        }}>
-          <div style={{
-            background: 'var(--white)', borderRadius: 'var(--r-md)',
-            border: '1px solid var(--border)', padding: '36px 40px',
-            maxWidth: '400px', width: '100%', textAlign: 'center',
-          }}>
-            <div style={{
-              width: '44px', height: '44px', borderRadius: 'var(--r-sm)',
-              background: '#FEF3E2', border: '1px solid #F9CB75',
-              display: 'grid', placeItems: 'center', margin: '0 auto 20px',
-            }}>
-              <svg width="20" height="20" viewBox="0 0 15 15" fill="none" stroke="#854F0B" strokeWidth="1.8" strokeLinecap="round">
-                <path d="M7.5 1L14 13H1L7.5 1z"/><path d="M7.5 6v3.5"/><path d="M7.5 11.5v.5"/>
-              </svg>
-            </div>
-            <div style={{
-              fontFamily: 'var(--font-jost)', fontSize: '18px', fontWeight: 800,
-              color: 'var(--text)', marginBottom: '10px',
-            }}>
-              Ton accès est suspendu
-            </div>
-            <p style={{ fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.7, marginBottom: '24px', margin: '0 0 24px' }}>
-              Pour continuer à accéder au club, réactive ton abonnement en quelques secondes.
-            </p>
-            {stripeUrl ? (
-              <a
-                href={`${stripeUrl}?prefilled_email=${encodeURIComponent(profile.email ?? '')}&client_reference_id=${profile.id}`}
-                style={{
-                  display: 'inline-block', background: 'var(--green)', color: '#fff',
-                  textDecoration: 'none', fontWeight: 700, fontSize: '14px',
-                  padding: '12px 28px', borderRadius: 'var(--r-full)',
-                }}
-              >
-                Réactiver mon accès →
-              </a>
-            ) : (
-              <p style={{ fontSize: '13px', color: 'var(--text-3)', margin: 0 }}>
-                Contacte-nous à{' '}
-                <a href="mailto:hello@nouveauvariable.fr" style={{ color: 'var(--green)', textDecoration: 'none', fontWeight: 600 }}>
-                  hello@nouveauvariable.fr
-                </a>
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Sidebar */}
       <nav style={{ width: '240px', flexShrink: 0, background: 'var(--white)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', height: '100vh', position: 'sticky', top: 0, overflowY: 'auto' }}>
         {/* Logo */}
-        <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '9px' }}>
-          <img src="/nv-logo-black.png" alt="Nouveau Variable" style={{ height: 28, width: 'auto', objectFit: 'contain' }} />
+        <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img
+            src="/nv-logo-black.png"
+            alt="NV"
+            width={32}
+            height={32}
+            style={{ objectFit: 'contain', flexShrink: 0 }}
+            onError={(e) => {
+              const el = e.currentTarget as HTMLImageElement
+              el.style.display = 'none'
+              const fb = el.nextElementSibling as HTMLElement | null
+              if (fb) fb.style.display = 'flex'
+            }}
+          />
+          <div style={{ width: 32, height: 32, borderRadius: 7, background: 'var(--green)', display: 'none', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span style={{ fontFamily: 'var(--font-jost)', fontSize: '11px', fontWeight: 900, color: '#fff', letterSpacing: '.04em' }}>NV</span>
+          </div>
           <div>
-            <div style={{ fontFamily: 'var(--font-jost)', fontSize: '12px', fontWeight: 700, color: 'var(--green)', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</div>
+            <div style={{ fontFamily: 'var(--font-jost)', fontSize: '13px', fontWeight: 900, color: 'var(--green)', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</div>
             <div style={{ fontSize: '10px', color: 'var(--text-3)', fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', marginTop: '1px' }}>Espace membre</div>
           </div>
         </div>
@@ -265,6 +239,16 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
                             padding: '2px 6px', marginLeft: 'auto', flexShrink: 0,
                           }}>
                             Bientôt
+                          </span>
+                        )}
+                        {item.id === 'members' && pendingMeetings > 0 && (
+                          <span style={{
+                            background: '#024f41', color: '#fff',
+                            borderRadius: '99px', padding: '1px 7px',
+                            fontSize: 11, fontWeight: 700,
+                            marginLeft: 'auto', flexShrink: 0,
+                          }}>
+                            {pendingMeetings}
                           </span>
                         )}
                       </div>
@@ -323,6 +307,15 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
           </button>
         </div>
 
+        {/* Legal footer */}
+        <div style={{ padding: '8px 16px 4px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          {[['CGU', '/cgu'], ['Confidentialité', '/confidentialite'], ['Cookies', '/cookies']].map(([label, href]) => (
+            <Link key={href} href={href} style={{ fontSize: '11px', color: 'var(--text-3)', textDecoration: 'none' }}>
+              {label}
+            </Link>
+          ))}
+        </div>
+
         {/* User card */}
         <div style={{ padding: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '9px 10px', borderRadius: 'var(--r-md)' }}>
@@ -361,5 +354,6 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
         </main>
       </div>
     </div>
+    </DashboardContext.Provider>
   )
 }

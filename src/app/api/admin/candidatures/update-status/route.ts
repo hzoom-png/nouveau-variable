@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { requireAdminAuth, logAdminAction } from '@/lib/admin-auth'
 import { createServiceClient } from '@/lib/supabase/service'
 import { z } from 'zod'
+import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
 
 const Schema = z.object({
   id:         z.string().uuid(),
@@ -26,6 +27,24 @@ export async function POST(request: NextRequest) {
   if (error) {
     console.error('[admin/candidatures/update-status] Erreur:', error.message)
     return NextResponse.json({ error: 'Erreur interne', code: 'INTERNAL_ERROR' }, { status: 500 })
+  }
+
+  if (status === 'rejected') {
+    const { data: cand } = await svc
+      .from('candidatures')
+      .select('email, full_name')
+      .eq('id', id)
+      .single()
+
+    if (cand) {
+      const prenom = (cand.full_name as string).trim().split(' ')[0] ?? ''
+      await sendEmail({
+        to: { email: cand.email as string, name: cand.full_name as string },
+        templateId: TEMPLATE_IDS.CANDIDATURE_REFUSEE,
+        params: { prenom },
+        tags: ['candidature', 'refus'],
+      })
+    }
   }
 
   await logAdminAction(adminId, 'update_candidature_status', 'candidature', id, { status, admin_note })

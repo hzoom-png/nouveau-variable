@@ -107,7 +107,7 @@ export default function CandidaturesPage() {
     const res = await fetch('/api/admin/candidatures/update-status', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ candidatureId: c.id, status, adminNote: note }),
+      body: JSON.stringify({ id: c.id, status, admin_note: note }),
     })
     if (res.ok) {
       await load()
@@ -130,7 +130,7 @@ export default function CandidaturesPage() {
     })
     if (res.ok) {
       const firstName = c.full_name.split(' ')[0]
-      setSuccessMsg(`SMS envoyé à ${firstName}`)
+      setSuccessMsg(`Email et SMS envoyés à ${firstName}`)
       await load()
       setSelected(prev => prev?.id === c.id ? { ...prev, status: 'accepted' } : prev)
     } else {
@@ -145,7 +145,7 @@ export default function CandidaturesPage() {
     await fetch('/api/admin/candidatures/update-status', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ candidatureId: selected.id, status: selected.status, adminNote: note }),
+      body: JSON.stringify({ id: selected.id, status: selected.status, admin_note: note }),
     })
   }
 
@@ -417,7 +417,7 @@ export default function CandidaturesPage() {
                   onClick={() => accept(selected)}
                   disabled={working}
                 >
-                  {working ? '…' : '✓ Accepter & notifier par SMS'}
+                  {working ? '…' : '✓ Accepter & notifier'}
                 </button>
               )}
               {selected.status !== 'rejected' && (

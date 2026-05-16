@@ -64,8 +64,17 @@ export async function PATCH(request: Request) {
     .single()
 
   if (error) {
-    console.error('[profile] Erreur:', error.message)
+    console.error('[profile] Erreur complète:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    })
     return NextResponse.json({ error: 'Erreur interne', code: 'INTERNAL_ERROR' }, { status: 500 })
+  }
+
+  if (!data.onboarding_completed && data.first_name && data.last_name && data.role_title && data.bio) {
+    await supabase.from('profiles').update({ onboarding_completed: true }).eq('id', user.id)
   }
 
   // Handle availability slots (separate table)

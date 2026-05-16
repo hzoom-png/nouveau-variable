@@ -7,14 +7,14 @@ import { NvLogo } from '@/components/NvLogo'
 
 type Step = 'phone' | 'otp' | 'referral' | 'done'
 
-const GREEN = '#2F5446'
-const GREEN_3 = '#EAF2EE'
-const GREEN_4 = '#C5DDD5'
+const GREEN = '#024f41'
+const GREEN_3 = '#e8f5ef'
+const GREEN_4 = '#56b791'
 const BORDER = '#E4EEEA'
-const TEXT = '#0F1C17'
+const TEXT = '#012722'
 const TEXT_2 = '#4B6358'
 const TEXT_3 = '#8FAAA0'
-const SURFACE = '#F7FAF8'
+const SURFACE = '#f4f9f9'
 
 export default function AuthPage() {
   return (
@@ -28,6 +28,7 @@ function AuthPageInner() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
+  const from = searchParams.get('from')
 
   const [step, setStep] = useState<Step>('phone')
   const [phone, setPhone] = useState('')
@@ -281,6 +282,15 @@ function AuthPageInner() {
 
           {step === 'phone' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              {from === 'acceptance' && (
+                <div style={{
+                  background: '#e8f5ef', border: '1px solid #56b791',
+                  borderRadius: 12, padding: '14px 18px', fontSize: 14,
+                  color: '#024f41', lineHeight: 1.6,
+                }}>
+                  ✓ Ta candidature a été acceptée. Connecte-toi avec le numéro de téléphone renseigné lors de ta candidature.
+                </div>
+              )}
               <div>
                 <label style={{ fontSize: '11px', fontWeight: 600, color: TEXT_2, textTransform: 'uppercase', letterSpacing: '.07em', display: 'block', marginBottom: '6px' }}>
                   Numéro de téléphone

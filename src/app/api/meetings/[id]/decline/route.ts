@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
 import { escHtml } from '@/lib/html-escape'
+import { sendSMS, SMS_TEMPLATES } from '@/lib/sms'
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -23,17 +24,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const refundAmount = meeting.points_cost
 
-  const { data: requesterProfile } = await service
-    .from('profiles')
-    .select('points_balance, email, first_name')
-    .eq('id', meeting.requester_id)
-    .single()
+  const [{ data: requesterProfile }, { data: recipientProfile }] = await Promise.all([
+    service.from('profiles').select('points_balance, email, first_name, phone').eq('id', meeting.requester_id).single(),
+    service.from('profiles').select('first_name').eq('id', user.id).single(),
+  ])
 
   if (!requesterProfile) return NextResponse.json({ error: 'Profil demandeur introuvable' }, { status: 400 })
 
   const newBalance = requesterProfile.points_balance + refundAmount
 
-  await service.from('meeting_requests').update({ status: 'declined' }).eq('id', id)
+  await service.from('meeting_requests')
+    .update({ status: 'declined', responded_at: new Date().toISOString() })
+    .eq('id', id)
 
   await service.from('points_transactions').insert({
     profile_id:         meeting.requester_id,
@@ -48,6 +50,16 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     .update({ points_balance: newBalance })
     .eq('id', meeting.requester_id)
 
+  // SMS to requester
+  try {
+    if (requesterProfile.phone) {
+      await sendSMS(requesterProfile.phone, SMS_TEMPLATES.meetingDeclined(recipientProfile?.first_name ?? ''))
+    }
+  } catch (e) {
+    console.error('[meetings/decline] Erreur SMS:', e instanceof Error ? e.message : e)
+  }
+
+  // Email to requester
   try {
     if (requesterProfile.email && process.env.BREVO_API_KEY) {
       const safeAmount = escHtml(String(refundAmount))

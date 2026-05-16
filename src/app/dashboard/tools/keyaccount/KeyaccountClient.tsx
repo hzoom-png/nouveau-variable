@@ -15,8 +15,11 @@ import KaModalAccount from './components/KaModalAccount'
 import KaModalContact from './components/KaModalContact'
 import KaAccountSheet from './components/KaAccountSheet'
 import { useKaNotes } from './hooks/useKaNotes'
+import { useDashboard } from '@/lib/dashboard-context'
+import { LockedSection } from '@/components/LockedSection'
 
 export default function KeyaccountClient() {
+  const { isInactive, userEmail } = useDashboard()
   const { accounts, loading, error, activeAccount, activeAccountIdx, dispatch, view, reload } = useKa()
   const score = activeAccount ? getScore(activeAccount.contacts) : 0
   const searchParams = useSearchParams()
@@ -87,6 +90,8 @@ export default function KeyaccountClient() {
     })
     showToast('Bulles réorganisées en cercle')
   }
+
+  if (isInactive) return <LockedSection feature="KeyAccount est réservé aux membres actifs" email={userEmail} />
 
   // ── LOADING ──
   if (loading) {

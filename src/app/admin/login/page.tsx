@@ -29,11 +29,19 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError]   = useState('')
 
+  function toE164(raw: string): string {
+    const stripped = raw.trim().replace(/[\s\-().]/g, '')
+    if (stripped.startsWith('+')) return stripped
+    return `+33${stripped.replace(/^0/, '')}`
+  }
+
   async function sendOtp() {
     setError('')
     setLoading(true)
     try {
-      const { error: e } = await supabase.auth.signInWithOtp({ phone })
+      const normalized = toE164(phone)
+      setPhone(normalized)
+      const { error: e } = await supabase.auth.signInWithOtp({ phone: normalized })
       if (e) throw e
       setStep('otp')
     } catch (e: unknown) {

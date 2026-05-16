@@ -5,6 +5,8 @@ import { MeetingRequest, MeetingSlot } from '@/lib/types'
 import { MEETING_TYPES } from '@/lib/constants'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import { useDashboard } from '@/lib/dashboard-context'
+import { LockedSection } from '@/components/LockedSection'
 
 interface Props {
   pendingRequests: MeetingRequest[]
@@ -13,6 +15,7 @@ interface Props {
 }
 
 export default function MeetingsClient({ pendingRequests, confirmedMeetings, currentUserId }: Props) {
+  const { isInactive, userEmail } = useDashboard()
   const [acceptingId, setAcceptingId] = useState<string | null>(null)
   const [confirmingId, setConfirmingId] = useState<string | null>(null)
   const [locationForms, setLocationForms] = useState<Record<string, { name: string, city: string }>>({})
@@ -66,6 +69,8 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
       return slot.label || slot.date
     }
   }
+
+  if (isInactive) return <LockedSection feature="Les Meetings sont réservés aux membres actifs" email={userEmail} />
 
   return (
     <div style={{ maxWidth: '800px' }}>

@@ -79,7 +79,7 @@ export default async function DashboardHome() {
     .single()
 
   const firstName = profile?.first_name || 'toi'
-  const isNew = profile?.onboarding_completed === false
+  const isNew = !profile?.onboarding_completed
 
   return (
     <div style={{ maxWidth: '820px' }}>
@@ -98,36 +98,52 @@ export default async function DashboardHome() {
 
       {isNew && (
         <div style={{
-          background: 'var(--green-3)', border: '1px solid var(--green-4)',
-          borderRadius: 'var(--r-md)', padding: '16px 20px',
-          marginBottom: '24px', display: 'flex', gap: '14px', alignItems: 'flex-start',
+          background: 'linear-gradient(135deg, #024f41 0%, #1a7b5e 100%)',
+          borderRadius: 16,
+          padding: '36px 40px',
+          marginBottom: 32,
+          color: '#ffffff',
         }}>
-          <div style={{
-            width: '30px', height: '30px', borderRadius: 'var(--r-sm)',
-            background: 'var(--green)', display: 'grid', placeItems: 'center', flexShrink: 0,
+          <p style={{
+            fontSize: 11, opacity: 0.6, letterSpacing: '0.12em',
+            textTransform: 'uppercase', marginBottom: 10,
           }}>
-            <svg width="14" height="14" viewBox="0 0 15 15" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-              <circle cx="7.5" cy="7.5" r="6.5"/><path d="M7.5 5v4"/><path d="M7.5 11v.5"/>
-            </svg>
-          </div>
-          <div>
-            <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--green)', marginBottom: '5px' }}>
-              Par où commencer ?
-            </div>
-            <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.65, margin: 0 }}>
-              Commence par{' '}
-              <Link href="/dashboard/profile" style={{ color: 'var(--green)', fontWeight: 600, textDecoration: 'none' }}>
-                compléter ton profil
-              </Link>{' '}
-              pour être visible dans l&apos;annuaire, puis explore les{' '}
-              <Link href="/dashboard/projects" style={{ color: 'var(--green)', fontWeight: 600, textDecoration: 'none' }}>
-                projets
-              </Link>{' '}
-              et génère tes premiers revenus via l&apos;{' '}
-              <Link href="/dashboard/affiliation" style={{ color: 'var(--green)', fontWeight: 600, textDecoration: 'none' }}>
-                affiliation
-              </Link>.
-            </p>
+            Bienvenue dans le club
+          </p>
+          <h1 style={{
+            fontFamily: 'var(--font-jost)', fontWeight: 800, fontSize: 26,
+            marginBottom: 14, lineHeight: 1.2,
+          }}>
+            Content de t&apos;avoir ici, {firstName}. 👋
+          </h1>
+          <p style={{
+            fontSize: 15, opacity: 0.8, lineHeight: 1.7,
+            maxWidth: 480, marginBottom: 28,
+          }}>
+            Commence par compléter ton profil pour être visible dans l&apos;annuaire,
+            puis explore les membres et les opportunités qui t&apos;attendent.
+          </p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <Link
+              href="/dashboard/profile"
+              style={{
+                background: '#ffffff', color: '#024f41',
+                padding: '10px 22px', borderRadius: '99px',
+                fontWeight: 700, fontSize: 14, textDecoration: 'none',
+              }}
+            >
+              Compléter mon profil →
+            </Link>
+            <Link
+              href="/dashboard/members"
+              style={{
+                background: 'rgba(255,255,255,0.12)', color: '#ffffff',
+                padding: '10px 22px', borderRadius: '99px',
+                fontWeight: 600, fontSize: 14, textDecoration: 'none',
+              }}
+            >
+              Explorer l&apos;annuaire
+            </Link>
           </div>
         </div>
       )}

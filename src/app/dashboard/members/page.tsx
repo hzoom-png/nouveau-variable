@@ -13,18 +13,25 @@ export default async function MembersPage() {
   const { data: members, error: membersError } = await supabase
     .from('profiles')
     .select('id, first_name, last_name, role_title, rank, cities, sectors, meeting_types, missions_count, rating, avatar_url, tagline, bio, slug, profile_visible, member_number')
-    .eq('is_active', true)
+    .or('is_active.eq.true,is_manually_activated.eq.true')
     .or('profile_visible.is.null,profile_visible.eq.true')
     .neq('id', user.id)
     .order('created_at', { ascending: false })
 
   console.log('[Members] result:', { count: members?.length ?? 0, error: membersError?.message })
 
+  const { count: pendingCount } = await supabase
+    .from('meeting_requests')
+    .select('*', { count: 'exact', head: true })
+    .eq('recipient_id', user.id)
+    .eq('status', 'pending')
+
   return (
     <MembersClient
       members={(members ?? []) as MemberProfile[]}
       currentUserId={user.id}
       currentUserPoints={profile?.points_balance ?? 0}
+      pendingCount={pendingCount ?? 0}
     />
   )
 }

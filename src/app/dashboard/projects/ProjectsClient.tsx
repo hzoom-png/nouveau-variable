@@ -12,12 +12,15 @@ import { ProjectFiltersBar } from './components/ProjectFilters'
 import { ProjectMatchBanner } from './components/ProjectMatchBanner'
 import { MyProjectsPanel } from './components/MyProjectsPanel'
 import { ProjectEmptyState } from './components/ProjectEmptyState'
+import { useDashboard } from '@/lib/dashboard-context'
+import { LockedSection } from '@/components/LockedSection'
 
 interface Props {
   profile: Profile
 }
 
 export default function ProjectsClient({ profile }: Props) {
+  const { isInactive, userEmail } = useDashboard()
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [showMyProjects, setShowMyProjects] = useState(false)
   const [showNewForm, setShowNewForm] = useState(false)
@@ -48,6 +51,8 @@ export default function ProjectsClient({ profile }: Props) {
   function handleScrollToMatches() {
     matchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  if (isInactive) return <LockedSection feature="Les Projets sont réservés aux membres actifs" email={userEmail} />
 
   const myProjectIds = new Set(myProjects.map(p => p.id))
 

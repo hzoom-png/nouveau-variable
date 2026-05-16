@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { getN2Rate, SUBSCRIPTION, N1_RATE } from '@/lib/constants'
+import { SUBSCRIPTION_HT, N1_RATE, N2_RATE } from '@/lib/constants'
 import { CopyButton } from '@/components/ui/CopyButton'
 import { AffiliationSimulator } from '@/components/affiliation/AffiliationSimulator'
+import { AffiliationPipe } from '@/components/affiliation/AffiliationPipe'
 
 export default async function AffiliationPage() {
   const supabase = await createClient()
@@ -28,9 +29,8 @@ export default async function AffiliationPage() {
 
   const n1 = n1Count ?? 0
   const n2 = n2Count ?? 0
-  const n2Rate = getN2Rate(n1)
-  const commN1 = n1 * SUBSCRIPTION * N1_RATE
-  const commN2 = n2 * SUBSCRIPTION * (n2Rate / 100)
+  const commN1 = n1 * SUBSCRIPTION_HT * N1_RATE
+  const commN2 = n2 * SUBSCRIPTION_HT * N2_RATE
 
   const affiliateLink = profile.referral_code
     ? `https://nouveauvariable.fr/?ref=${profile.referral_code}`
@@ -54,6 +54,8 @@ export default async function AffiliationPage() {
           </div>
         ))}
       </div>
+
+      <AffiliationPipe />
 
       <AffiliationSimulator n1Actifs={n1} />
 

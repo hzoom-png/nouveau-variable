@@ -1,7 +1,9 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useDashboard } from '@/lib/dashboard-context'
+import { LockedSection } from '@/components/LockedSection'
 
 // ── Types ──────────────────────────────────────────────────────────
 type Stage = 'idea' | 'validation' | 'build' | 'launch' | 'growth'
@@ -69,6 +71,7 @@ function uuid() { return crypto.randomUUID() }
 
 // ── Main component ─────────────────────────────────────────────────
 export default function SideHustleClient({ userId, initialProjects, memberProjects }: Props) {
+  const { isInactive, userEmail } = useDashboard()
   const supabase = createClient()
 
   const [projects, setProjects]   = useState<SHProject[]>(initialProjects)
@@ -84,6 +87,39 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
   const [editing, setEditing] = useState(false)
 
   // ── DB helpers ───────────────────────────────────────────────────
+  async function saveBmc(projId: string, field: keyof BmcKey, value: string) {
+    const proj = projects.find(p => p.id === projId)
+    if (!proj?.bmc) return
+    const bmc = { ...proj.bmc, [field]: value }
+    setProjects(ps => ps.map(p => p.id === projId ? { ...p, bmc } : p))
+    setActive(prev => prev?.id === projId ? { ...prev, bmc } : prev)
+    await supabase.from('sidehustle_projects').update({ bmc, updated_at: new Date().toISOString() }).eq('id', projId)
+  }
+
+  async function saveForecastMonth(projId: string, monthIdx: number, field: 'revenue' | 'costs', value: number) {
+    const proj = projects.find(p => p.id === projId)
+    if (!proj?.forecast) return
+    const months = proj.forecast.months.map((m, i) => {
+      if (i !== monthIdx) return m
+      const updated = { ...m, [field]: value }
+      updated.margin = updated.revenue - updated.costs
+      return updated
+    })
+    const forecast = { ...proj.forecast, months }
+    setProjects(ps => ps.map(p => p.id === projId ? { ...p, forecast } : p))
+    setActive(prev => prev?.id === projId ? { ...prev, forecast } : prev)
+    await supabase.from('sidehustle_projects').update({ forecast, updated_at: new Date().toISOString() }).eq('id', projId)
+  }
+
+  async function saveForecastAssumptions(projId: string, value: string) {
+    const proj = projects.find(p => p.id === projId)
+    if (!proj?.forecast) return
+    const forecast = { ...proj.forecast, assumptions: value }
+    setProjects(ps => ps.map(p => p.id === projId ? { ...p, forecast } : p))
+    setActive(prev => prev?.id === projId ? { ...prev, forecast } : prev)
+    await supabase.from('sidehustle_projects').update({ forecast, updated_at: new Date().toISOString() }).eq('id', projId)
+  }
+
   const refresh = useCallback(async () => {
     const { data } = await supabase.from('sidehustle_projects').select('*').eq('user_id', userId).order('created_at', { ascending: false })
     if (data) setProjects(data as SHProject[])
@@ -275,6 +311,8 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
     setView('form')
     setEditing(false)
   }
+
+  if (isInactive) return <LockedSection feature="Side Hustle est réservé aux membres actifs" email={userEmail} />
 
   // ── Loading overlay ───────────────────────────────────────────────
   if (generating) {
@@ -579,12 +617,10 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
         {/* BMC Drawer */}
         {drawer === 'bmc' && proj.bmc && (
           <Drawer title="Business Model Canvas" onClose={() => setDrawer(null)}>
+            <p style={{ fontSize:12,color:'var(--text-3)',marginBottom:16 }}>Clique sur un champ pour le modifier — sauvegarde automatique.</p>
             <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:12 }}>
               {(Object.entries(BMC_LABELS) as [keyof BmcKey, string][]).map(([key, label]) => (
-                <div key={key} style={{ background:'var(--surface)',borderRadius:'var(--r-sm)',padding:'14px' }}>
-                  <div style={{ fontSize:10,fontWeight:700,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:6 }}>{label}</div>
-                  <div style={{ fontSize:13,color:'var(--text)',lineHeight:1.65 }}>{proj.bmc![key]}</div>
-                </div>
+                <BmcField key={key} label={label} value={proj.bmc![key]} onSave={v => saveBmc(proj.id, key, v)} />
               ))}
             </div>
           </Drawer>
@@ -593,33 +629,26 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
         {/* Forecast Drawer */}
         {drawer === 'forecast' && proj.forecast && (
           <Drawer title="Prévisionnel 12 mois" onClose={() => setDrawer(null)}>
+            <p style={{ fontSize:12,color:'var(--text-3)',marginBottom:16 }}>Modifie le CA et les charges — la marge se recalcule automatiquement.</p>
             <div style={{ overflowX:'auto' }}>
               <table style={{ width:'100%',borderCollapse:'collapse',fontSize:13 }}>
                 <thead>
                   <tr style={{ background:'var(--surface)' }}>
-                    {['Mois','CA','Charges','Marge'].map(h => (
+                    {['Mois','CA (€)','Charges (€)','Marge'].map(h => (
                       <th key={h} style={{ padding:'8px 12px',textAlign:'left',fontWeight:600,color:'var(--text-2)',borderBottom:'1px solid var(--border)' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {proj.forecast.months.map((m, i) => (
-                    <tr key={i} style={{ borderBottom:'1px solid var(--border)' }}>
-                      <td style={{ padding:'8px 12px',fontFamily:'var(--font-jost)',fontWeight:600 }}>{m.month}</td>
-                      <td style={{ padding:'8px 12px',color:'var(--green)' }}>{m.revenue.toLocaleString('fr-FR')} €</td>
-                      <td style={{ padding:'8px 12px',color:'var(--red)' }}>{m.costs.toLocaleString('fr-FR')} €</td>
-                      <td style={{ padding:'8px 12px',fontWeight:600,color:m.margin>=0?'var(--green)':'var(--red)' }}>
-                        {m.margin>=0?'+':''}{m.margin.toLocaleString('fr-FR')} €
-                      </td>
-                    </tr>
+                    <ForecastRow key={i} month={m} onSave={(field, val) => saveForecastMonth(proj.id, i, field, val)} />
                   ))}
                 </tbody>
               </table>
-              {proj.forecast.assumptions && (
-                <div style={{ marginTop:16,padding:'14px',background:'var(--surface)',borderRadius:'var(--r-sm)',fontSize:13,color:'var(--text-2)',lineHeight:1.7 }}>
-                  <strong>Hypothèses :</strong> {proj.forecast.assumptions}
-                </div>
-              )}
+            </div>
+            <div style={{ marginTop:16 }}>
+              <div style={{ fontSize:11,fontWeight:700,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:6 }}>Hypothèses</div>
+              <AssumptionsField value={proj.forecast.assumptions ?? ''} onSave={v => saveForecastAssumptions(proj.id, v)} />
             </div>
           </Drawer>
         )}
@@ -656,6 +685,74 @@ function TaskRow({ task, onDone, onText }: { task: Task; onDone: (d:boolean)=>vo
         </span>
       )}
     </div>
+  )
+}
+
+function BmcField({ label, value, onSave }: { label: string; value: string; onSave: (v: string) => void }) {
+  const [val, setVal] = useState(value)
+  const [focused, setFocused] = useState(false)
+  useEffect(() => { setVal(value) }, [value])
+  return (
+    <div style={{ background:'var(--surface)',borderRadius:'var(--r-sm)',padding:'14px',
+      border:`1.5px solid ${focused ? 'var(--green)' : 'transparent'}`,transition:'border-color .15s' }}>
+      <div style={{ fontSize:10,fontWeight:700,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:6 }}>{label}</div>
+      <textarea value={val} rows={4}
+        onChange={e => setVal(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => { setFocused(false); onSave(val) }}
+        style={{ width:'100%',fontSize:13,color:'var(--text)',lineHeight:1.65,background:'transparent',
+          border:'none',outline:'none',resize:'vertical',fontFamily:'inherit',padding:0 }}
+      />
+    </div>
+  )
+}
+
+function ForecastRow({ month, onSave }: { month: Month; onSave: (field: 'revenue' | 'costs', val: number) => void }) {
+  const [revenue, setRevenue] = useState(String(month.revenue))
+  const [costs,   setCosts]   = useState(String(month.costs))
+  useEffect(() => { setRevenue(String(month.revenue)); setCosts(String(month.costs)) }, [month.revenue, month.costs])
+  const margin = (Number(revenue) || 0) - (Number(costs) || 0)
+  const numStyle: React.CSSProperties = {
+    width:'100%',fontSize:13,background:'transparent',border:'none',outline:'none',
+    fontFamily:'inherit',padding:'0 2px',textAlign:'left' as const,
+  }
+  return (
+    <tr style={{ borderBottom:'1px solid var(--border)' }}>
+      <td style={{ padding:'6px 12px',fontFamily:'var(--font-jost)',fontWeight:600 }}>{month.month}</td>
+      <td style={{ padding:'4px 8px' }}>
+        <input type="number" value={revenue}
+          onChange={e => setRevenue(e.target.value)}
+          onBlur={() => onSave('revenue', Number(revenue) || 0)}
+          style={{ ...numStyle, color:'var(--green)' }}/>
+      </td>
+      <td style={{ padding:'4px 8px' }}>
+        <input type="number" value={costs}
+          onChange={e => setCosts(e.target.value)}
+          onBlur={() => onSave('costs', Number(costs) || 0)}
+          style={{ ...numStyle, color:'var(--red)' }}/>
+      </td>
+      <td style={{ padding:'6px 12px',fontWeight:600,color:margin>=0?'var(--green)':'var(--red)' }}>
+        {margin>=0?'+':''}{margin.toLocaleString('fr-FR')} €
+      </td>
+    </tr>
+  )
+}
+
+function AssumptionsField({ value, onSave }: { value: string; onSave: (v: string) => void }) {
+  const [val, setVal] = useState(value)
+  const [focused, setFocused] = useState(false)
+  useEffect(() => { setVal(value) }, [value])
+  return (
+    <textarea value={val} rows={4}
+      onChange={e => setVal(e.target.value)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => { setFocused(false); onSave(val) }}
+      style={{ width:'100%',fontSize:13,color:'var(--text-2)',lineHeight:1.7,
+        background:'var(--surface)',borderRadius:'var(--r-sm)',
+        border:`1.5px solid ${focused ? 'var(--green)' : 'var(--border)'}`,
+        outline:'none',resize:'vertical',fontFamily:'inherit',padding:'12px 14px',
+        transition:'border-color .15s' }}
+    />
   )
 }
 

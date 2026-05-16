@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   const svc = createServiceClient()
 
   let q = svc.from('profiles')
-    .select('id, first_name, last_name, email, phone, is_active, role, tokens_balance, points_balance, plan_id, referral_code, created_at, profile_visible', { count: 'exact' })
+    .select('id, first_name, last_name, email, phone, is_active, is_manually_activated, tokens_balance, points_balance, subscription_plan, referral_code, created_at, profile_visible', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range((page - 1) * pageSize, page * pageSize - 1)
 
@@ -36,11 +36,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Erreur interne', code: 'INTERNAL_ERROR' }, { status: 500 })
   }
 
-  const members = (data ?? []).map(m => ({
-    ...m,
-    tokens: (m as unknown as Record<string, unknown>).tokens_balance ?? 0,
-    points: (m as unknown as Record<string, unknown>).points_balance ?? 0,
-  }))
+  const members = (data ?? []).map(m => {
+    const row = m as unknown as Record<string, unknown>
+    return {
+      ...m,
+      tokens:  row.tokens_balance ?? 0,
+      points:  row.points_balance ?? 0,
+      plan_id: row.subscription_plan ?? null,
+    }
+  })
 
   return NextResponse.json({ members, total: count ?? 0, page, pageSize })
 }
