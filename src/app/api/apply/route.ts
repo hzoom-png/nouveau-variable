@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     projet_concept:     projet_concept     || null,
     projet_avancement:  projet_avancement  || null,
     projet_besoins:     projet_besoins     ?? null,
-    status:             'pending',
+    status:             'received',
   }).select('id').single()
 
   if (insertError) {
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
   const { count } = await svc
     .from('candidatures')
     .select('id', { count: 'exact', head: true })
-    .eq('status', 'pending')
+    .in('status', ['pending', 'received', 'reviewed'])
 
   const currentCount = count ?? 0
 

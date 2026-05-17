@@ -19,6 +19,6 @@ export async function GET() {
   const { count } = await svc
     .from('candidatures')
     .select('id', { count: 'exact', head: true })
-    .eq('status', 'pending')
+    .in('status', ['pending', 'received', 'reviewed'])
   return NextResponse.json({ count: count ?? 0 }, { headers: cors() })
 }

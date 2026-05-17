@@ -49,8 +49,17 @@ function fmtDate(iso: string) {
   return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: '2-digit' })
 }
 
-function StatusPill({ status }: { status: Status }) {
-  const col = COLUMNS.find(c => c.key === status)!
+function StatusPill({ status }: { status: string }) {
+  const col = COLUMNS.find(c => c.key === status)
+  if (!col) return (
+    <span style={{
+      fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10,
+      background: 'rgba(75,99,88,0.1)', color: '#4B6358',
+      letterSpacing: '0.06em', textTransform: 'uppercase',
+    }}>
+      {status}
+    </span>
+  )
   return (
     <span style={{
       fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10,
