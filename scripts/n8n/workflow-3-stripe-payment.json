@@ -1,0 +1,106 @@
+{
+  "name": "NV - 3 - Paiement Stripe Reçu",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "nv-stripe-payment",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "77777777-7777-7777-7777-777777777777",
+      "name": "🔗 Webhook - Paiement Stripe",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "77777777-7777-7777-7777-777777777777"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "REMPLACE_PAR_TON_AIRTABLE_BASE_ID",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Candidatures",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "active",
+            "date_payment": "={{ new Date().toISOString().split('T')[0] }}",
+            "plan": "={{ $json.body.plan }}"
+          },
+          "matchingColumns": ["email"],
+          "schema": []
+        }
+      },
+      "id": "88888888-8888-8888-8888-888888888888",
+      "name": "📊 Airtable - Status → active",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [440, 300],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "CREDENTIAL_AIRTABLE",
+          "name": "Airtable - NV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "channel": {
+          "__rl": true,
+          "value": "admin",
+          "mode": "name"
+        },
+        "text": "=💰 *Nouveau paiement !*\n📧 {{ $('🔗 Webhook - Paiement Stripe').item.json.body.email }}\n👤 {{ $('🔗 Webhook - Paiement Stripe').item.json.body.prenom }}\n📦 Plan : *{{ $('🔗 Webhook - Paiement Stripe').item.json.body.plan }}*\n\n🎉 Membre activé automatiquement.",
+        "otherOptions": {}
+      },
+      "id": "99999999-9999-9999-9999-999999999999",
+      "name": "💬 Slack - Notif paiement",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [680, 300],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "CREDENTIAL_SLACK",
+          "name": "Slack - NV"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "🔗 Webhook - Paiement Stripe": {
+      "main": [
+        [
+          {
+            "node": "📊 Airtable - Status → active",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Airtable - Status → active": {
+      "main": [
+        [
+          {
+            "node": "💬 Slack - Notif paiement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "_comment": "Ce workflow se déclenche après un paiement Stripe validé. L'activation du membre est faite par le code Next.js. N8N met à jour Airtable et notifie Slack."
+}

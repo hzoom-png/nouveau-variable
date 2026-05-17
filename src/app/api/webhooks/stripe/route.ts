@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
+import { notifyN8N } from '@/lib/n8n'
 
 function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-04-22.dahlia' })
@@ -156,6 +157,15 @@ export async function POST(req: NextRequest) {
           }
         }
       }
+
+      // Notifier N8N → Airtable status=active + Slack (fire & forget)
+      notifyN8N('N8N_WEBHOOK_STRIPE_PAYMENT', {
+        email,
+        prenom:     profile.first_name ?? '',
+        plan,
+        customerId,
+        subscriptionId: subId,
+      })
 
       if (session.invoice) {
         try {

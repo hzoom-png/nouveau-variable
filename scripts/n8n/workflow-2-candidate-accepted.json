@@ -1,0 +1,106 @@
+{
+  "name": "NV - 2 - Candidature Acceptée",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "nv-candidate-accepted",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "44444444-4444-4444-4444-444444444444",
+      "name": "🔗 Webhook - Candidature acceptée",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "44444444-4444-4444-4444-444444444444"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "REMPLACE_PAR_TON_AIRTABLE_BASE_ID",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Candidatures",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "accepted",
+            "date_acceptation": "={{ new Date().toISOString().split('T')[0] }}"
+          },
+          "matchingColumns": ["supabase_id"],
+          "schema": []
+        },
+        "filterByFormula": "={supabase_id}='{{ $json.body.candidatureId }}'"
+      },
+      "id": "55555555-5555-5555-5555-555555555555",
+      "name": "📊 Airtable - Mettre à jour status",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [440, 300],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "CREDENTIAL_AIRTABLE",
+          "name": "Airtable - NV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "channel": {
+          "__rl": true,
+          "value": "admin",
+          "mode": "name"
+        },
+        "text": "=✅ *Candidature acceptée !*\n*{{ $('🔗 Webhook - Candidature acceptée').item.json.body.full_name }}*\n📧 {{ $('🔗 Webhook - Candidature acceptée').item.json.body.email }}\n\n📨 Email de paiement envoyé automatiquement.",
+        "otherOptions": {}
+      },
+      "id": "66666666-6666-6666-6666-666666666666",
+      "name": "💬 Slack - Notif acceptation",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [680, 300],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "CREDENTIAL_SLACK",
+          "name": "Slack - NV"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "🔗 Webhook - Candidature acceptée": {
+      "main": [
+        [
+          {
+            "node": "📊 Airtable - Mettre à jour status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Airtable - Mettre à jour status": {
+      "main": [
+        [
+          {
+            "node": "💬 Slack - Notif acceptation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "_comment": "Ce workflow se déclenche quand l'admin accepte une candidature depuis /admin/candidatures. Il met à jour Airtable et notifie Slack. L'email de paiement est envoyé par le code Next.js (pas par ce workflow)."
+}

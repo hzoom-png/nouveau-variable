@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { escHtml } from '@/lib/html-escape'
 import { rateLimit } from '@/lib/rate-limit'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
+import { notifyN8N } from '@/lib/n8n'
 
 function getCorsHeaders() {
   return {
@@ -178,6 +179,22 @@ export async function POST(request: NextRequest) {
       }),
     }).catch(() => null)
   }
+
+  // Notifier N8N → Airtable + Slack (fire & forget, non-bloquant)
+  notifyN8N('N8N_WEBHOOK_NEW_CANDIDATE', {
+    candidatureId: inserted.id,
+    prenom: firstname,
+    nom:    lastname,
+    email,
+    role,
+    city,
+    sector,
+    xp:           xp || '',
+    why,
+    referral:     referral || '',
+    code_parrain,
+    projet_nom:   projet_nom || '',
+  })
 
   return NextResponse.json(
     { success: true, candidatureId: inserted.id, code_parrain, message: 'Candidature reçue ✓' },

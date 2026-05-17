@@ -1,0 +1,115 @@
+{
+  "name": "NV - 1 - Nouvelle Candidature",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "nv-new-candidate",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "11111111-1111-1111-1111-111111111111",
+      "name": "🔗 Webhook - Nouvelle candidature",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "11111111-1111-1111-1111-111111111111"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "base": {
+          "__rl": true,
+          "value": "REMPLACE_PAR_TON_AIRTABLE_BASE_ID",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Candidatures",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "prenom": "={{ $json.body.prenom }}",
+            "nom": "={{ $json.body.nom }}",
+            "email": "={{ $json.body.email }}",
+            "role": "={{ $json.body.role }}",
+            "ville": "={{ $json.body.city }}",
+            "secteur": "={{ $json.body.sector }}",
+            "experience": "={{ $json.body.xp }}",
+            "pourquoi": "={{ $json.body.why }}",
+            "code_parrain": "={{ $json.body.code_parrain }}",
+            "referrer_code": "={{ $json.body.referral }}",
+            "status": "received",
+            "supabase_id": "={{ $json.body.candidatureId }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        }
+      },
+      "id": "22222222-2222-2222-2222-222222222222",
+      "name": "📊 Airtable - Créer ligne",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [440, 300],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "CREDENTIAL_AIRTABLE",
+          "name": "Airtable - NV"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "channel": {
+          "__rl": true,
+          "value": "admin",
+          "mode": "name"
+        },
+        "text": "=🆕 *Nouvelle candidature !*\n*{{ $('🔗 Webhook - Nouvelle candidature').item.json.body.prenom }} {{ $('🔗 Webhook - Nouvelle candidature').item.json.body.nom }}*\n📧 {{ $('🔗 Webhook - Nouvelle candidature').item.json.body.email }}\n💼 {{ $('🔗 Webhook - Nouvelle candidature').item.json.body.role }}\n🏙️ {{ $('🔗 Webhook - Nouvelle candidature').item.json.body.city }}\n\n👉 <https://app.nouveauvariable.fr/admin/candidatures|Voir dans l'admin>",
+        "otherOptions": {}
+      },
+      "id": "33333333-3333-3333-3333-333333333333",
+      "name": "💬 Slack - Notif admin",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2,
+      "position": [680, 300],
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "CREDENTIAL_SLACK",
+          "name": "Slack - NV"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "🔗 Webhook - Nouvelle candidature": {
+      "main": [
+        [
+          {
+            "node": "📊 Airtable - Créer ligne",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Airtable - Créer ligne": {
+      "main": [
+        [
+          {
+            "node": "💬 Slack - Notif admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "_comment": "PLACEHOLDERS À REMPLACER : REMPLACE_PAR_TON_AIRTABLE_BASE_ID → ton Airtable Base ID (commence par app...). CREDENTIAL_AIRTABLE et CREDENTIAL_SLACK → N8N te demandera de les configurer à l'import."
+}

@@ -4,6 +4,7 @@ import { requireAdminAuth, logAdminAction } from '@/lib/admin-auth'
 import { createServiceClient } from '@/lib/supabase/service'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
 import { sendSMS } from '@/lib/sms'
+import { notifyN8N } from '@/lib/n8n'
 import { z } from 'zod'
 
 const Schema = z.object({ candidatureId: z.string().uuid() })
@@ -56,6 +57,15 @@ export async function POST(request: NextRequest) {
   }
 
   await logAdminAction(adminId, 'accept_candidature', 'candidature', parsed.data.candidatureId, { full_name: cand.full_name, email })
+
+  // Notifier N8N → Airtable update + Slack (fire & forget)
+  notifyN8N('N8N_WEBHOOK_CANDIDATE_ACCEPTED', {
+    candidatureId: parsed.data.candidatureId,
+    full_name:     cand.full_name,
+    email,
+    prenom,
+    is_founder:    isFounder,
+  })
 
   return NextResponse.json({ success: true })
 }
