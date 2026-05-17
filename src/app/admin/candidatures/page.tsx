@@ -97,10 +97,19 @@ export default function CandidaturesPage() {
 
   const load = useCallback(async () => {
     setLoading(true)
-    const r = await fetch('/api/admin/candidatures/list')
-    const d = await r.json()
-    setItems(d.candidatures ?? [])
-    setLoading(false)
+    try {
+      const r = await fetch('/api/admin/candidatures/list')
+      const d = await r.json()
+      if (r.ok) {
+        setItems(d.candidatures ?? [])
+      } else {
+        console.error('[candidatures] API error:', d.error)
+      }
+    } catch (err) {
+      console.error('[candidatures] load failed:', err)
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => { load() }, [load])

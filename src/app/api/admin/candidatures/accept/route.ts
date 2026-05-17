@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
   await logAdminAction(adminId, 'accept_candidature', 'candidature', parsed.data.candidatureId, { full_name: cand.full_name, email })
 
-  // Notifier N8N → Airtable update + Slack (fire & forget)
+  // Notifier N8N — fire & forget (pas d'await, évite de dépasser le timeout Vercel 10s)
   notifyN8N('N8N_WEBHOOK_CANDIDATE_ACCEPTED', {
     candidatureId: parsed.data.candidatureId,
     full_name:     cand.full_name,
