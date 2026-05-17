@@ -180,8 +180,8 @@ export async function POST(request: NextRequest) {
     }).catch(() => null)
   }
 
-  // Notifier N8N → Airtable + Slack (fire & forget, non-bloquant)
-  notifyN8N('N8N_WEBHOOK_NEW_CANDIDATE', {
+  // Notifier N8N → Airtable + Slack (awaité pour éviter que Vercel tue la requête avant envoi)
+  await notifyN8N('N8N_WEBHOOK_NEW_CANDIDATE', {
     candidatureId: inserted.id,
     prenom: firstname,
     nom:    lastname,
