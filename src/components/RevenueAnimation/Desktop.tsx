@@ -30,54 +30,69 @@ export function Desktop({ isMobile = false }: DesktopProps) {
   const bgOpacity = useTransform(progress, [...T.bgIn], [0, 1])
 
   // ── Graph elements ──────────────────────────────────────────────
-  const gridOpacity    = useTransform(progress, [...T.gridIn], [0, 0.45])
-  const axesOpacity    = useTransform(progress, [...T.axesIn], [0, 1])
-  const grayOpacity    = useTransform(progress,
+  const gridOpacity   = useTransform(progress, [...T.gridIn], [0, 0.45])
+  const axesOpacity   = useTransform(progress, [...T.axesIn], [0, 1])
+  const grayOpacity   = useTransform(progress,
     [...T.grayIn, ...T.grayOut], [0, 0.6, 0.6, 0],
   )
-  const grayDraw       = useTransform(progress, [...T.grayDraw], [0, 1])
-  const greenDraw      = useTransform(progress, [...T.greenDraw], [0, 1])
-  const glowIntensity  = useTransform(progress,
+  const grayDraw      = useTransform(progress, [...T.grayDraw], [0, 1])
+  const greenDraw     = useTransform(progress, [...T.greenDraw], [0, 1])
+  const glowIntensity = useTransform(progress,
     [0.38, 0.52, 0.54, 1.0],
     isMobile ? [0, 8, 8, 4] : [0, 20, 20, 8],
   )
 
-  // ── Graph container fade-out (whole graph disappears before content points) ──
-  const graphContainerOpacity = useTransform(progress, [...T.graphOut], [1, 0])
-
   // ── Section label ───────────────────────────────────────────────
   const labelOpacity = useTransform(progress, [0, 0.10, 0.42, 0.50], [0, 1, 1, 0])
 
-  // ── Dynamic counter (direct DOM — no re-render) ─────────────────
-  const counterRef = useRef<HTMLDivElement>(null)
+  // ── Graph wrapper + counter — direct DOM, guaranteed invisible ──
+  const graphWrapperRef = useRef<HTMLDivElement>(null)
+  const counterRef      = useRef<HTMLDivElement>(null)
+
+  const [gOut0, gOut1] = T.graphOut  // [0.50, 0.57]
+
   useMotionValueEvent(progress, 'change', (p) => {
+    // ── Graph fade + hard-hide ────────────────────────────────────
+    const gw = graphWrapperRef.current
+    if (gw) {
+      if (p >= gOut1) {
+        gw.style.opacity    = '0'
+        gw.style.visibility = 'hidden'
+      } else if (p >= gOut0) {
+        gw.style.opacity    = String(1 - (p - gOut0) / (gOut1 - gOut0))
+        gw.style.visibility = 'visible'
+      } else {
+        gw.style.opacity    = '1'
+        gw.style.visibility = 'visible'
+      }
+    }
+
+    // ── Counter — follows green curve tip ─────────────────────────
     const el = counterRef.current
     if (!el) return
 
-    // Appear when green tip reaches ~2600€ (month 3, progress ~0.36)
-    // Fade out with graph at T.graphOut start
+    // Fade in when tip reaches ~2600€ (month 3 ≈ progress 0.36)
+    // Fade out before graph starts disappearing
     let opacity = 0
     if      (p >= 0.35 && p < 0.39) opacity = (p - 0.35) / 0.04
-    else if (p >= 0.39 && p < 0.51) opacity = 1
-    else if (p >= 0.51 && p < 0.55) opacity = 1 - (p - 0.51) / 0.04
+    else if (p >= 0.39 && p < 0.48) opacity = 1
+    else if (p >= 0.48 && p < 0.52) opacity = 1 - (p - 0.48) / 0.04
 
     if (opacity <= 0) { el.style.opacity = '0'; return }
 
-    // Interpolate GREEN_DATA along drawing progress (new range 0.30→0.54)
-    const drawFrac = Math.max(0, Math.min(1, (p - 0.30) / (0.54 - 0.30)))
+    const drawFrac = Math.max(0, Math.min(1, (p - T.greenDraw[0]) / (T.greenDraw[1] - T.greenDraw[0])))
     const month    = drawFrac * 12
     const idx      = Math.min(Math.floor(month), GREEN_DATA.length - 2)
     const frac     = month - idx
     const gv       = GREEN_DATA[idx].v + frac * (GREEN_DATA[idx + 1].v - GREEN_DATA[idx].v)
 
-    // Tip X+Y in % of SVG container (clamped to stay visible)
     const xPct = Math.max(8, Math.min(90, (toX(month) / SVG_W) * 100))
     const yPct = Math.max(8, Math.min(85, (toY(gv)   / SVG_H) * 100))
 
-    el.style.opacity = String(opacity)
-    el.style.left    = xPct + '%'
-    el.style.top     = yPct + '%'
-    el.textContent   = Math.round(gv).toLocaleString('fr-FR') + ' €'
+    el.style.opacity  = String(opacity)
+    el.style.left     = xPct + '%'
+    el.style.top      = yPct + '%'
+    el.textContent    = Math.round(gv).toLocaleString('fr-FR') + ' €'
   })
 
   // ── Content points — 4 × 10% = 40% of scroll, each centered ────
@@ -93,7 +108,6 @@ export function Desktop({ isMobile = false }: DesktopProps) {
       style={{ height: '400vh', position: 'relative' }}
       aria-hidden="true"
     >
-      {/* ── Sticky viewport ─────────────────────────────────────── */}
       <div style={{
         position: 'sticky',
         top: 0,
@@ -111,7 +125,7 @@ export function Desktop({ isMobile = false }: DesktopProps) {
           opacity: bgOpacity,
         }} />
 
-        {/* Section label — fades before graph disappears */}
+        {/* Section label */}
         <motion.div style={{
           position: 'absolute',
           top: isMobile ? 20 : 40,
@@ -135,59 +149,65 @@ export function Desktop({ isMobile = false }: DesktopProps) {
           </p>
         </motion.div>
 
-        {/* ── SVG graph container — fades out entirely at graphOut ── */}
-        <motion.div style={{
-          position: 'absolute',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          scale,
-          originX,
-          originY,
-          willChange: 'transform',
-          opacity: graphContainerOpacity,
-        }}>
-          <div style={{
-            width: isMobile ? '100%' : '90vw',
-            maxWidth: isMobile ? 480 : 800,
-            padding: isMobile ? '0 12px' : 0,
-            aspectRatio: '2 / 1',
-            position: 'relative',
+        {/* ── Graph wrapper — direct DOM fade + hard-hide via ref ───
+            Plain div so opacity/visibility are set without Framer Motion
+            interference with scale/originX/originY on the inner motion.div */}
+        <div
+          ref={graphWrapperRef}
+          style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <motion.div style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            scale,
+            originX,
+            originY,
+            willChange: 'transform',
           }}>
-            <GraphCurves
-              grayOpacity={grayOpacity}
-              grayDraw={grayDraw}
-              greenDraw={greenDraw}
-              glowIntensity={glowIntensity}
-              gridOpacity={gridOpacity}
-              axesOpacity={axesOpacity}
-            />
-            {/* Dynamic counter — follows green curve tip */}
-            <div
-              ref={counterRef}
-              style={{
-                position: 'absolute',
-                left: '8%',
-                top: '82%',
-                transform: 'translate(-50%, -130%)',
-                opacity: 0,
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: isMobile ? 12 : 16,
-                fontWeight: 700,
-                color: '#36a64f',
-                letterSpacing: '.02em',
-                pointerEvents: 'none',
-                whiteSpace: 'nowrap',
-                textShadow: '0 0 8px #fff, 0 0 14px #fff, 0 1px 3px rgba(0,0,0,0.12)',
-                zIndex: 4,
-              }}
-            />
-          </div>
-        </motion.div>
+            <div style={{
+              width: isMobile ? '100%' : '90vw',
+              maxWidth: isMobile ? 480 : 800,
+              padding: isMobile ? '0 12px' : 0,
+              aspectRatio: '2 / 1',
+              position: 'relative',
+            }}>
+              <GraphCurves
+                grayOpacity={grayOpacity}
+                grayDraw={grayDraw}
+                greenDraw={greenDraw}
+                glowIntensity={glowIntensity}
+                gridOpacity={gridOpacity}
+                axesOpacity={axesOpacity}
+              />
+              {/* Counter — follows green curve tip */}
+              <div
+                ref={counterRef}
+                style={{
+                  position: 'absolute',
+                  left: '8%',
+                  top: '82%',
+                  transform: 'translate(-50%, -130%)',
+                  opacity: 0,
+                  fontFamily: "'Inter', system-ui, sans-serif",
+                  fontSize: isMobile ? 12 : 16,
+                  fontWeight: 700,
+                  color: '#36a64f',
+                  letterSpacing: '.02em',
+                  pointerEvents: 'none',
+                  whiteSpace: 'nowrap',
+                  textShadow: '0 0 8px #fff, 0 0 14px #fff, 0 1px 3px rgba(0,0,0,0.12)',
+                  zIndex: 4,
+                }}
+              />
+            </div>
+          </motion.div>
+        </div>
 
         {/* ── Content points — centered, one at a time ─────────────
-            Graph is already gone (graphOut) when these appear       */}
+            Graph is hard-hidden (visibility:hidden) before these appear */}
         <ContentPoints
           opacities={pointOpacities}
           position="center"

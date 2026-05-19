@@ -114,5 +114,5 @@ export const T = {
   glowUp:     [0.38, 0.52] as const,  // glow ramps up
   glowMax:    [0.52, 0.54] as const,  // glow au max pendant que le vert finit
   reZoom:     [0.52, 0.60] as const,
-  graphOut:   [0.54, 0.62] as const,  // tout le graphe disparaît
+  graphOut:   [0.50, 0.57] as const,  // tout le graphe disparaît (avant les contenus à 0.62)
 }
