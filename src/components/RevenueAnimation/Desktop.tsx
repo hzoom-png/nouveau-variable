@@ -39,11 +39,11 @@ export function Desktop() {
   // ── Section label ───────────────────────────────────────────────
   const labelOpacity = useTransform(progress, [0, 0.12, 0.55, 0.70], [0, 1, 1, 0])
 
-  // ── Content points — explicit calls to satisfy Rules of Hooks ───
-  // Ranges mirror CONTENT_POINTS: [0.72,0.84] [0.84,0.91] [0.91,0.96] [0.96,1.00]
-  const p0op = useTransform(progress, [0.72, 0.76, 0.78, 0.82, 0.84], [0, 1, 1, 1, 0])
-  const p1op = useTransform(progress, [0.84, 0.86, 0.875, 0.89, 0.91], [0, 1, 1, 1, 0])
-  const p2op = useTransform(progress, [0.91, 0.93, 0.935, 0.94, 0.96], [0, 1, 1, 1, 0])
+  // ── Content points — 7% window each (~700ms at normal scroll speed) ───
+  // Ranges: [0.75,0.82] [0.82,0.89] [0.89,0.96] [0.96,1.00]
+  const p0op = useTransform(progress, [0.75, 0.77, 0.785, 0.80, 0.82], [0, 1, 1, 1, 0])
+  const p1op = useTransform(progress, [0.82, 0.84, 0.855, 0.87, 0.89], [0, 1, 1, 1, 0])
+  const p2op = useTransform(progress, [0.89, 0.91, 0.925, 0.94, 0.96], [0, 1, 1, 1, 0])
   const p3op = useTransform(progress, [0.96, 0.975, 0.98, 0.99, 1.00], [0, 1, 1, 1, 0])
   const pointOpacities: MotionValue<number>[] = [p0op, p1op, p2op, p3op]
 

@@ -61,8 +61,8 @@ function PointCard({ pt, icon }: { pt: typeof CONTENT_POINTS[number]; icon: stri
     }}>
       <div style={{ fontSize: 22, marginBottom: 10 }}>{icon}</div>
       <h3 style={{
-        fontFamily: "'Jost', system-ui, sans-serif",
-        fontWeight: 800,
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontWeight: 400,
         fontSize: 15,
         color: '#ffffff',
         marginBottom: 6,
