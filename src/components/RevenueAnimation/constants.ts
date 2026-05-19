@@ -4,8 +4,8 @@ export const SVG_H = 400
 export const PAD = { l: 64, r: 24, t: 20, b: 44 }
 
 // Value domain
-export const MIN_V = 800
-export const MAX_V = 6400
+export const MIN_V = 2300
+export const MAX_V = 5500
 
 export const COLORS = {
   gray:    '#4B6358',
@@ -16,20 +16,20 @@ export const COLORS = {
   bg:      '#ffffff',
 }
 
-// Organic flat curve (1000€ → 1150€)
+// Organic flat curve (2500€ → 2580€)
 export const GRAY_DATA = [
-  [0,  1000], [1,  1022], [2,  1007], [3,  1048],
-  [4,  1036], [5,  1063], [6,  1050], [7,  1082],
-  [8,  1070], [9,  1096], [10, 1088], [11, 1124],
-  [12, 1150],
+  [0,  2500], [1,  2522], [2,  2507], [3,  2548],
+  [4,  2536], [5,  2563], [6,  2550], [7,  2558],
+  [8,  2565], [9,  2571], [10, 2568], [11, 2575],
+  [12, 2580],
 ].map(([m, v]) => ({ m, v }))
 
-// Exponential curve (1000€ → 6000€)
+// Exponential curve (2500€ → 7500€, goes off-chart for drama)
 export const GREEN_DATA = [
-  [0,  1000], [1,  1065], [2,  1200], [3,  1500],
-  [4,  2000], [5,  2650], [6,  3300], [7,  3950],
-  [8,  4480], [9,  4960], [10, 5300], [11, 5680],
-  [12, 6000],
+  [0,  2500], [1,  2600], [2,  2800], [3,  3100],
+  [4,  3600], [5,  4200], [6,  4800], [7,  5400],
+  [8,  5900], [9,  6400], [10, 6800], [11, 7200],
+  [12, 7500],
 ].map(([m, v]) => ({ m, v }))
 
 // Coordinate transforms
@@ -69,8 +69,8 @@ export const X_LABELS = [
   { m: 12, label: 'Mois 12' },
 ]
 export const Y_LABELS = [
-  { v: 1000, label: '1 000 €' },
-  { v: 3000, label: '3 000 €' },
+  { v: 2500, label: '2 500 €' },
+  { v: 3750, label: '3 750 €' },
   { v: 5000, label: '5 000 €+' },
 ]
 
