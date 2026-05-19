@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, type CSSProperties } from 'react'
+import { RevenueAnimation, USE_REVENUE_ANIMATION } from '@/components/RevenueAnimation'
 
 const GOAL = 100
 
@@ -523,8 +524,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       </section>
 
       {/* ──────────────────────────────────────────────────────────────
-          [D] OUTILS
+          [D] REVENUE ANIMATION (ou fallback outils classique)
+          → Pour reverter : changer USE_REVENUE_ANIMATION = false dans
+            src/components/RevenueAnimation/index.tsx
       ────────────────────────────────────────────────────────────── */}
+      {USE_REVENUE_ANIMATION ? (
+        <RevenueAnimation />
+      ) : (
       <section className="sf sec-pad" style={{ padding: '80px 40px', background: 'var(--surface)' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
@@ -613,6 +619,8 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           </div>
         </div>
       </section>
+
+      )}
 
       {/* ──────────────────────────────────────────────────────────────
           [E] COMPARAISON

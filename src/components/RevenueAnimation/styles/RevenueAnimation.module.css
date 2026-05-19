@@ -1,0 +1,17 @@
+.graphContainer {
+  will-change: transform, opacity;
+}
+
+.stickyViewport {
+  will-change: contents;
+}
+
+/* Neon glow pulse on green curve (applied via Framer Motion filter) */
+@keyframes glowPulse {
+  0%,  100% { filter: drop-shadow(0 0 12px rgba(54,166,79,.8)); }
+  50%        { filter: drop-shadow(0 0 20px rgba(54,166,79,.95)) drop-shadow(0 0 32px rgba(54,166,79,.4)); }
+}
+
+.glowPulse {
+  animation: glowPulse 1.8s ease-in-out infinite;
+}
