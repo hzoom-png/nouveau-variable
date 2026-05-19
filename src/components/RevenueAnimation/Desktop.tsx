@@ -5,7 +5,7 @@ import { motion, useTransform, MotionValue, useMotionValueEvent } from 'framer-m
 import { useScrollProgress } from './hooks/useScrollHijack'
 import { GraphCurves } from './components/GraphCurves'
 import { ContentPoints } from './components/ContentPoints'
-import { T, GREEN_DATA, SVG_H, toY } from './constants'
+import { T, GREEN_DATA, SVG_W, SVG_H, toX, toY } from './constants'
 
 interface DesktopProps {
   isMobile?: boolean
@@ -56,11 +56,11 @@ export function Desktop({ isMobile = false }: DesktopProps) {
     const el = counterRef.current
     if (!el) return
 
-    // Opacity envelope: fade in [0.36→0.42], stable, fade out [0.68→0.78]
+    // Fade in [0.36→0.42], stable, fade out [0.57→0.63] (before content points)
     let opacity = 0
     if      (p >= 0.36 && p < 0.42) opacity = (p - 0.36) / 0.06
-    else if (p >= 0.42 && p < 0.68) opacity = 1
-    else if (p >= 0.68 && p < 0.78) opacity = 1 - (p - 0.68) / 0.10
+    else if (p >= 0.42 && p < 0.57) opacity = 1
+    else if (p >= 0.57 && p < 0.63) opacity = 1 - (p - 0.57) / 0.06
 
     if (opacity <= 0) { el.style.opacity = '0'; return }
 
@@ -71,10 +71,12 @@ export function Desktop({ isMobile = false }: DesktopProps) {
     const frac     = month - idx
     const gv       = GREEN_DATA[idx].v + frac * (GREEN_DATA[idx + 1].v - GREEN_DATA[idx].v)
 
-    // Y position follows curve tip (clamped so counter stays inside container)
-    const yPct = Math.max(3, Math.min(82, (toY(gv) / SVG_H) * 100))
+    // Tip X+Y in % of SVG container (clamped to stay visible)
+    const xPct = Math.max(8, Math.min(90, (toX(month) / SVG_W) * 100))
+    const yPct = Math.max(8, Math.min(85, (toY(gv)   / SVG_H) * 100))
 
     el.style.opacity = String(opacity)
+    el.style.left    = xPct + '%'
     el.style.top     = yPct + '%'
     el.textContent   = Math.round(gv).toLocaleString('fr-FR') + ' €'
   })
@@ -161,27 +163,23 @@ export function Desktop({ isMobile = false }: DesktopProps) {
               gridOpacity={gridOpacity}
               axesOpacity={axesOpacity}
             />
-            {/* Dynamic counter — positioned by useMotionValueEvent, no React re-renders */}
+            {/* Dynamic counter — follows green curve tip via useMotionValueEvent */}
             <div
               ref={counterRef}
               style={{
                 position: 'absolute',
-                right: isMobile ? 6 : 16,
+                left: '8%',
                 top: '82%',
-                transform: 'translateY(-110%)',
+                transform: 'translate(-50%, -130%)',
                 opacity: 0,
                 fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: isMobile ? 11 : 15,
-                fontWeight: 600,
+                fontSize: isMobile ? 12 : 16,
+                fontWeight: 700,
                 color: '#36a64f',
-                background: 'rgba(10,26,20,0.85)',
-                padding: isMobile ? '3px 7px' : '4px 10px',
-                borderRadius: 6,
-                border: '1px solid rgba(54,166,79,0.35)',
                 letterSpacing: '.02em',
                 pointerEvents: 'none',
                 whiteSpace: 'nowrap',
-                textShadow: '0 0 8px rgba(54,166,79,0.6)',
+                textShadow: '0 0 8px #fff, 0 0 14px #fff, 0 1px 3px rgba(0,0,0,0.12)',
                 zIndex: 4,
               }}
             />
