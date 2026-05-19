@@ -16,15 +16,13 @@ export function Desktop({ isMobile = false }: DesktopProps) {
   const progress = useScrollProgress(containerRef)
 
   // ── Spatial / zoom ──────────────────────────────────────────────
-  // Mobile: zoom initial réduit (2.2x vs 3.0x) pour mieux tenir sur petit écran
   const scaleOut = isMobile
-    ? [2.2, 1.9, 1.2, 1.2, 1.45, 1.2]
-    : [3.0, 2.6, 1.5, 1.5, 1.85, 1.5]
+    ? [2.2, 1.9, 1.2, 1.2, 1.0, 1.0]
+    : [3.0, 2.6, 1.5, 1.5, 1.0, 1.0]
   const scale = useTransform(progress,
     [0, 0.12, 0.28, 0.52, 0.62, 1.0],
     scaleOut,
   )
-
   const originX = useTransform(progress, [0, 0.28, 0.52, 0.62], [0.09, 0.50, 0.50, 0.68])
   const originY = useTransform(progress, [0, 0.28, 0.52, 0.62], [0.88, 0.50, 0.50, 0.20])
 
@@ -32,40 +30,41 @@ export function Desktop({ isMobile = false }: DesktopProps) {
   const bgOpacity = useTransform(progress, [...T.bgIn], [0, 1])
 
   // ── Graph elements ──────────────────────────────────────────────
-  const gridOpacity   = useTransform(progress, [...T.gridIn], [0, 0.45])
-  const axesOpacity   = useTransform(progress, [...T.axesIn], [0, 1])
-  const grayOpacity   = useTransform(progress,
+  const gridOpacity    = useTransform(progress, [...T.gridIn], [0, 0.45])
+  const axesOpacity    = useTransform(progress, [...T.axesIn], [0, 1])
+  const grayOpacity    = useTransform(progress,
     [...T.grayIn, ...T.grayOut], [0, 0.6, 0.6, 0],
   )
-  const grayDraw      = useTransform(progress, [...T.grayDraw], [0, 1])
-  const greenDraw     = useTransform(progress, [...T.greenDraw], [0, 1])
-  // Mobile: glow réduit (8px max vs 20px) pour CPU mobile
-  const glowOut = isMobile ? [0, 5, 8, 8, 4] : [0, 10, 20, 20, 8]
-  const glowIntensity = useTransform(progress,
-    [...T.glowUp, ...T.glowMax, 1.0],
-    glowOut,
+  const grayDraw       = useTransform(progress, [...T.grayDraw], [0, 1])
+  const greenDraw      = useTransform(progress, [...T.greenDraw], [0, 1])
+  const glowIntensity  = useTransform(progress,
+    [0.38, 0.52, 0.54, 1.0],
+    isMobile ? [0, 8, 8, 4] : [0, 20, 20, 8],
   )
 
-  // ── Section label ───────────────────────────────────────────────
-  const labelOpacity = useTransform(progress, [0, 0.10, 0.45, 0.58], [0, 1, 1, 0])
+  // ── Graph container fade-out (whole graph disappears before content points) ──
+  const graphContainerOpacity = useTransform(progress, [...T.graphOut], [1, 0])
 
-  // ── Content points — 10% chacun = ~1500ms ───────────────────────
+  // ── Section label ───────────────────────────────────────────────
+  const labelOpacity = useTransform(progress, [0, 0.10, 0.42, 0.50], [0, 1, 1, 0])
+
   // ── Dynamic counter (direct DOM — no re-render) ─────────────────
   const counterRef = useRef<HTMLDivElement>(null)
   useMotionValueEvent(progress, 'change', (p) => {
     const el = counterRef.current
     if (!el) return
 
-    // Fade in [0.30→0.34] (~2600€ tip), stable, fade out [0.57→0.63]
+    // Appear when green tip reaches ~2600€ (month 3, progress ~0.36)
+    // Fade out with graph at T.graphOut start
     let opacity = 0
-    if      (p >= 0.30 && p < 0.34) opacity = (p - 0.30) / 0.04
-    else if (p >= 0.34 && p < 0.57) opacity = 1
-    else if (p >= 0.57 && p < 0.63) opacity = 1 - (p - 0.57) / 0.06
+    if      (p >= 0.35 && p < 0.39) opacity = (p - 0.35) / 0.04
+    else if (p >= 0.39 && p < 0.51) opacity = 1
+    else if (p >= 0.51 && p < 0.55) opacity = 1 - (p - 0.51) / 0.04
 
     if (opacity <= 0) { el.style.opacity = '0'; return }
 
-    // Interpolate GREEN_DATA along drawing progress
-    const drawFrac = Math.max(0, Math.min(1, (p - 0.22) / (0.58 - 0.22)))
+    // Interpolate GREEN_DATA along drawing progress (new range 0.30→0.54)
+    const drawFrac = Math.max(0, Math.min(1, (p - 0.30) / (0.54 - 0.30)))
     const month    = drawFrac * 12
     const idx      = Math.min(Math.floor(month), GREEN_DATA.length - 2)
     const frac     = month - idx
@@ -81,14 +80,14 @@ export function Desktop({ isMobile = false }: DesktopProps) {
     el.textContent   = Math.round(gv).toLocaleString('fr-FR') + ' €'
   })
 
-  const p0op = useTransform(progress, [0.60, 0.62, 0.65, 0.68, 0.70], [0, 1, 1, 1, 0])
-  const p1op = useTransform(progress, [0.70, 0.72, 0.75, 0.78, 0.80], [0, 1, 1, 1, 0])
-  const p2op = useTransform(progress, [0.80, 0.82, 0.85, 0.88, 0.90], [0, 1, 1, 1, 0])
-  const p3op = useTransform(progress, [0.90, 0.92, 0.95, 0.98, 1.00], [0, 1, 1, 1, 0])
+  // ── Content points — 4 × 10% = 40% of scroll, each centered ────
+  const p0op = useTransform(progress, [0.62, 0.65, 0.68, 0.70], [0, 1, 1, 0])
+  const p1op = useTransform(progress, [0.70, 0.73, 0.78, 0.80], [0, 1, 1, 0])
+  const p2op = useTransform(progress, [0.80, 0.83, 0.88, 0.90], [0, 1, 1, 0])
+  const p3op = useTransform(progress, [0.90, 0.93, 0.98, 1.00], [0, 1, 1, 0])
   const pointOpacities: MotionValue<number>[] = [p0op, p1op, p2op, p3op]
 
   return (
-    // 400vh outer container — the sticky inner div plays through it
     <div
       ref={containerRef}
       style={{ height: '400vh', position: 'relative' }}
@@ -105,14 +104,14 @@ export function Desktop({ isMobile = false }: DesktopProps) {
         justifyContent: 'center',
       }}>
 
-        {/* White background fade in */}
+        {/* White background */}
         <motion.div style={{
           position: 'absolute', inset: 0,
           background: '#ffffff',
           opacity: bgOpacity,
         }} />
 
-        {/* Section label */}
+        {/* Section label — fades before graph disappears */}
         <motion.div style={{
           position: 'absolute',
           top: isMobile ? 20 : 40,
@@ -136,7 +135,7 @@ export function Desktop({ isMobile = false }: DesktopProps) {
           </p>
         </motion.div>
 
-        {/* ── SVG graph container (scaled + origin animated) ────── */}
+        {/* ── SVG graph container — fades out entirely at graphOut ── */}
         <motion.div style={{
           position: 'absolute',
           inset: 0,
@@ -147,6 +146,7 @@ export function Desktop({ isMobile = false }: DesktopProps) {
           originX,
           originY,
           willChange: 'transform',
+          opacity: graphContainerOpacity,
         }}>
           <div style={{
             width: isMobile ? '100%' : '90vw',
@@ -163,7 +163,7 @@ export function Desktop({ isMobile = false }: DesktopProps) {
               gridOpacity={gridOpacity}
               axesOpacity={axesOpacity}
             />
-            {/* Dynamic counter — follows green curve tip via useMotionValueEvent */}
+            {/* Dynamic counter — follows green curve tip */}
             <div
               ref={counterRef}
               style={{
@@ -186,12 +186,12 @@ export function Desktop({ isMobile = false }: DesktopProps) {
           </div>
         </motion.div>
 
-        {/* ── Content points ───────────────────────────────────────
-            Desktop : à droite du graphe
-            Mobile  : overlaid en bas (centré, pleine largeur)        */}
+        {/* ── Content points — centered, one at a time ─────────────
+            Graph is already gone (graphOut) when these appear       */}
         <ContentPoints
           opacities={pointOpacities}
-          position={isMobile ? 'bottom' : 'right'}
+          position="center"
+          isMobile={isMobile}
         />
 
       </div>
