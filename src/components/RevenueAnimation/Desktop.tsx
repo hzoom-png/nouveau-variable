@@ -56,10 +56,10 @@ export function Desktop({ isMobile = false }: DesktopProps) {
     const el = counterRef.current
     if (!el) return
 
-    // Fade in [0.36→0.42], stable, fade out [0.57→0.63] (before content points)
+    // Fade in [0.30→0.34] (~2600€ tip), stable, fade out [0.57→0.63]
     let opacity = 0
-    if      (p >= 0.36 && p < 0.42) opacity = (p - 0.36) / 0.06
-    else if (p >= 0.42 && p < 0.57) opacity = 1
+    if      (p >= 0.30 && p < 0.34) opacity = (p - 0.30) / 0.04
+    else if (p >= 0.34 && p < 0.57) opacity = 1
     else if (p >= 0.57 && p < 0.63) opacity = 1 - (p - 0.57) / 0.06
 
     if (opacity <= 0) { el.style.opacity = '0'; return }
