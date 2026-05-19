@@ -58,4 +58,31 @@ export const TEMPLATE_IDS = {
   NEWSLETTER_MENSUELLE: parseInt(process.env.BREVO_TPL_NEWSLETTER            ?? '0'),
   RENOUVELLEMENT_J7:    parseInt(process.env.BREVO_TPL_RENOUVELLEMENT_J7    ?? '0'),
   NOUVEAU_FILLEUL:      parseInt(process.env.BREVO_TPL_NOUVEAU_FILLEUL      ?? '0'),
+  SUPPORT_RECUE:        parseInt(process.env.BREVO_TPL_SUPPORT_RECUE        ?? '0'),
+  SUPPORT_REPONSE:      parseInt(process.env.BREVO_TPL_SUPPORT_REPONSE      ?? '0'),
+  FOUNDER_ACCES_VIP:    parseInt(process.env.BREVO_TPL_FOUNDER_ACCES_VIP    ?? '0'),
+}
+
+export async function sendRawEmail(opts: {
+  to: { email: string; name?: string }
+  subject: string
+  html: string
+  tags?: string[]
+}): Promise<void> {
+  if (!process.env.BREVO_API_KEY) return
+  try {
+    await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: [opts.to],
+        sender: { email: process.env.BREVO_SENDER_EMAIL!, name: process.env.BREVO_SENDER_NAME ?? 'Nouveau Variable' },
+        subject: opts.subject,
+        htmlContent: opts.html,
+        tags: opts.tags ?? [],
+      }),
+    })
+  } catch (err) {
+    console.error('[Email raw]', err instanceof Error ? err.message : err)
+  }
 }

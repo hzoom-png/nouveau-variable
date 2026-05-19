@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { escHtml } from '@/lib/html-escape'
 import { rateLimit } from '@/lib/rate-limit'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
-import { notifyN8N } from '@/lib/n8n'
+import { notifySlack } from '@/lib/slack'
 
 function getCorsHeaders() {
   return {
@@ -180,21 +180,19 @@ export async function POST(request: NextRequest) {
     }).catch(() => null)
   }
 
-  // Notifier N8N → Airtable + Slack (awaité pour éviter que Vercel tue la requête avant envoi)
-  await notifyN8N('N8N_WEBHOOK_NEW_CANDIDATE', {
-    candidatureId: inserted.id,
-    prenom: firstname,
-    nom:    lastname,
-    email,
-    role,
-    city,
-    sector,
-    xp:           xp || '',
-    why,
-    referral:     referral || '',
-    code_parrain,
-    projet_nom:   projet_nom || '',
-  })
+  // Slack — fire & forget
+  notifySlack({
+    title: '🆕 Nouvelle candidature',
+    description: `${fullName} — ${currentCount} en attente`,
+    fields: [
+      { title: 'Email',      value: email },
+      { title: 'Rôle',       value: role },
+      { title: 'Ville',      value: city },
+      { title: 'Expérience', value: xp || '—' },
+      { title: 'Parrainage', value: referral || 'Aucun' },
+    ],
+    color: '#36a64f',
+  }).catch(() => null)
 
   return NextResponse.json(
     { success: true, candidatureId: inserted.id, code_parrain, message: 'Candidature reçue ✓' },

@@ -2,6 +2,7 @@ import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import { createServiceClient } from './supabase/service'
 import { createClient } from './supabase/server'
+import { rateLimit } from './rate-limit'
 
 const getSecret = () => {
   const s = process.env.ADMIN_JWT_SECRET
@@ -64,16 +65,6 @@ export async function logAdminAction(
 
 // ── RATE LIMIT TOTP ──────────────────────────────────────────────
 
-const rlMap = new Map<string, { count: number; resetAt: number }>()
-
-export function checkTotpRateLimit(key: string): boolean {
-  const now   = Date.now()
-  const entry = rlMap.get(key)
-  if (!entry || now > entry.resetAt) {
-    rlMap.set(key, { count: 1, resetAt: now + 15 * 60 * 1000 })
-    return true
-  }
-  if (entry.count >= 5) return false
-  entry.count++
-  return true
+export async function checkTotpRateLimit(key: string): Promise<boolean> {
+  return rateLimit(`totp_${key}`, 5, 900)
 }

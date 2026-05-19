@@ -10,7 +10,7 @@ const Schema = z.object({ token: z.string().length(6).regex(/^\d{6}$/) })
 export async function POST(request: NextRequest) {
   try {
     const ip = request.headers.get('x-forwarded-for') ?? 'unknown'
-    if (!checkTotpRateLimit(ip)) {
+    if (!await checkTotpRateLimit(ip)) {
       return NextResponse.json({ error: 'Trop de tentatives. Attends 15 minutes.' }, { status: 429 })
     }
 

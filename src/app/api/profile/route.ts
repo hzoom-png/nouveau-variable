@@ -15,6 +15,9 @@ export async function PATCH(request: Request) {
   if (body.tagline && body.tagline.length > 100) {
     return NextResponse.json({ error: 'Le tagline ne peut pas dépasser 100 caractères' }, { status: 400 })
   }
+  if (body.onboarding_completed !== undefined && body.onboarding_completed !== true) {
+    return NextResponse.json({ error: 'Valeur invalide' }, { status: 400 })
+  }
   if (body.cities && body.cities.length > MAX_CITIES) {
     return NextResponse.json({ error: `Maximum ${MAX_CITIES} villes` }, { status: 400 })
   }
@@ -28,6 +31,7 @@ export async function PATCH(request: Request) {
     'available_days', 'max_meetings_per_week',
     'notif_meeting_request', 'notif_new_referral', 'notif_commission', 'notif_newsletter',
     'display_name', 'tagline', 'role_type', 'services', 'links', 'track_record', 'profile_visible',
+    'linkedin_url', 'onboarding_completed',
   ]
   const update: Record<string, unknown> = {}
   for (const field of allowedFields) {

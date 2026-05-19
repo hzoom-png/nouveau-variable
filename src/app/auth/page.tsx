@@ -136,14 +136,42 @@ function AuthPageInner() {
       .eq('id', data.user.id)
       .single()
 
-    setLoading(false)
-
     if (profile?.onboarding_completed) {
+      setLoading(false)
       router.push('/dashboard')
       router.refresh()
-    } else {
-      setStep('referral')
+      return
     }
+
+    try {
+      const founderRes = await fetch('/api/auth/check-founder', { method: 'POST' })
+      const founderData = await founderRes.json()
+
+      if (founderData.isFounder) {
+        const code = 'NV' + Math.random().toString(36).slice(2, 6).toUpperCase()
+        await supabase.from('profiles').upsert({
+          id: data.user.id,
+          phone: data.user.phone ?? '',
+          email: founderData.email as string,
+          first_name: founderData.prenom as string,
+          last_name: founderData.nom as string,
+          referral_code: code,
+          is_founder: true,
+          is_active: true,
+          points_balance: 97,
+          onboarding_completed: false,
+        }, { onConflict: 'id' })
+        setLoading(false)
+        router.push('/onboarding/profile')
+        router.refresh()
+        return
+      }
+    } catch {
+      // check-founder failed — fall through to referral
+    }
+
+    setLoading(false)
+    setStep('referral')
   }
 
   async function validateAndCreate() {

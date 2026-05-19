@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, type CSSProperties } from 'react'
+import { useState, useEffect, useRef, type CSSProperties } from 'react'
 
 const GOAL = 100
 
@@ -86,6 +86,47 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
     }, 400)
     return () => clearTimeout(t)
   }, [waitlistCount])
+
+  const affSectionRef = useRef<HTMLElement>(null)
+  const affTitleRef   = useRef<HTMLHeadingElement>(null)
+  const affFillRef    = useRef(0)
+  const affRafRef     = useRef<number>(0)
+
+  function applyFill(pct: number) {
+    const el = affTitleRef.current
+    if (!el) return
+    affFillRef.current = pct
+    if (pct <= 0) {
+      el.style.backgroundImage = 'none'
+      el.style.webkitBackgroundClip = ''
+      el.style.webkitTextFillColor = ''
+      el.style.backgroundClip = ''
+      el.style.color = 'var(--text)'
+    } else {
+      el.style.backgroundImage = `linear-gradient(90deg, #36a64f ${pct}%, var(--text) ${pct}%)`
+      el.style.webkitBackgroundClip = 'text'
+      el.style.webkitTextFillColor = 'transparent'
+      el.style.backgroundClip = 'text'
+      el.style.color = 'transparent'
+    }
+  }
+
+  function handleAffMouseMove(e: React.MouseEvent<HTMLElement>) {
+    cancelAnimationFrame(affRafRef.current)
+    const rect = e.currentTarget.getBoundingClientRect()
+    const pct = Math.round(((e.clientX - rect.left) / rect.width) * 100)
+    applyFill(Math.max(0, Math.min(100, pct)))
+  }
+
+  function handleAffMouseLeave() {
+    cancelAnimationFrame(affRafRef.current)
+    function decay() {
+      if (affFillRef.current <= 0) { applyFill(0); return }
+      applyFill(Math.max(0, affFillRef.current - 4))
+      affRafRef.current = requestAnimationFrame(decay)
+    }
+    affRafRef.current = requestAnimationFrame(decay)
+  }
 
   function setField(k: string, v: string) { setForm(f => ({ ...f, [k]: v })) }
 
@@ -691,7 +732,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 "Outils SaaS intégrés (Réplique, Missions, Deallink)",
                 "Système d'affiliation pour générer des revenus",
               ] as const).map((item, i, arr) => (
-                <div key={i} style={{
+                <div key={i} className="cmp-item" style={{
                   display: 'flex', alignItems: 'center', gap: 14,
                   padding: '13px 0',
                   borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.15)' : 'none',
@@ -725,13 +766,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       {/* ──────────────────────────────────────────────────────────────
           [F] AFFILIATION
       ────────────────────────────────────────────────────────────── */}
-      <section className="sf sec-pad" style={{ padding: '80px 40px', background: 'var(--surface)' }}>
+      <section ref={affSectionRef} className="sf sec-pad" style={{ padding: '80px 40px', background: 'var(--surface)' }} onMouseMove={handleAffMouseMove} onMouseLeave={handleAffMouseLeave}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div className="aff-box" style={{
             background: 'var(--green-3)', borderRadius: 24, padding: '48px',
           }}>
             <div style={{ textAlign: 'center', marginBottom: 40 }}>
-              <h2 style={{
+              <h2 ref={affTitleRef} className="aff-title-fill" style={{
                 fontFamily: 'var(--fj)', fontWeight: 600,
                 fontSize: 'clamp(22px, 3.5vw, 36px)', color: 'var(--text)',
                 letterSpacing: '-.02em', marginBottom: 16,

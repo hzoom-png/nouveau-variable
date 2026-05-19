@@ -9,6 +9,7 @@ import { TokenBalance } from '@/components/TokenBalance'
 import { useTheme } from '@/lib/theme'
 import { WelcomeTour } from '@/components/onboarding/WelcomeTour'
 import { DashboardContext } from '@/lib/dashboard-context'
+import { SupportWidget } from '@/components/SupportWidget'
 
 type SectionId = 'club' | 'outils' | 'moi'
 
@@ -353,6 +354,12 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
           {children}
         </main>
       </div>
+
+      <SupportWidget
+        userEmail={profile.email ?? ''}
+        userName={[profile.first_name, profile.last_name].filter(Boolean).join(' ')}
+        userId={profile.id}
+      />
     </div>
     </DashboardContext.Provider>
   )

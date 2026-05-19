@@ -2,7 +2,7 @@ import Stripe from 'stripe'
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
-import { notifyN8N } from '@/lib/n8n'
+import { notifySlack } from '@/lib/slack'
 
 function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-04-22.dahlia' })
@@ -158,14 +158,16 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Notifier N8N → Airtable status=active + Slack (fire & forget)
-      notifyN8N('N8N_WEBHOOK_STRIPE_PAYMENT', {
-        email,
-        prenom:     profile.first_name ?? '',
-        plan,
-        customerId,
-        subscriptionId: subId,
-      })
+      notifySlack({
+        title: '💳 Paiement reçu',
+        description: `${profile.first_name ?? email}`,
+        fields: [
+          { title: 'Email',  value: email },
+          { title: 'Plan',   value: plan === 'annual' ? 'Annuel' : 'Mensuel' },
+          { title: 'Montant', value: session.amount_total ? `${(session.amount_total / 100).toFixed(0)} €` : '—' },
+        ],
+        color: '#36a64f',
+      }).catch(() => null)
 
       if (session.invoice) {
         try {
@@ -245,6 +247,17 @@ export async function POST(req: NextRequest) {
     }).eq('stripe_customer_id', inv.customer as string)
 
     if (failedProfile) {
+      notifySlack({
+        title: '⚠️ Paiement échoué',
+        description: `${failedProfile.first_name ?? ''} — tentative n°${failCount}`,
+        fields: [
+          { title: 'Email',   value: failedProfile.email as string },
+          { title: 'Montant', value: inv.amount_due ? `${(inv.amount_due / 100).toFixed(0)} €` : '—' },
+          { title: 'Tentative', value: String(failCount) },
+        ],
+        color: '#ff9900',
+      }).catch(() => null)
+
       // 2d — J+0 : premier email d'échec
       if (failCount === 1) {
         await sendEmail({

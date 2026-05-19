@@ -281,3 +281,37 @@ img { display: block; max-width: 100%; }
   .project-modal { width: 100vw; }
   .my-projects-panel { width: 100vw; }
 }
+
+/* ── Section 1 vs 5 — hover effects ───────────────────────────── */
+.cmp-l {
+  transition: border-color 200ms ease-in-out, border-width 200ms ease-in-out, box-shadow 200ms ease-in-out;
+}
+.cmp-l:hover {
+  border: 2px solid #e74c3c !important;
+  box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.06);
+}
+
+.cmp-r {
+  transition: border-color 200ms ease-in-out, border-width 200ms ease-in-out, box-shadow 200ms ease-in-out, transform 200ms ease-in-out;
+}
+.cmp-r:hover {
+  border: 2px solid rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 16px 48px rgba(2, 79, 65, 0.45);
+  transform: translateY(-2px);
+}
+
+.cmp-item {
+  border-radius: 6px;
+  transition: transform 250ms ease-in-out, box-shadow 250ms ease-in-out;
+}
+.cmp-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 2px 18px rgba(255, 255, 255, 0.12);
+}
+
+/* ── Affiliation title fill effect ── */
+.aff-title-fill {
+  transition: none !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+}

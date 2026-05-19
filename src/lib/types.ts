@@ -103,6 +103,7 @@ export interface Profile {
   services?: ServiceItem[]
   links?: LinkItem[]
   track_record?: TrackRecord[]
+  linkedin_url?: string
   profile_visible?: boolean
   onboarding_completed?: boolean
   member_number?: number

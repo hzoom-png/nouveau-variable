@@ -90,6 +90,14 @@ function IconTarget() {
   )
 }
 
+function IconSupport() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 9.33A5.33 5.33 0 0 1 8.67 14L6 15l1-2.33A5.33 5.33 0 1 1 14 9.33z"/>
+    </svg>
+  )
+}
+
 function IconSettings() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -148,6 +156,12 @@ const NAV = [
     items: [
       { href: '/admin/projets',      label: 'Projets',            Icon: IconFolder },
       { href: '/admin/missions',     label: 'Missions',           Icon: IconTarget },
+    ],
+  },
+  {
+    group: 'SUPPORT',
+    items: [
+      { href: '/admin/support-tickets', label: 'Support',          Icon: IconSupport },
     ],
   },
   {

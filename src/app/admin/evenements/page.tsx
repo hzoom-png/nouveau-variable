@@ -95,11 +95,11 @@ export default function EvenementsPage() {
     const payload = {
       ...form,
       max_attendees: form.max_attendees ? parseInt(form.max_attendees) : null,
-      ...(editing ? { eventId: editing } : {}),
+      ...(editing ? { id: editing } : {}),
     }
     const url = editing ? '/api/admin/events/update' : '/api/admin/events/create'
     const res = await fetch(url, {
-      method: 'POST',
+      method: editing ? 'PATCH' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     })
@@ -116,9 +116,9 @@ export default function EvenementsPage() {
   async function togglePublish(e: Event) {
     setWorking(true)
     await fetch('/api/admin/events/update', {
-      method: 'POST',
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eventId: e.id, is_published: !e.is_published }),
+      body: JSON.stringify({ id: e.id, is_published: !e.is_published }),
     })
     await load()
     setWorking(false)
@@ -127,9 +127,9 @@ export default function EvenementsPage() {
   async function deleteEvent(id: string) {
     setWorking(true)
     await fetch('/api/admin/events/delete', {
-      method: 'POST',
+      method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eventId: id }),
+      body: JSON.stringify({ id }),
     })
     setDelId(null)
     await load()

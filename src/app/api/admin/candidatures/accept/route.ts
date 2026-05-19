@@ -4,7 +4,7 @@ import { requireAdminAuth, logAdminAction } from '@/lib/admin-auth'
 import { createServiceClient } from '@/lib/supabase/service'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
 import { sendSMS } from '@/lib/sms'
-import { notifyN8N } from '@/lib/n8n'
+import { notifySlack } from '@/lib/slack'
 import { z } from 'zod'
 
 const Schema = z.object({ candidatureId: z.string().uuid() })
@@ -37,17 +37,29 @@ export async function POST(request: NextRequest) {
   const expiration = new Date(Date.now() + 48 * 60 * 60 * 1000)
     .toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  if (!isFounder) await sendEmail({
-    to: { email, name: `${prenom} ${nom}`.trim() },
-    templateId: TEMPLATE_IDS.CANDIDATURE_ACCEPTEE,
-    params: {
-      prenom,
-      lien_paiement: `https://app.nouveauvariable.fr/subscribe?email=${encodeURIComponent(email)}&prenom=${encodeURIComponent(prenom)}`,
-      lien_connexion: `https://app.nouveauvariable.fr/auth?from=acceptance`,
-      expiration,
-    },
-    tags: ['candidature', 'acceptation'],
-  })
+  if (isFounder) {
+    await sendEmail({
+      to: { email, name: `${prenom} ${nom}`.trim() },
+      templateId: TEMPLATE_IDS.FOUNDER_ACCES_VIP,
+      params: {
+        prenom,
+        lien_connexion: `https://app.nouveauvariable.fr/auth?from=founder`,
+      },
+      tags: ['fondateur', 'acces-vip'],
+    })
+  } else {
+    await sendEmail({
+      to: { email, name: `${prenom} ${nom}`.trim() },
+      templateId: TEMPLATE_IDS.CANDIDATURE_ACCEPTEE,
+      params: {
+        prenom,
+        lien_paiement: `https://app.nouveauvariable.fr/subscribe?email=${encodeURIComponent(email)}&prenom=${encodeURIComponent(prenom)}`,
+        lien_connexion: `https://app.nouveauvariable.fr/auth?from=acceptance`,
+        expiration,
+      },
+      tags: ['candidature', 'acceptation'],
+    })
+  }
 
   if (telephone && !isFounder) {
     await sendSMS(
@@ -58,14 +70,17 @@ export async function POST(request: NextRequest) {
 
   await logAdminAction(adminId, 'accept_candidature', 'candidature', parsed.data.candidatureId, { full_name: cand.full_name, email })
 
-  // Notifier N8N — fire & forget (pas d'await, évite de dépasser le timeout Vercel 10s)
-  notifyN8N('N8N_WEBHOOK_CANDIDATE_ACCEPTED', {
-    candidatureId: parsed.data.candidatureId,
-    full_name:     cand.full_name,
-    email,
-    prenom,
-    is_founder:    isFounder,
-  })
+  notifySlack({
+    title: '✅ Candidature acceptée',
+    description: `${cand.full_name}`,
+    fields: [
+      { title: 'Email', value: email },
+      { title: 'Rôle',  value: (cand.role as string | null) ?? '—' },
+      { title: 'Ville', value: (cand.city as string | null) ?? '—' },
+      { title: 'Email envoyé', value: isFounder ? 'Accès VIP' : 'Acceptation' },
+    ],
+    color: '#36a64f',
+  }).catch(() => null)
 
   return NextResponse.json({ success: true })
 }

@@ -68,5 +68,30 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, is_active: !proj.is_active })
   }
 
+  if (action === 'create') {
+    const { userId, title, tagline, sector, stage, what } = body
+    if (!userId || !title?.trim() || !sector?.trim() || !stage?.trim()) {
+      return NextResponse.json({ error: 'Champs requis manquants' }, { status: 400 })
+    }
+    const { data: profile } = await svc.from('profiles').select('id').eq('id', userId).maybeSingle()
+    if (!profile) return NextResponse.json({ error: 'Membre introuvable' }, { status: 404 })
+    const { data: project, error: createErr } = await svc.from('projects').insert({
+      user_id:      userId,
+      title:        title.trim(),
+      tagline:      tagline?.trim() || null,
+      sector:       sector.trim(),
+      stage:        stage.trim(),
+      what:         what?.trim() || null,
+      cover_color:  '#2F5446',
+      is_active:    true,
+    }).select().single()
+    if (createErr) {
+      console.error('[admin/projects] create error:', createErr.message)
+      return NextResponse.json({ error: 'Erreur interne' }, { status: 500 })
+    }
+    await logAdminAction(adminId, 'project_created', 'project', project.id, { title, userId })
+    return NextResponse.json({ success: true, project })
+  }
+
   return NextResponse.json({ error: 'Action inconnue' }, { status: 400 })
 }

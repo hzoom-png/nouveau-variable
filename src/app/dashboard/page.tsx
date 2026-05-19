@@ -67,19 +67,25 @@ const CARDS = [
   },
 ]
 
-export default async function DashboardHome() {
+export default async function DashboardHome({
+  searchParams,
+}: {
+  searchParams: Promise<{ welcome?: string }>
+}) {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()
   if (!session?.user) redirect('/auth/login')
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('first_name, onboarding_completed')
+    .select('first_name, onboarding_completed, is_founder')
     .eq('id', session.user.id)
     .single()
 
+  const params = await searchParams
   const firstName = profile?.first_name || 'toi'
   const isNew = !profile?.onboarding_completed
+  const isFounderWelcome = !isNew && profile?.is_founder && params.welcome === '1'
 
   return (
     <div style={{ maxWidth: '820px' }}>
@@ -95,6 +101,58 @@ export default async function DashboardHome() {
           Retrouve tous les accès de ton espace membre ci-dessous.
         </p>
       </div>
+
+      {isFounderWelcome && (
+        <div style={{
+          background: 'linear-gradient(135deg, #024f41 0%, #1a7b5e 100%)',
+          borderRadius: 16,
+          padding: '36px 40px',
+          marginBottom: 32,
+          color: '#ffffff',
+        }}>
+          <p style={{
+            fontSize: 11, opacity: 0.6, letterSpacing: '0.12em',
+            textTransform: 'uppercase', marginBottom: 10,
+          }}>
+            Accès fondateur activé
+          </p>
+          <h2 style={{
+            fontFamily: 'var(--font-jost)', fontWeight: 800, fontSize: 26,
+            marginBottom: 14, lineHeight: 1.2, margin: '0 0 14px',
+          }}>
+            Bienvenue {firstName}, ton espace est prêt. 🎉
+          </h2>
+          <p style={{
+            fontSize: 15, opacity: 0.8, lineHeight: 1.7,
+            maxWidth: 480, marginBottom: 28,
+          }}>
+            En tant que fondateur, tu as un accès anticipé à toutes les fonctionnalités du club.
+            Commence par explorer l&apos;annuaire et complète ton profil pour être visible.
+          </p>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <Link
+              href="/dashboard/members"
+              style={{
+                background: '#ffffff', color: '#024f41',
+                padding: '10px 22px', borderRadius: '99px',
+                fontWeight: 700, fontSize: 14, textDecoration: 'none',
+              }}
+            >
+              Explorer l&apos;annuaire →
+            </Link>
+            <Link
+              href="/dashboard/profile"
+              style={{
+                background: 'rgba(255,255,255,0.12)', color: '#ffffff',
+                padding: '10px 22px', borderRadius: '99px',
+                fontWeight: 600, fontSize: 14, textDecoration: 'none',
+              }}
+            >
+              Compléter mon profil
+            </Link>
+          </div>
+        </div>
+      )}
 
       {isNew && (
         <div style={{

@@ -3,6 +3,7 @@ import { requireAdminAuth, logAdminAction } from '@/lib/admin-auth'
 import { createServiceClient } from '@/lib/supabase/service'
 import { z } from 'zod'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
+import { notifySlack } from '@/lib/slack'
 
 const Schema = z.object({
   id:         z.string().uuid(),
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
   if (status === 'rejected') {
     const { data: cand } = await svc
       .from('candidatures')
-      .select('email, full_name')
+      .select('email, full_name, role, city')
       .eq('id', id)
       .single()
 
@@ -44,6 +45,17 @@ export async function POST(request: NextRequest) {
         params: { prenom },
         tags: ['candidature', 'refus'],
       })
+
+      notifySlack({
+        title: '❌ Candidature refusée',
+        description: `${cand.full_name}`,
+        fields: [
+          { title: 'Email', value: cand.email as string },
+          { title: 'Rôle',  value: (cand.role as string | null) ?? '—' },
+          { title: 'Ville', value: (cand.city as string | null) ?? '—' },
+        ],
+        color: '#ff0000',
+      }).catch(() => null)
     }
   }
 
