@@ -9,6 +9,7 @@ import { Grid } from './Grid'
 
 interface GraphCurvesProps {
   grayOpacity:  MotionValue<number>
+  grayDraw:     MotionValue<number>   // 0→1 pathLength (progressive reveal)
   greenDraw:    MotionValue<number>   // 0→1 pathLength
   glowIntensity: MotionValue<number>  // 0→20px blur
   gridOpacity:  MotionValue<number>
@@ -17,6 +18,7 @@ interface GraphCurvesProps {
 
 export function GraphCurves({
   grayOpacity,
+  grayDraw,
   greenDraw,
   glowIntensity,
   gridOpacity,
@@ -35,7 +37,7 @@ export function GraphCurves({
       {/* Grid + axes */}
       <Grid gridOpacity={gridOpacity} axesOpacity={axesOpacity} />
 
-      {/* Gray curve — flat rémunération actuelle */}
+      {/* Gray curve — flat rémunération actuelle (dessinée progressivement) */}
       <motion.path
         d={GRAY_PATH}
         stroke={COLORS.gray}
@@ -43,7 +45,7 @@ export function GraphCurves({
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
-        style={{ opacity: grayOpacity }}
+        style={{ opacity: grayOpacity, pathLength: grayDraw }}
       />
 
       {/* Gray label */}

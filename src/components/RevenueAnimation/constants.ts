@@ -99,14 +99,17 @@ export const CONTENT_POINTS = [
 ]
 
 // Scroll-to-progress timing (progress 0→1)
+// 0.00–0.60 : intro + courbes race
+// 0.60–1.00 : 4 content points (10% chacun = ~1500ms)
 export const T = {
   bgIn:       [0,    0.06] as const,  // white bg fade in
-  gridIn:     [0.15, 0.35] as const,  // gridlines fade in
-  axesIn:     [0.20, 0.38] as const,  // axis labels fade in
-  grayIn:     [0.28, 0.42] as const,  // gray curve appear
-  grayOut:    [0.62, 0.72] as const,  // gray curve disappear
-  greenDraw:  [0.28, 0.72] as const,  // green curve draws from 0→1
-  glowUp:     [0.38, 0.65] as const,  // glow ramps up
-  glowMax:    [0.65, 0.72] as const,  // glow at max
-  reZoom:     [0.60, 0.72] as const,  // re-zoom to 1.8x
+  gridIn:     [0.12, 0.28] as const,  // gridlines fade in
+  axesIn:     [0.18, 0.32] as const,  // axis labels fade in
+  grayIn:     [0.20, 0.35] as const,  // gray curve opacity fade-in
+  grayDraw:   [0.20, 0.55] as const,  // gray pathLength 0→1
+  grayOut:    [0.48, 0.58] as const,  // gray curve disappear before points
+  greenDraw:  [0.22, 0.58] as const,  // green curve draws 0→1
+  glowUp:     [0.32, 0.52] as const,  // glow ramps up
+  glowMax:    [0.52, 0.58] as const,  // glow at max
+  reZoom:     [0.52, 0.62] as const,  // re-zoom to 1.8x
 }

@@ -13,13 +13,13 @@ export function Desktop() {
 
   // ── Spatial / zoom ──────────────────────────────────────────────
   const scale = useTransform(progress,
-    [0, 0.12, 0.30, 0.60, 0.72, 1.0],
+    [0, 0.12, 0.28, 0.52, 0.62, 1.0],
     [3.0, 2.6, 1.5, 1.5, 1.85, 1.5],
   )
 
   // Origin: bottom-left → center → upper-right (0–1 fractions for Framer Motion)
-  const originX = useTransform(progress, [0, 0.30, 0.60, 0.72], [0.09, 0.50, 0.50, 0.68])
-  const originY = useTransform(progress, [0, 0.30, 0.60, 0.72], [0.88, 0.50, 0.50, 0.20])
+  const originX = useTransform(progress, [0, 0.28, 0.52, 0.62], [0.09, 0.50, 0.50, 0.68])
+  const originY = useTransform(progress, [0, 0.28, 0.52, 0.62], [0.88, 0.50, 0.50, 0.20])
 
   // ── Background ──────────────────────────────────────────────────
   const bgOpacity = useTransform(progress, [...T.bgIn], [0, 1])
@@ -30,21 +30,21 @@ export function Desktop() {
   const grayOpacity   = useTransform(progress,
     [...T.grayIn, ...T.grayOut], [0, 0.6, 0.6, 0],
   )
+  const grayDraw      = useTransform(progress, [...T.grayDraw], [0, 1])
   const greenDraw     = useTransform(progress, [...T.greenDraw], [0, 1])
   const glowIntensity = useTransform(progress,
-    [...T.glowUp, ...T.glowMax, 0.85],
-    [0, 10, 20, 20, 12],
+    [...T.glowUp, ...T.glowMax, 1.0],
+    [0, 10, 20, 20, 8],
   )
 
-  // ── Section label ───────────────────────────────────────────────
-  const labelOpacity = useTransform(progress, [0, 0.12, 0.55, 0.70], [0, 1, 1, 0])
+  // ── Section label — fades out as curves finish ──────────────────
+  const labelOpacity = useTransform(progress, [0, 0.10, 0.45, 0.58], [0, 1, 1, 0])
 
-  // ── Content points — 7% window each (~700ms at normal scroll speed) ───
-  // Ranges: [0.75,0.82] [0.82,0.89] [0.89,0.96] [0.96,1.00]
-  const p0op = useTransform(progress, [0.75, 0.77, 0.785, 0.80, 0.82], [0, 1, 1, 1, 0])
-  const p1op = useTransform(progress, [0.82, 0.84, 0.855, 0.87, 0.89], [0, 1, 1, 1, 0])
-  const p2op = useTransform(progress, [0.89, 0.91, 0.925, 0.94, 0.96], [0, 1, 1, 1, 0])
-  const p3op = useTransform(progress, [0.96, 0.975, 0.98, 0.99, 1.00], [0, 1, 1, 1, 0])
+  // ── Content points — 10% chacun = ~1500ms (progress 0.60→1.00) ─
+  const p0op = useTransform(progress, [0.60, 0.62, 0.65, 0.68, 0.70], [0, 1, 1, 1, 0])
+  const p1op = useTransform(progress, [0.70, 0.72, 0.75, 0.78, 0.80], [0, 1, 1, 1, 0])
+  const p2op = useTransform(progress, [0.80, 0.82, 0.85, 0.88, 0.90], [0, 1, 1, 1, 0])
+  const p3op = useTransform(progress, [0.90, 0.92, 0.95, 0.98, 1.00], [0, 1, 1, 1, 0])
   const pointOpacities: MotionValue<number>[] = [p0op, p1op, p2op, p3op]
 
   return (
@@ -114,6 +114,7 @@ export function Desktop() {
           }}>
             <GraphCurves
               grayOpacity={grayOpacity}
+              grayDraw={grayDraw}
               greenDraw={greenDraw}
               glowIntensity={glowIntensity}
               gridOpacity={gridOpacity}

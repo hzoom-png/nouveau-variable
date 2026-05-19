@@ -275,6 +275,15 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         .ft-link:hover { color: var(--text) !important; }
         .btn-ghost { transition: color 0.15s; }
         .btn-ghost:hover { color: var(--text) !important; }
+        /* Inter 400 pour titres et CTAs */
+        .nv-landing h1, .nv-landing h2, .nv-landing h3 {
+          font-family: var(--fi) !important;
+          font-weight: 400 !important;
+        }
+        .nv-landing .btn-green, .nv-landing .nav-cta {
+          font-family: var(--fi) !important;
+          font-weight: 400 !important;
+        }
         .steps-wrap { display: flex; align-items: flex-start; }
         .step-arrow { display: flex; align-items: center; padding-top: 14px; color: var(--green-4); font-size: 20px; flex-shrink: 0; }
         @media (max-width: 640px) {
