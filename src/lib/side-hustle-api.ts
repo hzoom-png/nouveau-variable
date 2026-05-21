@@ -55,12 +55,14 @@ PROJET :
 - Concept : ${project.concept || 'non précisé'}
 ${project.bmc ? `- Business Model Canvas : ${JSON.stringify(project.bmc)}` : ''}
 
-Génère les hypothèses financières clés structurées. Couvre exactement ces catégories :
-- TARIFICATION : prix abonnement, tarifs, freemium, upsell
-- CAC : coût d'acquisition client par canal
-- RETENTION : taux de churn mensuel, LTV calculée
-- COUTS : coûts fixes mensuels, coûts variables, infrastructure
-- CROISSANCE : taux de croissance mensuel, objectifs clients
+Génère les hypothèses financières clés structurées. Le champ "category" doit être EXACTEMENT l'une de ces 5 valeurs (en majuscules, en français, sans variation) :
+- "TARIFICATION" : prix abonnement, tarifs, freemium, upsell
+- "CAC" : coût d'acquisition client par canal
+- "RETENTION" : taux de churn mensuel, LTV calculée
+- "COUTS" : coûts fixes mensuels, coûts variables, infrastructure
+- "CROISSANCE" : taux de croissance mensuel, objectifs clients
+
+IMPORTANT : Tous les textes (category, key, unit) doivent être en français uniquement. N'utilise aucune autre langue.
 
 FORMAT JSON UNIQUEMENT, sans texte autour :
 [
@@ -81,7 +83,7 @@ order_index = position dans la catégorie (0, 1, 2…).`
   const response = await anthropic.messages.create({
     model:      'claude-haiku-4-5-20251001',
     max_tokens: 3000,
-    system:     'Tu es un expert financier. Tu réponds UNIQUEMENT en JSON valide (tableau JSON), sans aucun texte avant ni après, sans backticks, sans markdown.',
+    system:     'Tu es un expert financier français. Tu réponds UNIQUEMENT en JSON valide (tableau JSON), sans aucun texte avant ni après, sans backticks, sans markdown. Tous les textes dans le JSON sont en français. Le champ "category" ne peut être que l\'une de ces valeurs exactes : "TARIFICATION", "CAC", "RETENTION", "COUTS", "CROISSANCE".',
     messages:   [{ role: 'user', content: prompt }],
   }, { timeout: 15_000 })
 

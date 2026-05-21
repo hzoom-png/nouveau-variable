@@ -125,12 +125,12 @@ export default function SideHustleAIPanel({ projectId, onClose }: Props) {
 
   return (
     <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.32)', zIndex: 200 }} />
-      <div style={{ position: 'fixed', top: 0, right: 0, width: 680, maxWidth: '96vw', height: '100vh', background: 'var(--white)', borderLeft: '1px solid var(--border)', zIndex: 201, display: 'flex', flexDirection: 'column' }}>
+      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(1,39,34,.5)', zIndex: 200 }} />
+      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 'min(720px, 94vw)', maxHeight: '86vh', background: 'var(--white)', borderRadius: 'var(--r-lg)', boxShadow: '0 20px 60px rgba(0,0,0,.14)', zIndex: 201, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
         {/* Header */}
         <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-          <h2 style={{ fontFamily: 'var(--font-jost)', fontWeight: 800, fontSize: 18, color: 'var(--text)' }}>Hypothèses & Prévisionnel IA</h2>
+          <h2 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: 16, color: 'var(--text)' }}>Hypothèses & Prévisionnel</h2>
           <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 'var(--r-sm)', background: 'var(--surface)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 16, color: 'var(--text-2)' }}>×</button>
         </div>
 
