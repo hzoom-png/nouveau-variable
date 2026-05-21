@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react'
 import type { Project, ProjectContact } from '../types'
 import { STAGE_CONFIG, NEED_CONFIG } from '../types'
 import { ProjectForm } from './ProjectForm'
+import type { ProjectInvitation } from '../hooks/useMyProjects'
 
 interface Props {
   myProjects: Project[]
+  invitations: ProjectInvitation[]
   loading: boolean
   currentUserId: string
   authorName: string
@@ -15,14 +17,17 @@ interface Props {
   onToggleActive: (id: string) => Promise<void>
   onDeleteProject: (id: string) => Promise<void>
   onGetContacts: (projectId: string) => Promise<ProjectContact[]>
+  onAcceptInvitation: (projectId: string) => Promise<void>
+  onDeclineInvitation: (projectId: string) => Promise<void>
   onClose: () => void
   showForm?: boolean
   onFormClose?: () => void
 }
 
 export function MyProjectsPanel({
-  myProjects, loading, currentUserId, authorName,
+  myProjects, invitations, loading, currentUserId, authorName,
   onCreateProject, onUpdateProject, onToggleActive, onDeleteProject, onGetContacts,
+  onAcceptInvitation, onDeclineInvitation,
   onClose, showForm, onFormClose,
 }: Props) {
   const [editing, setEditing] = useState<Project | null>(null)
@@ -97,6 +102,68 @@ export function MyProjectsPanel({
                 onCancel={handleCloseForm}
                 submitLabel={editing ? 'Enregistrer' : 'Publier'}
               />
+            </div>
+          )}
+
+          {/* Invitations en attente */}
+          {invitations.length > 0 && (
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{
+                fontSize: '11px', fontWeight: 700, color: 'var(--text-3)',
+                textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: '10px',
+              }}>
+                Invitations ({invitations.length})
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {invitations.map(inv => {
+                  const stage = STAGE_CONFIG[inv.project.stage]
+                  return (
+                    <div key={inv.id} style={{
+                      background: 'var(--white)', borderRadius: 'var(--r-md)',
+                      border: '1px solid var(--border)', overflow: 'hidden',
+                    }}>
+                      <div style={{ height: '3px', background: inv.project.cover_color }} />
+                      <div style={{ padding: '12px 14px' }}>
+                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>
+                          {inv.project.title}
+                        </div>
+                        <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '4px' }}>
+                          {inv.project.sector} · par {inv.project.owner_name}
+                        </div>
+                        <span style={{
+                          display: 'inline-block', padding: '2px 8px',
+                          borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 700,
+                          background: stage.bg, color: stage.color, marginBottom: '10px',
+                        }}>
+                          {stage.label}
+                        </span>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <button
+                            onClick={() => onAcceptInvitation(inv.project_id)}
+                            style={{
+                              padding: '5px 12px', borderRadius: 'var(--r-sm)', fontSize: '11px',
+                              fontWeight: 700, border: 'none', cursor: 'pointer',
+                              background: 'var(--green)', color: '#fff',
+                            }}
+                          >
+                            Accepter
+                          </button>
+                          <button
+                            onClick={() => onDeclineInvitation(inv.project_id)}
+                            style={{
+                              padding: '5px 12px', borderRadius: 'var(--r-sm)', fontSize: '11px',
+                              fontWeight: 600, border: '1px solid var(--border)',
+                              cursor: 'pointer', background: 'var(--surface)', color: 'var(--text-3)',
+                            }}
+                          >
+                            Refuser
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           )}
 

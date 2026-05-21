@@ -11,6 +11,7 @@ import { ProjectModal } from './components/ProjectModal'
 import { ProjectFiltersBar } from './components/ProjectFilters'
 import { ProjectMatchBanner } from './components/ProjectMatchBanner'
 import { MyProjectsPanel } from './components/MyProjectsPanel'
+import { CreateProjectFlow } from './components/CreateProjectFlow'
 import { ProjectEmptyState } from './components/ProjectEmptyState'
 import { useDashboard } from '@/lib/dashboard-context'
 import { LockedSection } from '@/components/LockedSection'
@@ -24,10 +25,11 @@ export default function ProjectsClient({ profile }: Props) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [showMyProjects, setShowMyProjects] = useState(false)
   const [showNewForm, setShowNewForm] = useState(false)
+  const [showCreateFlow, setShowCreateFlow] = useState(false)
   const matchRef = useRef<HTMLDivElement>(null)
 
   const { projects, loading, hasMore, loadMore, filters, setFilters, toggleSave, reload } = useProjects(profile.id)
-  const { myProjects, loading: myLoading, createProject, updateProject, toggleActive, deleteProject, getContacts } = useMyProjects(profile.id)
+  const { myProjects, invitations, loading: myLoading, createProject, updateProject, toggleActive, deleteProject, getContacts, acceptInvitation, declineInvitation } = useMyProjects(profile.id)
   const matches = useProjectMatches(projects, profile)
 
   const authorName = `${profile.first_name ?? ''} ${profile.last_name ?? ''}`.trim()
@@ -40,6 +42,7 @@ export default function ProjectsClient({ profile }: Props) {
 
   async function handleCreateProject(data: Omit<Project, 'id' | 'user_id' | 'created_at' | 'contacts_count' | 'saves_count' | 'is_saved' | 'author'>) {
     await createProject(data)
+    setShowCreateFlow(false)
     reload()
   }
 
@@ -69,10 +72,10 @@ export default function ProjectsClient({ profile }: Props) {
             onClick={() => { setShowMyProjects(true); setShowNewForm(false) }}
             style={{ padding: '9px 16px', borderRadius: 'var(--r-sm)', border: '1.5px solid var(--border)', background: 'var(--white)', fontSize: '13px', fontWeight: 600, color: 'var(--text-2)', cursor: 'pointer', transition: '.14s' }}
           >
-            Mes projets {myProjects.length > 0 && `(${myProjects.length})`}
+            Mes projets {myProjects.length > 0 && `(${myProjects.length})`}{invitations.length > 0 && ` · ${invitations.length} invitation${invitations.length > 1 ? 's' : ''}`}
           </button>
           <button
-            onClick={() => { setShowMyProjects(true); setShowNewForm(true) }}
+            onClick={() => setShowCreateFlow(true)}
             style={{ padding: '9px 18px', borderRadius: 'var(--r-sm)', background: 'var(--green)', color: '#fff', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', transition: '.15s' }}
           >
             + Partager un projet
@@ -94,7 +97,7 @@ export default function ProjectsClient({ profile }: Props) {
           ))}
         </div>
       ) : !projects.length ? (
-        <ProjectEmptyState onCreateProject={() => { setShowMyProjects(true); setShowNewForm(true) }} />
+        <ProjectEmptyState onCreateProject={() => setShowCreateFlow(true)} />
       ) : (
         <>
           {/* Matches section */}
@@ -158,10 +161,20 @@ export default function ProjectsClient({ profile }: Props) {
         />
       )}
 
+      {/* Create project flow (new multi-step modal) */}
+      {showCreateFlow && (
+        <CreateProjectFlow
+          currentUserId={profile.id}
+          onSubmit={handleCreateProject}
+          onCancel={() => setShowCreateFlow(false)}
+        />
+      )}
+
       {/* My projects panel */}
       {showMyProjects && (
         <MyProjectsPanel
           myProjects={myProjects}
+          invitations={invitations}
           loading={myLoading}
           currentUserId={profile.id}
           authorName={authorName}
@@ -170,6 +183,8 @@ export default function ProjectsClient({ profile }: Props) {
           onToggleActive={toggleActive}
           onDeleteProject={deleteProject}
           onGetContacts={getContacts}
+          onAcceptInvitation={acceptInvitation}
+          onDeclineInvitation={declineInvitation}
           onClose={() => { setShowMyProjects(false); setShowNewForm(false) }}
           showForm={showNewForm}
           onFormClose={() => setShowNewForm(false)}

@@ -61,6 +61,17 @@ export async function POST(request: Request) {
       .from('project_collaborators')
       .insert(collaborators.map(c => ({ project_id: projectId, user_id: c.user_id, role: c.role ?? null })))
     if (collabError) console.error('[POST /api/projects] collaborators error:', collabError.code)
+
+    // Crée les invitations pending dans project_members
+    const { error: memberError } = await service
+      .from('project_members')
+      .insert(collaborators.map(c => ({
+        project_id: projectId,
+        member_id:  c.user_id,
+        role:       'participant',
+        status:     'pending',
+      })))
+    if (memberError) console.error('[POST /api/projects] project_members error:', memberError.code)
   }
 
   return NextResponse.json({ project })

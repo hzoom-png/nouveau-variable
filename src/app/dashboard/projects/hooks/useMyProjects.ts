@@ -4,13 +4,25 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Project, ProjectContact, ProjectCollaborator } from '../types'
 
+export interface ProjectInvitation {
+  id: string
+  project_id: string
+  invited_at: string
+  project: Pick<Project, 'id' | 'title' | 'tagline' | 'sector' | 'stage' | 'cover_color'> & {
+    owner_name: string
+  }
+}
+
 export function useMyProjects(userId: string) {
-  const [myProjects, setMyProjects] = useState<Project[]>([])
-  const [loading, setLoading] = useState(true)
+  const [myProjects, setMyProjects]   = useState<Project[]>([])
+  const [invitations, setInvitations] = useState<ProjectInvitation[]>([])
+  const [loading, setLoading]         = useState(true)
 
   const load = useCallback(async () => {
     setLoading(true)
     const supabase = createClient()
+
+    // Projets dont je suis owner
     const { data, error } = await supabase
       .from('projects')
       .select('*')
@@ -21,7 +33,7 @@ export function useMyProjects(userId: string) {
 
     const rows = data ?? []
 
-    // Fetch collaborators separately (avoids FK join issue with auth.users)
+    // Collaborateurs (jointure manuelle pour éviter le problème FK auth.users)
     const projectIds = rows.map(p => p.id as string)
     let collabsByProject: Record<string, ProjectCollaborator[]> = {}
     if (projectIds.length) {
@@ -48,6 +60,48 @@ export function useMyProjects(userId: string) {
       ...p,
       collaborators: collabsByProject[p.id] ?? [],
     })))
+
+    // Invitations pending pour moi
+    const { data: inviteRows } = await supabase
+      .from('project_members')
+      .select('id, project_id, invited_at')
+      .eq('member_id', userId)
+      .eq('status', 'pending')
+      .order('invited_at', { ascending: false })
+
+    if (inviteRows?.length) {
+      const inviteProjectIds = inviteRows.map(r => r.project_id as string)
+      const { data: inviteProjects } = await supabase
+        .from('projects')
+        .select('id, title, tagline, sector, stage, cover_color, user_id')
+        .in('id', inviteProjectIds)
+
+      const ownerIds = [...new Set((inviteProjects ?? []).map(p => p.user_id as string))]
+      const ownerNames: Record<string, string> = {}
+      if (ownerIds.length) {
+        const { data: owners } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name, display_name')
+          .in('id', ownerIds)
+        ;(owners ?? []).forEach(o => {
+          ownerNames[o.id] = o.display_name || `${o.first_name ?? ''} ${o.last_name ?? ''}`.trim()
+        })
+      }
+
+      const projectMap = Object.fromEntries((inviteProjects ?? []).map(p => [p.id, p]))
+      setInvitations(inviteRows.map(r => ({
+        id:         r.id,
+        project_id: r.project_id,
+        invited_at: r.invited_at,
+        project: {
+          ...projectMap[r.project_id],
+          owner_name: ownerNames[projectMap[r.project_id]?.user_id] ?? '',
+        },
+      })))
+    } else {
+      setInvitations([])
+    }
+
     setLoading(false)
   }, [userId])
 
@@ -57,8 +111,6 @@ export function useMyProjects(userId: string) {
     fields: Omit<Project, 'id' | 'user_id' | 'created_at' | 'contacts_count' | 'saves_count' | 'is_saved' | 'author'>
   ): Promise<string | null> => {
     const id = crypto.randomUUID()
-
-    // Optimistic update
     const optimistic: Project = {
       ...fields, id, user_id: userId,
       created_at: new Date().toISOString(),
@@ -84,7 +136,6 @@ export function useMyProjects(userId: string) {
   }, [userId, load])
 
   const updateProject = useCallback(async (id: string, fields: Partial<Project>) => {
-    // Optimistic update
     setMyProjects(prev => prev.map(p => p.id === id ? { ...p, ...fields } : p))
 
     const res = await fetch(`/api/projects/${id}`, {
@@ -110,11 +161,28 @@ export function useMyProjects(userId: string) {
 
   const deleteProject = useCallback(async (id: string) => {
     setMyProjects(prev => prev.filter(p => p.id !== id))
-
     const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' })
     if (!res.ok) {
       const err = await res.json().catch(() => ({ error: 'Erreur inconnue' }))
       console.error('[deleteProject] error:', err)
+      await load()
+    }
+  }, [load])
+
+  const acceptInvitation = useCallback(async (projectId: string) => {
+    setInvitations(prev => prev.filter(i => i.project_id !== projectId))
+    const res = await fetch(`/api/projects/${projectId}/accept-invitation`, { method: 'POST' })
+    if (!res.ok) {
+      console.error('[acceptInvitation] error')
+      await load()
+    }
+  }, [load])
+
+  const declineInvitation = useCallback(async (projectId: string) => {
+    setInvitations(prev => prev.filter(i => i.project_id !== projectId))
+    const res = await fetch(`/api/projects/${projectId}/decline-invitation`, { method: 'POST' })
+    if (!res.ok) {
+      console.error('[declineInvitation] error')
       await load()
     }
   }, [load])
@@ -129,5 +197,10 @@ export function useMyProjects(userId: string) {
     return data ?? []
   }, [])
 
-  return { myProjects, loading, createProject, updateProject, toggleActive, deleteProject, getContacts, reload: load }
+  return {
+    myProjects, invitations, loading,
+    createProject, updateProject, toggleActive, deleteProject,
+    acceptInvitation, declineInvitation,
+    getContacts, reload: load,
+  }
 }
