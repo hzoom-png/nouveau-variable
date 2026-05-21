@@ -37,6 +37,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
     projet_nom: '', projet_website: '', projet_concept: '',
     projet_avancement: '', projet_besoins: [] as string[],
   })
+  const [otherRole, setOtherRole] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [codeParrain, setCodeParrain] = useState('')
   const [copied, setCopied] = useState(false)
@@ -119,7 +120,15 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
 
   function setField(k: string, v: string) { setForm(f => ({ ...f, [k]: v })) }
 
-  function handleStep1(e: React.FormEvent) { e.preventDefault(); setStep(2) }
+  function handleStep1(e: React.FormEvent) {
+    e.preventDefault()
+    if (form.role === 'Autre' && !otherRole.trim()) {
+      setErrorMsg('Précise ton rôle')
+      return
+    }
+    setErrorMsg('')
+    setStep(2)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -147,7 +156,10 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       }
     }
     setStatus('loading')
-    const payload: Record<string, unknown> = { ...form }
+    const payload: Record<string, unknown> = {
+      ...form,
+      role: form.role === 'Autre' ? otherRole.trim() : form.role,
+    }
     if (showProjectFields) Object.assign(payload, project)
     try {
       const res = await fetch('/api/apply', {
@@ -443,7 +455,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           [C] BOUCLE DE VALEUR
       ────────────────────────────────────────────────────────────── */}
       <section
-        id="comment-ca-marche"
+        id="a-qui-sadresse"
         className="sf sec-pad"
         style={{
           padding: '80px 40px', background: '#fff',
@@ -453,73 +465,20 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 52 }}>
             <h2 style={{
-              fontFamily: 'var(--fj)', fontWeight: 600,
+              fontFamily: 'var(--fi)', fontWeight: 600,
               fontSize: 'clamp(22px, 3.5vw, 36px)', color: 'var(--text)',
               letterSpacing: '-.02em',
             }}>
-              Comment Nouveau Variable génère de la valeur ?
+              À qui s&apos;adresse Nouveau Variable ?
             </h2>
             <p style={{
-              fontFamily: 'var(--fi)', fontSize: 16, color: 'var(--text-2)', marginTop: 12,
+              fontFamily: 'var(--fi)', fontSize: 16, color: 'var(--text-2)', marginTop: 12, maxWidth: 580, margin: '12px auto 0',
             }}>
-              Un système actif pensé dans les moindres détails
+              Nouveau Variable s&apos;adresse à 3 profils qui veulent créer de la valeur, progresser et transformer leurs revenus.
             </p>
           </div>
 
-          <div className="steps-wrap" style={{ alignItems: 'flex-start' }}>
-            {([
-              {
-                n: '01',
-                t: 'Tu rejoins et crées ton profil',
-                d: 'Annuaire, outils, opportunités : le nombre fait la force.',
-              },
-              {
-                n: '02',
-                t: 'Tu exécutes des actions commerciales',
-                d: "Missions freelance, closing & apport d'affaires via le réseau interne.",
-              },
-              {
-                n: '03',
-                t: 'Tu génères des résultats',
-                d: 'Chaque action valorise ton profil et ouvre de nouvelles opportunités.',
-              },
-              {
-                n: '04',
-                t: 'Tu fais grandir le système',
-                d: 'En parrainant d\'autres membres, tu perçois des commissions récurrentes mensuelles.',
-              },
-            ] as const).map((s, i, arr) => (
-              <div key={s.n} style={{ display: 'flex', alignItems: 'flex-start', flex: 1 }}>
-                <div style={{ flex: 1, padding: '0 8px 0 0' }}>
-                  <div style={{
-                    width: 44, height: 44, borderRadius: '50%',
-                    background: 'var(--green)', color: '#fff',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 14,
-                    marginBottom: 14, flexShrink: 0,
-                  }}>
-                    {s.n}
-                  </div>
-                  <h3 style={{
-                    fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 16,
-                    color: 'var(--text)', marginBottom: 8, lineHeight: 1.35,
-                  }}>
-                    {s.t}
-                  </h3>
-                  <p style={{
-                    fontFamily: 'var(--fi)', fontSize: 14, color: 'var(--text-2)', lineHeight: 1.7,
-                  }}>
-                    {s.d}
-                  </p>
-                </div>
-                {i < arr.length - 1 && (
-                  <div className="step-arrow" style={{ paddingTop: 14, paddingRight: 8, flexShrink: 0 }}>
-                    →
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <TargetAudienceCards />
         </div>
       </section>
 
@@ -931,6 +890,21 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                         <option>Autre</option>
                       </select>
                     </div>
+
+                    {form.role === 'Autre' && (
+                      <div>
+                        <label style={lbl}>Précise ton rôle *</label>
+                        <input
+                          type="text"
+                          className="lp-input"
+                          value={otherRole}
+                          onChange={e => setOtherRole(e.target.value)}
+                          placeholder="ex : Consultant, Manager commercial…"
+                          maxLength={100}
+                          style={inp}
+                        />
+                      </div>
+                    )}
 
                     <div>
                       <label htmlFor="xp" style={lbl}>Expérience *</label>
@@ -1401,6 +1375,77 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+const TARGET_AUDIENCE = [
+  {
+    title: 'Professionnels de la vente',
+    description: 'qui souhaitent se créer des revenus additionnels à côté de leur emploi',
+  },
+  {
+    title: 'Entrepreneurs',
+    description: 'souhaitant développer leur réseau, faire connaître leurs activités et générer des ventes via le réseau commercial NV',
+  },
+  {
+    title: 'Commerciaux',
+    description: 'souhaitant découvrir de nouveaux outils et faire un bond dans leur propre métier',
+  },
+]
+
+function TargetAudienceCards() {
+  const [hovered, setHovered] = useState<number | null>(null)
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: 24,
+    }}>
+      {TARGET_AUDIENCE.map((item, idx) => (
+        <div
+          key={idx}
+          onMouseEnter={() => setHovered(idx)}
+          onMouseLeave={() => setHovered(null)}
+          style={{
+            background: '#fff',
+            border: `1px solid ${hovered === idx ? '#2F5446' : 'var(--border)'}`,
+            borderRadius: 12,
+            padding: '28px 24px',
+            minHeight: 180,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            cursor: 'default',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            transform: hovered === idx ? 'translateY(-8px)' : 'translateY(0)',
+            boxShadow: hovered === idx
+              ? '0 12px 32px rgba(47, 84, 70, 0.12)'
+              : '0 2px 8px rgba(0,0,0,0.04)',
+          }}
+        >
+          <h3 style={{
+            fontFamily: 'var(--fi)',
+            fontSize: 16,
+            fontWeight: 600,
+            color: 'var(--text)',
+            marginBottom: 10,
+            lineHeight: 1.4,
+          }}>
+            {item.title}
+          </h3>
+          <p style={{
+            fontFamily: 'var(--fi)',
+            fontSize: 14,
+            fontWeight: 400,
+            color: 'var(--text-2)',
+            lineHeight: 1.65,
+            margin: 0,
+          }}>
+            {item.description}
+          </p>
+        </div>
+      ))}
     </div>
   )
 }
