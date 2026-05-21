@@ -1409,7 +1409,7 @@ function TargetAudienceCards() {
           onMouseLeave={() => setHovered(null)}
           style={{
             background: '#fff',
-            border: `1px solid ${hovered === idx ? '#2F5446' : 'var(--border)'}`,
+            border: `1px solid ${hovered === idx ? '#36a64f' : 'var(--border)'}`,
             borderRadius: 12,
             padding: '28px 24px',
             minHeight: 180,
@@ -1428,7 +1428,7 @@ function TargetAudienceCards() {
             fontFamily: 'var(--fi)',
             fontSize: 16,
             fontWeight: 600,
-            color: hovered === idx ? 'var(--green)' : 'var(--text)',
+            color: hovered === idx ? '#36a64f' : 'var(--text)',
             marginBottom: 10,
             lineHeight: 1.4,
             transition: 'color 0.3s ease',
