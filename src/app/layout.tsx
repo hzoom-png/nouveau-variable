@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Jost, Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/lib/theme'
+import { LenisInit } from '@/components/LenisInit'
 
 const jost = Jost({
   subsets: ['latin'],
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}} />
       </head>
       <body>
+        <LenisInit />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

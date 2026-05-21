@@ -1,26 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Rate limit simple : 3 inscriptions par IP par heure
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateLimitMap.get(ip)
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + 3_600_000 })
-    return true
-  }
-  if (entry.count >= 3) return false
-  entry.count++
-  return true
-}
+import { rateLimit } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
     ?? req.headers.get('x-real-ip')
     ?? 'unknown'
 
-  if (!checkRateLimit(ip)) {
+  const allowed = await rateLimit(`waitlist:${ip}`, 3, 3600)
+  if (!allowed) {
     return NextResponse.json(
       { error: 'Trop de tentatives. Réessaie dans 1 heure.' },
       { status: 429 }

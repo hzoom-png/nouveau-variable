@@ -3,7 +3,8 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { z } from 'zod'
 import { escHtml } from '@/lib/html-escape'
 import { rateLimit } from '@/lib/rate-limit'
-import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
+import { sendWaitlistBienvenueEmail, sendCandidatureRecueEmail } from '@/lib/email'
+import { getClubSettings } from '@/lib/settings'
 import { notifySlack } from '@/lib/slack'
 
 function getCorsHeaders() {
@@ -80,17 +81,30 @@ export async function POST(request: NextRequest) {
 
   const svc = createServiceClient()
 
-  const { data: existing } = await svc
+  const { data: existingRows } = await svc
     .from('candidatures')
-    .select('id')
+    .select('id, status, blocked')
     .eq('email', email)
-    .maybeSingle()
+    .order('created_at', { ascending: false })
+    .limit(1)
+
+  const existing = existingRows?.[0] ?? null
 
   if (existing) {
-    return NextResponse.json(
-      { error: 'already_exists', message: 'Une candidature existe déjà pour cet email.' },
-      { status: 409, headers: CORS }
-    )
+    if (existing.blocked) {
+      return NextResponse.json(
+        { error: 'blocked', message: 'Cet email ne peut plus soumettre de candidature.' },
+        { status: 403, headers: CORS }
+      )
+    }
+    if (existing.status !== 'rejected') {
+      return NextResponse.json(
+        { error: 'already_exists', message: 'Une candidature existe déjà pour cet email.' },
+        { status: 409, headers: CORS }
+      )
+    }
+    // Rejet non bloqué → on laisse repostuler, on nettoie l'ancienne candidature
+    await svc.from('candidatures').delete().eq('id', existing.id)
   }
 
   const code_parrain = await generateReferralCode(svc)
@@ -159,12 +173,16 @@ export async function POST(request: NextRequest) {
   }
 
   // Email confirmation candidat (fire & forget)
-  sendEmail({
-    to: { email, name: fullName },
-    templateId: TEMPLATE_IDS.CANDIDATURE_RECUE,
-    params: { prenom: firstname, code_parrain, current_count: String(currentCount) },
-    tags: ['candidature', 'confirmation'],
-  }).catch(err => console.error('[apply] Email candidat:', err))
+  const settings = await getClubSettings()
+  if (settings.waitlist_mode) {
+    console.log('[APPLY] Waitlist mode ON → sending waitlist email', { email })
+    sendWaitlistBienvenueEmail({ email, prenom: firstname, code_parrain })
+      .catch(err => console.error('[apply] Email waitlist:', err))
+  } else {
+    console.log('[APPLY] Waitlist mode OFF → sending candidature_recue email', { email })
+    sendCandidatureRecueEmail({ email, prenom: firstname, code_parrain, current_count: String(currentCount) })
+      .catch(err => console.error('[apply] Email candidature_recue:', err))
+  }
 
   // Ajout à la liste Brevo waitlist
   const listId = parseInt(process.env.BREVO_LIST_ID_WAITLIST ?? '0')

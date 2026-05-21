@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: 'Payload invalide' }, { status: 400 })
 
   const svc = createServiceClient()
-  const { data: cand } = await svc.from('candidatures').select('*').eq('id', parsed.data.candidatureId).single()
+  const { data: cand } = await svc.from('candidatures').select('id, email, full_name, phone, role, city, is_founder').eq('id', parsed.data.candidatureId).single()
   if (!cand) return NextResponse.json({ error: 'Candidature introuvable' }, { status: 404 })
 
   const { error } = await svc.from('candidatures')

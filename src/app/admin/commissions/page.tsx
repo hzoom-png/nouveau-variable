@@ -16,196 +16,193 @@ const C = {
   input:  '#111D18',
 }
 
-type Commission = {
+type CommissionRequest = {
   id: string
-  referrer_id: string
-  referrer_name: string
-  referred_id: string
-  referred_name: string
-  level: number
-  amount: number
-  month: string
-  status: 'pending' | 'paid'
-  paid_at: string | null
+  month_year: string
+  status: 'pending' | 'facture_recue' | 'validee' | 'payee' | 'rejetee'
+  revenue_earned: number | null
+  commission_amount: number | null
+  submitted_at: string | null
+  validated_at: string | null
+  payment_date: string | null
+  payment_reference: string | null
+  admin_notes: string | null
+  rejection_reason: string | null
+  facture_url: string | null
+  affiliate: { id: string; prenom: string; nom: string; email: string } | null
 }
 
-function fmtEur(n: number) {
+type StatusFilter = '' | 'facture_recue' | 'validee' | 'payee' | 'rejetee'
+
+const STATUS_LABELS: Record<string, string> = {
+  pending:       'En attente',
+  facture_recue: 'Facture reçue',
+  validee:       'Validée',
+  payee:         'Payée',
+  rejetee:       'Rejetée',
+}
+
+const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
+  pending:       { bg: 'rgba(200,121,10,0.15)', color: '#C8790A' },
+  facture_recue: { bg: 'rgba(74,140,111,0.2)',  color: '#4A8C6F' },
+  validee:       { bg: 'rgba(75,123,245,0.2)',  color: '#4B7BF5' },
+  payee:         { bg: 'rgba(47,84,70,0.3)',    color: '#4A8C6F' },
+  rejetee:       { bg: 'rgba(224,82,82,0.2)',   color: '#E05252' },
+}
+
+function fmtEur(n: number | null) {
+  if (n == null) return '—'
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
 }
 
-function getLast6Months(): string[] {
-  const months: string[] = []
-  const now = new Date()
-  for (let i = 0; i < 6; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-    months.push(d.toISOString().slice(0, 7))
-  }
-  return months
+function fmtDate(s: string | null) {
+  if (!s) return '—'
+  return new Date(s).toLocaleDateString('fr-FR')
 }
 
-function exportCSV(commissions: Commission[]) {
-  const rows = [
-    ['Période', 'Affilié', 'Bénéficiaire', 'Niveau', 'Montant', 'Statut'],
-    ...commissions.map(c => [c.month, c.referrer_name, c.referred_name, String(c.level), String(c.amount), c.status]),
-  ]
-  const csv = rows.map(r => r.join(';')).join('\n')
-  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `commissions-${new Date().toISOString().slice(0, 7)}.csv`
-  a.click()
-  URL.revokeObjectURL(url)
-}
+type Modal =
+  | { type: 'validate'; request: CommissionRequest }
+  | { type: 'reject';   request: CommissionRequest }
+  | { type: 'pay';      request: CommissionRequest }
 
 export default function CommissionsPage() {
-  const [commissions, setCommissions] = useState<Commission[]>([])
-  const [loading, setLoading]   = useState(true)
-  const [monthFilter, setMonthFilter] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'' | 'pending' | 'paid'>('')
-  const [selected, setSelected] = useState<Set<string>>(new Set())
-  const [working, setWorking]   = useState(false)
+  const [items, setItems]           = useState<CommissionRequest[]>([])
+  const [total, setTotal]           = useState(0)
+  const [loading, setLoading]       = useState(true)
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('facture_recue')
+  const [offset, setOffset]         = useState(0)
+  const [modal, setModal]           = useState<Modal | null>(null)
+  const [working, setWorking]       = useState(false)
 
-  const months = getLast6Months()
+  // Validate form state
+  const [validateAmount, setValidateAmount] = useState('')
+  const [validateNotes, setValidateNotes]   = useState('')
+  // Reject form state
+  const [rejectReason, setRejectReason]     = useState('')
+  // Pay form state
+  const [payRef, setPayRef]                 = useState('')
 
   const load = useCallback(async () => {
     setLoading(true)
-    const r = await fetch('/api/admin/affiliations/list')
+    const params = new URLSearchParams({ offset: String(offset) })
+    if (statusFilter) params.set('status', statusFilter)
+    const r = await fetch(`/api/admin/commissions/list?${params}`)
     const d = await r.json()
-    const raw: Commission[] = (d.commissions ?? []).map((c: Record<string, unknown>) => ({
-      id:            c.id as string,
-      referrer_id:   c.affiliate_id as string,
-      referrer_name: c.affiliate_name as string,
-      referred_id:   '',
-      referred_name: '',
-      level:         1,
-      amount:        Number(c.amount ?? 0),
-      month:         c.month as string,
-      status:        c.status as 'pending' | 'paid',
-      paid_at:       (c.paid_at as string | null) ?? null,
-    }))
-    setCommissions(raw)
+    setItems(d.items ?? [])
+    setTotal(d.total ?? 0)
     setLoading(false)
-  }, [])
+  }, [statusFilter, offset])
 
   useEffect(() => { load() }, [load])
 
-  const filtered = commissions.filter(c => {
-    if (monthFilter && c.month !== monthFilter) return false
-    if (statusFilter && c.status !== statusFilter) return false
-    return true
-  })
-
-  const pendingTotal = filtered.filter(c => c.status === 'pending').reduce((s, c) => s + c.amount, 0)
-  const paidMonthly  = filtered.filter(c => c.status === 'paid').reduce((s, c) => s + c.amount, 0)
-
-  function toggleSelect(id: string) {
-    setSelected(prev => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
+  function openValidate(req: CommissionRequest) {
+    setValidateAmount(String(req.revenue_earned ?? ''))
+    setValidateNotes('')
+    setModal({ type: 'validate', request: req })
+  }
+  function openReject(req: CommissionRequest) {
+    setRejectReason('')
+    setModal({ type: 'reject', request: req })
+  }
+  function openPay(req: CommissionRequest) {
+    setPayRef('')
+    setModal({ type: 'pay', request: req })
   }
 
-  function toggleAll() {
-    const pendingIds = filtered.filter(c => c.status === 'pending').map(c => c.id)
-    if (selected.size === pendingIds.length) {
-      setSelected(new Set())
-    } else {
-      setSelected(new Set(pendingIds))
-    }
-  }
-
-  async function markPaid(ids: string[]) {
+  async function submitValidate() {
+    if (!modal || modal.type !== 'validate') return
+    const amount = parseFloat(validateAmount)
+    if (isNaN(amount) || amount <= 0) return
     setWorking(true)
-    await Promise.all(ids.map(id =>
-      fetch('/api/admin/commissions/mark-paid', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ commissionId: id }),
-      })
-    ))
-    setSelected(new Set())
+    await fetch(`/api/admin/commissions/${modal.request.id}/validate`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ commission_amount: amount, admin_notes: validateNotes }),
+    })
+    setModal(null)
     await load()
     setWorking(false)
   }
 
-  const inputSt: React.CSSProperties = {
-    background: C.input, border: `1px solid rgba(255,255,255,0.1)`,
-    borderRadius: 8, padding: '8px 12px', fontSize: 12,
-    color: C.text, fontFamily: 'Inter, sans-serif', outline: 'none',
+  async function submitReject() {
+    if (!modal || modal.type !== 'reject' || !rejectReason.trim()) return
+    setWorking(true)
+    await fetch(`/api/admin/commissions/${modal.request.id}/reject`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rejection_reason: rejectReason }),
+    })
+    setModal(null)
+    await load()
+    setWorking(false)
   }
 
+  async function submitPay() {
+    if (!modal || modal.type !== 'pay' || !payRef.trim()) return
+    setWorking(true)
+    await fetch(`/api/admin/commissions/${modal.request.id}/mark-paid`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ payment_reference: payRef }),
+    })
+    setModal(null)
+    await load()
+    setWorking(false)
+  }
+
+  const pendingTotal  = items.filter(i => i.status === 'facture_recue').reduce((s, i) => s + (i.revenue_earned ?? 0), 0)
+  const validatedTotal = items.filter(i => i.status === 'validee').reduce((s, i) => s + (i.commission_amount ?? 0), 0)
+
+  const inputSt: React.CSSProperties = {
+    background: C.input, border: `1px solid rgba(255,255,255,0.1)`,
+    borderRadius: 8, padding: '8px 12px', fontSize: 13,
+    color: C.text, fontFamily: 'Inter, sans-serif', outline: 'none', width: '100%', boxSizing: 'border-box',
+  }
   const btnPrimary: React.CSSProperties = {
     padding: '9px 18px', borderRadius: 8, background: C.green,
     border: 'none', color: C.text, fontSize: 13, fontWeight: 600,
     fontFamily: 'Inter, sans-serif', cursor: 'pointer',
   }
-
-  const btnGhost: React.CSSProperties = {
-    ...btnPrimary, background: 'transparent',
-    border: '1px solid rgba(255,255,255,0.1)', color: C.text2,
+  const btnDanger: React.CSSProperties = {
+    ...btnPrimary, background: 'rgba(224,82,82,0.2)', border: `1px solid ${C.error}`, color: C.error,
   }
-
-  const pendingRows = filtered.filter(c => c.status === 'pending')
-
-  const action = (
-    <div style={{ display: 'flex', gap: 8 }}>
-      {selected.size > 0 && (
-        <button
-          style={{ ...btnPrimary, background: C.greenL }}
-          onClick={() => markPaid(Array.from(selected))}
-          disabled={working}
-        >
-          Marquer {selected.size} payée{selected.size > 1 ? 's' : ''}
-        </button>
-      )}
-      <button style={btnGhost} onClick={() => exportCSV(filtered)}>
-        Exporter CSV
-      </button>
-    </div>
-  )
+  const btnGhost: React.CSSProperties = {
+    ...btnPrimary, background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: C.text2,
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: C.bg }}>
-      <AdminHeader title="Commissions" action={action} />
+      <AdminHeader title="Commissions" />
 
-      <div style={{ padding: '28px 40px', maxWidth: 1100 }}>
-        {/* Filters */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 24, flexWrap: 'wrap', alignItems: 'center' }}>
-          <select value={monthFilter} onChange={e => setMonthFilter(e.target.value)} style={inputSt}>
-            <option value="">Tous les mois</option>
-            {months.map(m => (
-              <option key={m} value={m}>{m}</option>
-            ))}
-          </select>
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value as '' | 'pending' | 'paid')} style={inputSt}>
-            <option value="">Tous les statuts</option>
-            <option value="pending">En attente</option>
-            <option value="paid">Payé</option>
-          </select>
+      <div style={{ padding: '28px 40px', maxWidth: 1200 }}>
+        {/* Filtres */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
+          {(['', 'facture_recue', 'validee', 'payee', 'rejetee'] as StatusFilter[]).map(s => (
+            <button
+              key={s}
+              onClick={() => { setStatusFilter(s); setOffset(0) }}
+              style={{
+                ...btnGhost,
+                ...(statusFilter === s ? { background: C.green, color: C.text, border: `1px solid ${C.green}` } : {}),
+                fontSize: 12,
+              }}
+            >
+              {s === '' ? 'Toutes' : STATUS_LABELS[s]}
+            </button>
+          ))}
         </div>
 
         {/* Table */}
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden', marginBottom: 24 }}>
           {loading ? (
             <div style={{ padding: 40, textAlign: 'center', color: C.text2 }}>Chargement…</div>
-          ) : filtered.length === 0 ? (
-            <div style={{ padding: 40, textAlign: 'center', color: C.text2 }}>Aucune commission</div>
+          ) : items.length === 0 ? (
+            <div style={{ padding: 40, textAlign: 'center', color: C.text2 }}>Aucune demande</div>
           ) : (
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
                 <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                  <th style={{ padding: '12px 16px', width: 32 }}>
-                    <input
-                      type="checkbox"
-                      checked={selected.size === pendingRows.length && pendingRows.length > 0}
-                      onChange={toggleAll}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </th>
-                  {['Période', 'Affilié', 'Niveau', 'Montant', 'Statut', 'Date paiement', ''].map(h => (
+                  {['Affilié', 'Mois', 'Montant déclaré', 'À payer', 'Statut', 'Date', 'Actions'].map(h => (
                     <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                       {h}
                     </th>
@@ -213,79 +210,158 @@ export default function CommissionsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(c => (
-                  <tr key={c.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                    <td style={{ padding: '12px 16px' }}>
-                      {c.status === 'pending' && (
-                        <input
-                          type="checkbox"
-                          checked={selected.has(c.id)}
-                          onChange={() => toggleSelect(c.id)}
-                          style={{ cursor: 'pointer' }}
-                        />
-                      )}
-                    </td>
-                    <td style={{ padding: '12px 16px', color: C.text2 }}>{c.month}</td>
-                    <td style={{ padding: '12px 16px', color: C.text, fontWeight: 500 }}>{c.referrer_name}</td>
-                    <td style={{ padding: '12px 16px' }}>
-                      <span style={{ fontSize: 10, background: 'rgba(47,84,70,0.2)', color: C.greenL, padding: '2px 7px', borderRadius: 6, fontWeight: 700 }}>
-                        N{c.level}
-                      </span>
-                    </td>
-                    <td style={{ padding: '12px 16px', fontWeight: 700, color: C.text }}>{fmtEur(c.amount)}</td>
-                    <td style={{ padding: '12px 16px' }}>
-                      <span style={{
-                        fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10,
-                        background: c.status === 'paid' ? 'rgba(47,84,70,0.25)' : 'rgba(200,121,10,0.2)',
-                        color: c.status === 'paid' ? C.greenL : C.amber,
-                        letterSpacing: '0.06em', textTransform: 'uppercase',
-                      }}>
-                        {c.status === 'paid' ? 'Payée' : 'En attente'}
-                      </span>
-                    </td>
-                    <td style={{ padding: '12px 16px', color: C.text2, fontSize: 12 }}>
-                      {c.paid_at ? new Date(c.paid_at).toLocaleDateString('fr-FR') : '—'}
-                    </td>
-                    <td style={{ padding: '12px 16px' }}>
-                      {c.status === 'pending' && (
-                        <button
-                          onClick={() => markPaid([c.id])}
-                          disabled={working}
-                          style={{
-                            padding: '5px 12px', borderRadius: 6,
-                            background: 'rgba(47,84,70,0.2)',
-                            border: `1px solid ${C.green}`,
-                            color: C.greenL, fontSize: 11, fontWeight: 600,
-                            fontFamily: 'Inter, sans-serif', cursor: 'pointer',
-                          }}
-                        >
-                          {working ? '…' : 'Marquer payée'}
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {items.map(req => {
+                  const sc = STATUS_COLORS[req.status] ?? STATUS_COLORS.pending
+                  return (
+                    <tr key={req.id} style={{ borderBottom: `1px solid ${C.border}` }}>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div style={{ fontWeight: 600, color: C.text }}>
+                          {req.affiliate ? `${req.affiliate.prenom} ${req.affiliate.nom}` : '—'}
+                        </div>
+                        <div style={{ fontSize: 11, color: C.text2 }}>{req.affiliate?.email ?? ''}</div>
+                      </td>
+                      <td style={{ padding: '12px 16px', color: C.text2 }}>{req.month_year}</td>
+                      <td style={{ padding: '12px 16px', fontWeight: 700, color: C.text }}>{fmtEur(req.revenue_earned)}</td>
+                      <td style={{ padding: '12px 16px', fontWeight: 700, color: C.greenL }}>{fmtEur(req.commission_amount)}</td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, letterSpacing: '0.06em', textTransform: 'uppercase', background: sc.bg, color: sc.color }}>
+                          {STATUS_LABELS[req.status] ?? req.status}
+                        </span>
+                      </td>
+                      <td style={{ padding: '12px 16px', color: C.text2, fontSize: 12 }}>
+                        {fmtDate(req.submitted_at)}
+                      </td>
+                      <td style={{ padding: '12px 16px' }}>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                          {req.facture_url && (
+                            <a
+                              href={req.facture_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: C.text2, fontSize: 11, fontWeight: 600, textDecoration: 'none' }}
+                            >
+                              PDF
+                            </a>
+                          )}
+                          {req.status === 'facture_recue' && (
+                            <>
+                              <button onClick={() => openValidate(req)} style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(47,84,70,0.2)', border: `1px solid ${C.green}`, color: C.greenL, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                                Valider
+                              </button>
+                              <button onClick={() => openReject(req)} style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(224,82,82,0.1)', border: `1px solid ${C.error}`, color: C.error, fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                                Rejeter
+                              </button>
+                            </>
+                          )}
+                          {req.status === 'validee' && (
+                            <button onClick={() => openPay(req)} style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(75,123,245,0.2)', border: '1px solid #4B7BF5', color: '#4B7BF5', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                              Marquer payé
+                            </button>
+                          )}
+                          {req.status === 'payee' && req.payment_reference && (
+                            <span style={{ fontSize: 11, color: C.text2 }}>Réf: {req.payment_reference}</span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           )}
         </div>
 
-        {/* Totals */}
+        {/* Pagination */}
+        {total > 20 && (
+          <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+            <button onClick={() => setOffset(Math.max(0, offset - 20))} disabled={offset === 0} style={btnGhost}>← Précédent</button>
+            <span style={{ color: C.text2, fontSize: 13, alignSelf: 'center' }}>{offset + 1}–{Math.min(offset + 20, total)} sur {total}</span>
+            <button onClick={() => setOffset(offset + 20)} disabled={offset + 20 >= total} style={btnGhost}>Suivant →</button>
+          </div>
+        )}
+
+        {/* Totaux */}
         <div style={{ display: 'flex', gap: 16 }}>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '16px 24px', flex: 1 }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: C.amber, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
-              Total en attente
-            </p>
+            <p style={{ fontSize: 10, fontWeight: 700, color: C.amber, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Factures à valider</p>
             <p style={{ fontSize: 24, fontWeight: 800, color: C.text }}>{fmtEur(pendingTotal)}</p>
           </div>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '16px 24px', flex: 1 }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: C.greenL, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>
-              Total payé (sélection)
-            </p>
-            <p style={{ fontSize: 24, fontWeight: 800, color: C.text }}>{fmtEur(paidMonthly)}</p>
+            <p style={{ fontSize: 10, fontWeight: 700, color: '#4B7BF5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Validées, à payer</p>
+            <p style={{ fontSize: 24, fontWeight: 800, color: C.text }}>{fmtEur(validatedTotal)}</p>
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {modal && (
+        <div
+          onClick={() => setModal(null)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: 32, width: 420, maxWidth: '90vw' }}
+          >
+            {modal.type === 'validate' && (
+              <>
+                <h3 style={{ color: C.text, margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>Valider la commission</h3>
+                <p style={{ color: C.text2, fontSize: 13, margin: '0 0 20px' }}>
+                  {modal.request.affiliate?.prenom} — {modal.request.month_year}
+                  <br />Montant déclaré : {fmtEur(modal.request.revenue_earned)}
+                </p>
+                <div style={{ marginBottom: 12 }}>
+                  <label style={{ fontSize: 11, color: C.text2, fontWeight: 600, display: 'block', marginBottom: 6 }}>MONTANT À VERSER (€)</label>
+                  <input type="number" step="0.01" value={validateAmount} onChange={e => setValidateAmount(e.target.value)} style={inputSt} />
+                </div>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ fontSize: 11, color: C.text2, fontWeight: 600, display: 'block', marginBottom: 6 }}>NOTES ADMIN (optionnel)</label>
+                  <textarea value={validateNotes} onChange={e => setValidateNotes(e.target.value)} rows={3} style={{ ...inputSt, resize: 'vertical' }} />
+                </div>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                  <button onClick={() => setModal(null)} style={btnGhost}>Annuler</button>
+                  <button onClick={submitValidate} disabled={working} style={btnPrimary}>{working ? '…' : 'Valider'}</button>
+                </div>
+              </>
+            )}
+
+            {modal.type === 'reject' && (
+              <>
+                <h3 style={{ color: C.error, margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>Rejeter la demande</h3>
+                <p style={{ color: C.text2, fontSize: 13, margin: '0 0 20px' }}>
+                  {modal.request.affiliate?.prenom} — {modal.request.month_year}
+                </p>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ fontSize: 11, color: C.text2, fontWeight: 600, display: 'block', marginBottom: 6 }}>RAISON DU REJET</label>
+                  <textarea value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} placeholder="Ex: Montant déclaré ne correspond pas à la facture…" style={{ ...inputSt, resize: 'vertical' }} />
+                </div>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                  <button onClick={() => setModal(null)} style={btnGhost}>Annuler</button>
+                  <button onClick={submitReject} disabled={working || !rejectReason.trim()} style={btnDanger}>{working ? '…' : 'Rejeter'}</button>
+                </div>
+              </>
+            )}
+
+            {modal.type === 'pay' && (
+              <>
+                <h3 style={{ color: C.text, margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>Marquer comme payé</h3>
+                <p style={{ color: C.text2, fontSize: 13, margin: '0 0 20px' }}>
+                  {modal.request.affiliate?.prenom} — {modal.request.month_year}
+                  <br />Montant : {fmtEur(modal.request.commission_amount)}
+                </p>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ fontSize: 11, color: C.text2, fontWeight: 600, display: 'block', marginBottom: 6 }}>RÉFÉRENCE VIREMENT</label>
+                  <input type="text" value={payRef} onChange={e => setPayRef(e.target.value)} placeholder="Ex: VIR20260515-001" style={inputSt} />
+                </div>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+                  <button onClick={() => setModal(null)} style={btnGhost}>Annuler</button>
+                  <button onClick={submitPay} disabled={working || !payRef.trim()} style={{ ...btnPrimary, background: '#4B7BF5', border: '1px solid #4B7BF5' }}>{working ? '…' : 'Confirmer paiement'}</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

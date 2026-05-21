@@ -19,6 +19,7 @@ type Settings = {
   admin_email?: string
   welcome_message?: string
   applications_open?: boolean
+  waitlist_mode?: boolean
 }
 
 export default function ParametresPage() {
@@ -28,10 +29,11 @@ export default function ParametresPage() {
     welcome_message: '',
     applications_open: true,
   })
-  const [loading, setLoading]   = useState(true)
-  const [saving, setSaving]     = useState(false)
-  const [success, setSuccess]   = useState('')
-  const [error, setError]       = useState('')
+  const [loading, setLoading]         = useState(true)
+  const [saving, setSaving]           = useState(false)
+  const [success, setSuccess]         = useState('')
+  const [error, setError]             = useState('')
+  const [waitlistSaving, setWaitlistSaving] = useState(false)
 
   useEffect(() => {
     fetch('/api/admin/settings')
@@ -44,6 +46,23 @@ export default function ParametresPage() {
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
+
+  async function toggleWaitlistMode() {
+    setWaitlistSaving(true)
+    try {
+      const res = await fetch('/api/admin/settings/waitlist-mode', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: !settings.waitlist_mode }),
+      })
+      if (!res.ok) throw new Error('Erreur serveur')
+      setSettings(s => ({ ...s, waitlist_mode: !s.waitlist_mode }))
+    } catch {
+      alert('Impossible de modifier le mode waitlist. Réessaie.')
+    } finally {
+      setWaitlistSaving(false)
+    }
+  }
 
   async function save(e: React.FormEvent) {
     e.preventDefault()
@@ -83,6 +102,34 @@ export default function ParametresPage() {
         {loading ? (
           <p style={{ color: C.text2 }}>Chargement…</p>
         ) : (
+          <>
+          {/* Toggle waitlist mode — instant, sans bouton save */}
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: '20px 24px', marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <p style={{ fontWeight: 600, fontSize: 14, color: C.text, marginBottom: 4 }}>Mode Waitlist</p>
+              <p style={{ fontSize: 13, color: C.text2 }}>
+                {settings.waitlist_mode
+                  ? 'Actif — email "Bienvenue en waitlist" envoyé (template 16)'
+                  : 'Inactif — email "Candidature reçue" envoyé (template 3)'}
+              </p>
+            </div>
+            <button
+              onClick={toggleWaitlistMode}
+              disabled={waitlistSaving}
+              type="button"
+              style={{
+                padding: '8px 20px', borderRadius: 99, border: 'none',
+                background: settings.waitlist_mode ? C.green : 'rgba(255,255,255,0.08)',
+                color: settings.waitlist_mode ? C.text : C.text2,
+                fontWeight: 600, fontSize: 13, cursor: 'pointer',
+                opacity: waitlistSaving ? 0.5 : 1,
+                flexShrink: 0, marginLeft: 16,
+              }}
+            >
+              {waitlistSaving ? '…' : settings.waitlist_mode ? 'Désactiver' : 'Activer'}
+            </button>
+          </div>
+
           <form onSubmit={save}>
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 28, display: 'flex', flexDirection: 'column', gap: 20 }}>
 
@@ -177,6 +224,7 @@ export default function ParametresPage() {
               </div>
             </div>
           </form>
+          </>
         )}
       </div>
     </div>

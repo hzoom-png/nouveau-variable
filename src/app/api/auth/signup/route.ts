@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { createClient as createAdmin } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { rateLimit } from '@/lib/rate-limit'
 
 const Schema = z.object({
   email:     z.string().email().max(254).trim().toLowerCase(),
@@ -15,6 +16,12 @@ const Schema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
+  const allowed = await rateLimit(`signup:${ip}`, 3, 3600)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Trop de tentatives. Réessaie dans 1 heure.' }, { status: 429 })
+  }
+
   let rawBody: unknown
   try { rawBody = await request.json() } catch {
     return NextResponse.json({ error: 'JSON invalide' }, { status: 400 })

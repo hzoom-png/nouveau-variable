@@ -1,0 +1,518 @@
+{
+  "project": {
+    "name": "Nouveau Variable",
+    "type": "SaaS — Club privé pour commerciaux ambitieux",
+    "version": "1.0.0",
+    "stack_version": "Next.js 16.2.4 · React 19.2.4 · TypeScript",
+    "description": "Plateforme club privé B2B: candidature sélective, abonnement Stripe, outils IA pour commerciaux (Réplique, DealLink, KeyAccount, SideHustle), réseau de membres, système d'affiliation multi-niveau, événements, support.",
+    "repo": "https://github.com/hzoom-png/nouveau-variable",
+    "domains": {
+      "landing": "https://nouveauvariable.fr",
+      "app": "https://app.nouveauvariable.fr",
+      "admin": "https://app.nouveauvariable.fr/admin"
+    },
+    "size": {
+      "loc": "~18000",
+      "files": "240+",
+      "api_routes": 68,
+      "migrations": 19,
+      "components": 18,
+      "lib_files": 17
+    }
+  },
+
+  "tech_stack": {
+    "framework": "Next.js 16.2.4 (App Router)",
+    "runtime": "React 19.2.4 (Server Components + Client Components)",
+    "language": "TypeScript",
+    "styling": "Inline styles (primary) + Tailwind CSS (sparse) + CSS Modules via globals.css",
+    "validation": "Zod v4.4.1",
+    "auth_user": "Supabase Auth (email/password)",
+    "auth_admin": "JWT HS256 via jose v6.2.3 + TOTP via otpauth v9.5.1",
+    "database": "Supabase (PostgreSQL) via @supabase/supabase-js v2.104.0",
+    "payments": "Stripe v22.1.0",
+    "email": "Brevo via @getbrevo/brevo v3.0.4",
+    "sms": "Twilio v6.0.1",
+    "llm": "Anthropic Claude via @anthropic-ai/sdk v0.92.0",
+    "notifications": "Slack Incoming Webhooks",
+    "file_storage": "Vercel Blob",
+    "deployment": "Vercel (manuel, pas connecté à Git)",
+    "forms": "react-hook-form v7.72.1 + @hookform/resolvers v5.2.2",
+    "pdf_parsing": "pdf-parse v2.4.5",
+    "docx_parsing": "mammoth v1.12.0",
+    "qr_codes": "qrcode v1.5.4",
+    "date_handling": "date-fns v4.1.0"
+  },
+
+  "architecture": {
+    "pattern": "Monolithe Next.js (pages + API routes co-localisées)",
+    "deployment_model": "Vercel Fluid Compute (serverless functions, pas de serveur persistant)",
+    "auth_strategy": {
+      "members": "Supabase Auth session cookie (SSR via @supabase/ssr)",
+      "admin": "JWT cookie 'admin_session' (HS256, 8h expiry, TOTP 2FA requis)"
+    },
+    "database_access": {
+      "user_routes": "createClient() ou createServerClient() — respecte RLS",
+      "admin_routes": "createServiceClient() — bypasse RLS (service role key)",
+      "key_rule": "SUPABASE_SERVICE_ROLE_KEY jamais exposé côté client"
+    },
+    "rate_limiting": {
+      "persistent": "Supabase RPC upsert_rate_limit(key, max, window_sec) — fail-open",
+      "in_memory": "checkTotpRateLimit() — 5 attempts/15min/IP — reset au redeploy",
+      "limits": {
+        "POST /api/apply": "5/heure/IP",
+        "POST /api/support/create": "5/heure/email",
+        "POST /api/ai/replique": "10/minute/user",
+        "POST /api/admin/auth/verify-totp": "5 tentatives/15min/IP"
+      }
+    },
+    "external_api_pattern": "Fire & forget (.catch(() => null)) pour Slack, email, SMS — ne bloque pas la réponse principale"
+  },
+
+  "pages": {
+    "public": [
+      { "path": "/", "component": "LandingClient.tsx", "type": "ISR (revalidate 60s)", "features": ["Candidature form", "Waitlist counter", "1vs5 comparison", "Affiliation section avec fill-title effect", "Support widget"] },
+      { "path": "/auth", "type": "Static", "features": ["Login email/password", "Signup"] },
+      { "path": "/subscribe", "type": "Static", "features": ["Post-candidature subscription flow"] },
+      { "path": "/dl/[slug]", "type": "Dynamic", "features": ["DealLink public page", "View tracking"] },
+      { "path": "/p/[slug]", "type": "Dynamic", "features": ["Profil public membre", "Meeting request sans auth"] },
+      { "path": "/(legal)/*", "type": "Static", "pages": ["CGU", "CGV", "Confidentialité", "Cookies", "Mentions légales"] }
+    ],
+    "protected_dashboard": [
+      { "path": "/dashboard", "tables": ["profiles"], "features": ["Hub navigation", "Onboarding banner"] },
+      { "path": "/dashboard/members", "tables": ["profiles"], "features": ["Annuaire avec filtres secteur/ville"] },
+      { "path": "/dashboard/projects", "tables": ["projects"], "features": ["Portfolio side hustles", "Gestion collaborateurs"] },
+      { "path": "/dashboard/missions", "tables": ["missions"], "features": ["Board missions freelance"] },
+      { "path": "/dashboard/meetings", "tables": ["meeting_requests", "profiles"], "features": ["Demandes envoyées/reçues", "Accept/decline/confirm"] },
+      { "path": "/dashboard/network/n1", "tables": ["referrals", "profiles"], "features": ["Visualisation réseau N1"] },
+      { "path": "/dashboard/network/n2", "tables": ["referrals", "profiles"], "features": ["Visualisation réseau N2"] },
+      { "path": "/dashboard/affiliation", "tables": ["referrals", "commissions"], "features": ["Lien parrainage", "Simulation revenus", "Pipeline CRM"] },
+      { "path": "/dashboard/billing", "tables": ["profiles (stripe fields)"], "features": ["Historique paiements", "Portail Stripe"] },
+      { "path": "/dashboard/profile", "tables": ["profiles"], "features": ["Édition profil complet", "Upload avatar Vercel Blob"] },
+      { "path": "/dashboard/library", "tables": ["library_items"], "features": ["Bibliothèque ressources"] },
+      { "path": "/dashboard/tools/replique", "features": ["Scripts commerciaux IA", "25 tokens/génération", "Rate-limit 10/min"] },
+      { "path": "/dashboard/tools/deallink", "features": ["Builder link-in-bio", "Analyse IA deals", "QR code"] },
+      { "path": "/dashboard/tools/keyaccount", "features": ["CRM léger grands comptes", "Contacts", "Notes", "Pipeline visuel"] },
+      { "path": "/dashboard/tools/sidehustle", "features": ["Génération idées IA", "40 tokens/génération"] }
+    ],
+    "admin": [
+      { "path": "/admin/login", "auth": "Phone OTP → TOTP 2FA", "note": "2 facteurs requis" },
+      { "path": "/admin/dashboard", "features": ["KPIs temps réel", "MRR/ARR", "Courbe 12 mois", "Top tools", "Candidatures pipeline", "Modal accept/reject"] },
+      { "path": "/admin/candidatures", "features": ["Kanban drag-and-drop", "RECEIVED→REVIEWED→ACCEPTED/REJECTED"] },
+      { "path": "/admin/membres", "features": ["Search/filter", "Ajout manuel", "Tokens/points", "Activation", "Suppression confirmée"] },
+      { "path": "/admin/broadcast", "features": ["Bulk SMS Twilio", "Bulk email Brevo", "Historique"] },
+      { "path": "/admin/evenements", "features": ["CRUD événements", "Publier/dépublier"] },
+      { "path": "/admin/support-tickets", "features": ["Table filtrée", "Réponse admin → email auto"] },
+      { "path": "/admin/affiliations", "features": ["Réseau parrainage", "Commissions dues/payées"] },
+      { "path": "/admin/activite", "features": ["Audit log complet", "Toutes actions admin loguées"] },
+      { "path": "/admin/parametres", "features": ["Config globale club"] }
+    ]
+  },
+
+  "api_routes": {
+    "public": [
+      { "path": "/api/apply", "method": "POST", "auth": false, "rateLimit": "5/h/IP", "validation": "Zod", "triggers": ["INSERT candidatures", "notifySlack #admin", "notifyN8N (legacy)"], "returns": "{ candidatureId, code_parrain }" },
+      { "path": "/api/count", "method": "GET", "auth": false, "returns": "{ count: number }" },
+      { "path": "/api/waitlist", "method": "POST", "auth": false },
+      { "path": "/api/members/search", "method": "GET", "auth": false, "note": "Public directory — confirm RLS covers this" }
+    ],
+    "auth": [
+      { "path": "/api/auth/login", "method": "POST", "auth": false, "triggers": ["Supabase signInWithPassword"] },
+      { "path": "/api/auth/signup", "method": "POST", "auth": false, "triggers": ["Supabase createUser", "INSERT profiles", "INSERT referrals N1+N2 (if code_parrain)"] },
+      { "path": "/auth/callback", "method": "GET", "auth": false, "note": "OAuth callback — exchangeCodeForSession" }
+    ],
+    "user_protected": [
+      { "path": "/api/profile", "method": "PATCH", "auth": "Supabase session", "note": "Whitelist explicite des champs modifiables. Auto-génère slug unique." },
+      { "path": "/api/profile/avatar", "method": "POST", "auth": "Supabase session", "triggers": ["Upload Vercel Blob", "UPDATE profiles avatar_url"] },
+      { "path": "/api/projects", "method": "GET|POST", "auth": "Supabase session", "tables": ["projects"] },
+      { "path": "/api/projects/[id]", "method": "GET|PATCH|DELETE", "auth": "Supabase session" },
+      { "path": "/api/meetings", "method": "GET|POST", "auth": "Supabase session", "cost": "points deduction", "triggers": ["INSERT meeting_requests", "deductPoints()", "Email Brevo", "SMS Twilio"] },
+      { "path": "/api/meetings/[id]/accept", "method": "POST", "auth": "Supabase session", "triggers": ["UPDATE meeting_requests", "Email+SMS aux 2 parties"] },
+      { "path": "/api/affiliation/pipe", "method": "GET|POST", "auth": "Supabase session", "tables": ["affiliation_pipe"] },
+      { "path": "/api/support/create", "method": "POST", "auth": "optional", "rateLimit": "5/h/email", "triggers": ["INSERT support_tickets", "sendRawEmail auto-reply", "notifySlack #support"] }
+    ],
+    "ai_tools": [
+      { "path": "/api/ai/replique", "method": "POST", "auth": "Supabase session", "rateLimit": "10/min/user", "tokenCost": 25, "model": "claude-sonnet-4-6", "sdk": "@anthropic-ai/sdk" },
+      { "path": "/api/ai/deallink", "method": "POST", "auth": "Supabase session", "tokenCost": 20, "model": "claude-sonnet-4-6" },
+      { "path": "/api/ai/sidehustle", "method": "POST", "auth": "Supabase session", "tokenCost": 40, "model": "claude-sonnet-4-6" },
+      { "path": "/api/extract", "method": "POST", "auth": "Supabase session", "note": "PDF via pdf-parse, DOCX via mammoth" }
+    ],
+    "admin": [
+      { "path": "/api/admin/candidatures/list", "method": "GET", "auth": "JWT admin_session" },
+      { "path": "/api/admin/candidatures/accept", "method": "POST", "auth": "JWT admin_session", "triggers": ["UPDATE candidature status→accepted", "Email Brevo acceptation", "SMS Twilio OTP", "notifySlack #admin", "logAdminAction"] },
+      { "path": "/api/admin/candidatures/update-status", "method": "POST", "auth": "JWT admin_session", "triggers": ["UPDATE status", "Email Brevo (si rejected)", "notifySlack", "logAdminAction"] },
+      { "path": "/api/admin/candidatures/resend-acceptance", "method": "POST", "auth": "JWT admin_session", "note": "Ne change pas le statut. Interdit pour founders." },
+      { "path": "/api/admin/members/*", "method": "Various", "auth": "JWT admin_session", "routes": ["GET list (paginated)", "POST create", "GET detail", "POST update (tokens/points)", "POST activate (bypass Stripe)", "POST delete (requires confirmation)", "POST visibility"] },
+      { "path": "/api/admin/events/create", "method": "POST", "auth": "JWT admin_session" },
+      { "path": "/api/admin/events/update", "method": "PATCH", "auth": "JWT admin_session" },
+      { "path": "/api/admin/events/delete", "method": "DELETE", "auth": "JWT admin_session" },
+      { "path": "/api/admin/broadcast/send", "method": "POST", "auth": "JWT admin_session", "triggers": ["Twilio bulk SMS ou Brevo bulk email"] },
+      { "path": "/api/admin/support/tickets", "method": "GET", "auth": "JWT admin_session", "note": "Filtres: status, priority, type, search. Pagination." },
+      { "path": "/api/admin/support/tickets/[id]", "method": "PATCH", "auth": "JWT admin_session", "triggers": ["UPDATE ticket", "sendRawEmail response", "notifySlack", "logAdminAction"] },
+      { "path": "/api/admin/stats", "method": "GET", "auth": "JWT admin_session", "returns": "{ activeMembers, pendingCandidatures, MRR, ARR, mrrByMonth[], topTools[] }" },
+      { "path": "/api/admin/activity", "method": "GET", "auth": "JWT admin_session", "tables": ["admin_audit_log"] }
+    ],
+    "webhooks_and_crons": [
+      { "path": "/api/webhooks/stripe", "method": "POST", "auth": "Stripe HMAC signature", "events": { "checkout.session.completed": ["UPDATE profiles is_active=true", "INSERT commissions N1+N2", "notifySlack #admin", "sendEmail Brevo welcome"], "invoice.payment_failed": ["notifySlack #admin warning"] } },
+      { "path": "/api/stripe/create-checkout", "method": "POST", "auth": "Supabase session", "returns": "{ url: Stripe Checkout URL }" },
+      { "path": "/api/stripe/portal", "method": "POST", "auth": "Supabase session", "returns": "{ url: Stripe Portal URL }" },
+      { "path": "/api/cron/onboarding", "method": "GET", "auth": "Vercel cron", "triggers": ["sendEmail Brevo J1/J3/J7/J14 onboarding series"] },
+      { "path": "/api/cron/check-100-candidates", "method": "GET", "auth": "Vercel cron" }
+    ]
+  },
+
+  "database": {
+    "provider": "Supabase (PostgreSQL 15)",
+    "connection_strategy": {
+      "user_scoped": "createClient() — respects RLS — pour routes utilisateurs",
+      "server_ssr": "createServerClient() — pour Server Components",
+      "service": "createServiceClient() — SUPABASE_SERVICE_ROLE_KEY — bypasse tout RLS — admin uniquement"
+    },
+    "tables": [
+      {
+        "name": "auth.users",
+        "managed_by": "Supabase Auth",
+        "columns": ["id UUID PK", "email unique", "created_at"],
+        "rls": false,
+        "note": "Référencée par profiles(id FK)"
+      },
+      {
+        "name": "profiles",
+        "purpose": "Profils membres — table centrale",
+        "columns": ["id UUID FK auth.users", "first_name", "last_name", "email", "phone", "city", "role", "sector", "bio", "website", "linkedin", "tokens INT default 50", "points INT default 0", "is_active BOOL", "member_number INT unique", "referral_code VARCHAR(8)", "slug unique", "stripe_customer_id", "stripe_subscription_id", "plan", "profile_visible BOOL", "onboarding_completed BOOL", "created_at", "updated_at"],
+        "indexes": ["email", "referral_code", "is_active", "slug"],
+        "rls": "Users: SELECT/UPDATE own row only"
+      },
+      {
+        "name": "candidatures",
+        "purpose": "Pipeline de candidatures",
+        "columns": ["id UUID PK", "email UNIQUE", "nom", "prenom", "ville", "role", "secteur", "experience", "why", "code_parrain nullable FK", "status: received|reviewed|accepted|rejected", "is_founder BOOL", "admin_notes TEXT", "projet_nom", "projet_concept", "projet_avancement", "projet_besoins JSONB", "projet_website", "created_at"],
+        "indexes": ["email", "status", "code_parrain", "created_at DESC"],
+        "rls": true,
+        "migrations": ["20250001_admin_backoffice.sql", "add_candidatures_indexes.sql", "add_founder_mode.sql", "add_projet_to_candidatures.sql"]
+      },
+      {
+        "name": "events",
+        "purpose": "Événements du club",
+        "columns": ["id UUID PK", "title (max 200)", "description (max 5000)", "event_date TIMESTAMPTZ", "location (max 300)", "location_url (max 500)", "cover_image_url (max 500)", "max_attendees INT > 0", "is_published BOOL default false", "created_by UUID FK auth.users", "created_at", "updated_at"],
+        "indexes": ["event_date ASC", "is_published"],
+        "rls": "SELECT: is_published=true only",
+        "migration": "20250006_events.sql"
+      },
+      {
+        "name": "support_tickets",
+        "purpose": "Tickets support client",
+        "columns": ["id UUID PK", "user_id nullable FK auth.users", "user_email NOT NULL", "user_name NOT NULL", "ticket_type: bug|feature|billing|general|other", "subject (max 255)", "message (max 2000)", "status: open|in_progress|resolved|closed default open", "priority: low|medium|high default medium", "admin_response nullable", "admin_id nullable FK auth.users", "resolved_at nullable", "created_at", "updated_at"],
+        "indexes": ["status", "priority", "user_id", "user_email", "created_at DESC"],
+        "rls": "Users: SELECT (user_id OR email), INSERT. Admin: service client bypasses RLS",
+        "migration": "20250005_support_tickets.sql"
+      },
+      {
+        "name": "meeting_requests",
+        "purpose": "Demandes de rendez-vous entre membres",
+        "columns": ["requester_id FK profiles", "recipient_id FK profiles", "status: pending|accepted|declined|confirmed|cancelled", "points_cost INT", "message TEXT", "proposed_times JSONB"],
+        "migration": "20250002_meeting_preferences.sql"
+      },
+      {
+        "name": "projects",
+        "purpose": "Side hustles et projets des membres",
+        "rls": "Via 20250003_projects_rls_policies.sql",
+        "migration": "20250003_projects_rls_policies.sql"
+      },
+      {
+        "name": "referrals",
+        "purpose": "Chaîne de parrainage N1 et N2",
+        "columns": ["referrer_id FK profiles", "referred_id FK profiles", "level: 1|2", "created_at"],
+        "note": "2 lignes créées à l'inscription si code_parrain fourni: N1 (parrain direct) + N2 (parrain du parrain)"
+      },
+      {
+        "name": "commissions",
+        "purpose": "Commissions dues (calculées au webhook Stripe)",
+        "columns": ["id UUID PK", "payer_id FK profiles", "receiver_id FK profiles", "amount DECIMAL", "level: 1|2", "stripe_payment_id", "paid BOOL default false", "paid_at nullable", "created_at"],
+        "note": "N1: 20% du montant mensuel. N2: 10%. Marquées paid manuellement par admin.",
+        "migration": "stripe_integration.sql"
+      },
+      {
+        "name": "token_transactions",
+        "purpose": "Historique consommation tokens AI",
+        "columns": ["id", "user_id FK profiles", "tool_name: replique|deallink|sidehustle|terrain", "tokens_used INT", "created_at"],
+        "costs": { "replique": 25, "deallink": 20, "sidehustle": 40, "terrain": 30 },
+        "migration": "20250001_admin_backoffice.sql"
+      },
+      {
+        "name": "admin_audit_log",
+        "purpose": "Audit trail complet de toutes les actions admin",
+        "columns": ["id UUID PK", "admin_id UUID", "action VARCHAR", "entity_type VARCHAR", "entity_id VARCHAR nullable", "data JSONB nullable", "created_at"],
+        "note": "Appelé via logAdminAction() — fire & forget, ne bloque pas",
+        "migration": "fix_admin_audit_log.sql"
+      },
+      {
+        "name": "rate_limits",
+        "purpose": "Rate limiting persistant via Supabase RPC",
+        "note": "upsert_rate_limit(key TEXT, max_count INT, window_sec INT) → BOOL. Fail-open si RPC unavailable.",
+        "migration": "rate_limits.sql + rate_limit_fn.sql"
+      },
+      {
+        "name": "club_settings",
+        "purpose": "Configuration globale du club (singleton)",
+        "migration": "fix_club_settings.sql"
+      },
+      {
+        "name": "sidehustle_conversations",
+        "purpose": "Historique des sessions SideHustle AI par membre",
+        "migration": "20250004_sidehustle.sql"
+      }
+    ]
+  },
+
+  "external_services": [
+    {
+      "name": "Stripe",
+      "role": "Paiements et abonnements",
+      "sdk": "stripe v22.1.0",
+      "env_vars": ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET (Production only — ne pas mettre en Preview)", "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"],
+      "features": ["Checkout sessions (pre-fill email)", "Portail client", "Abonnements mensuels/annuels"],
+      "webhook_events": {
+        "checkout.session.completed": "Activer membre + calculer commissions + email bienvenue + Slack",
+        "invoice.payment_failed": "Notification Slack #admin"
+      },
+      "used_in": ["/api/stripe/create-checkout", "/api/stripe/portal", "/api/webhooks/stripe"]
+    },
+    {
+      "name": "Brevo",
+      "role": "Emails transactionnels",
+      "sdk": "@getbrevo/brevo v3.0.4",
+      "env_vars": ["BREVO_API_KEY", "BREVO_TPL_CANDIDATURE_RECUE", "BREVO_TPL_CANDIDATURE_ACCEPTEE", "BREVO_TPL_CANDIDATURE_REFUSEE", "BREVO_TPL_ONBOARDING_J1/J3/J7/J14", "BREVO_TPL_COMMISSION_MENSUELLE", "BREVO_TPL_RENOUVELLEMENT", "BREVO_TPL_REFERRAL_COMMISSION", "BREVO_TPL_SUPPORT_RECUE", "BREVO_TPL_SUPPORT_REPONSE"],
+      "helpers": {
+        "sendEmail()": "Template-based avec params",
+        "sendRawEmail()": "HTML direct sans template (auto-reply support, réponse admin)"
+      },
+      "total_templates": 15,
+      "used_in": ["Candidature flow", "Payment flow", "Meeting flow", "Support flow", "Onboarding cron"]
+    },
+    {
+      "name": "Twilio",
+      "role": "SMS",
+      "sdk": "twilio v6.0.1",
+      "env_vars": ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_FROM"],
+      "use_cases": ["SMS OTP après acceptation candidature", "SMS confirmation meeting", "Broadcast admin"],
+      "helper": "src/lib/sms.ts"
+    },
+    {
+      "name": "Anthropic Claude",
+      "role": "LLM pour outils IA",
+      "sdk": "@anthropic-ai/sdk v0.92.0",
+      "env_vars": ["ANTHROPIC_API_KEY"],
+      "model": "claude-sonnet-4-6",
+      "tools": {
+        "Réplique": { "cost_tokens": 25, "route": "/api/ai/replique", "rate_limit": "10/min/user" },
+        "SideHustle": { "cost_tokens": 40, "route": "/api/ai/sidehustle" },
+        "DealLink": { "cost_tokens": 20, "route": "/api/ai/deallink" }
+      }
+    },
+    {
+      "name": "Slack",
+      "role": "Notifications internes",
+      "env_vars": ["SLACK_WEBHOOK_ADMIN", "SLACK_WEBHOOK_SUPPORT"],
+      "channels": {
+        "#admin": ["Nouvelle candidature", "Candidature acceptée", "Candidature refusée", "Paiement reçu", "Paiement échoué"],
+        "#support": ["Nouveau ticket support", "Réponse admin envoyée", "Ticket résolu"]
+      },
+      "pattern": "Fire & forget — .catch(() => null) — ne bloque jamais la réponse principale",
+      "helper": "src/lib/slack.ts"
+    },
+    {
+      "name": "Supabase",
+      "role": "Base de données + Auth + Storage",
+      "env_vars": ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "SUPABASE_SERVICE_ROLE_KEY (server-only, jamais exposé)"],
+      "features": ["PostgreSQL managé", "RLS sur toutes les tables", "Auth email/password", "Storage avatars et logos"],
+      "clients": {
+        "createClient()": "Client-side, user-scoped, respecte RLS",
+        "createServerClient()": "SSR, user-scoped via cookies",
+        "createServiceClient()": "Admin-only, service role, bypasse RLS"
+      }
+    },
+    {
+      "name": "Vercel",
+      "role": "Déploiement + Vercel Blob + Crons",
+      "note_important": "PAS connecté à Git — chaque deploy est manuel avec vercel --prod PUIS vercel alias set sur les 3 domaines",
+      "domains_manual_alias": ["app.nouveauvariable.fr", "nouveauvariable.fr", "www.nouveauvariable.fr"],
+      "crons": ["/api/cron/onboarding", "/api/cron/check-100-candidates"],
+      "blob": "Vercel Blob pour avatars (profiles.avatar_url) et logos DealLink"
+    }
+  ],
+
+  "data_flows": [
+    {
+      "name": "Candidature Flow",
+      "trigger": "User remplit le formulaire de candidature sur /",
+      "steps": [
+        "POST /api/apply (Zod validation + rate-limit 5/h/IP)",
+        "INSERT candidatures (statut: received)",
+        "notifySlack #admin 'Nouvelle candidature'",
+        "Admin voit dans /admin/candidatures (Kanban)",
+        "Admin clique Accepter → POST /api/admin/candidatures/accept",
+        "UPDATE candidature statut → accepted",
+        "Email Brevo 'Acceptation + lien Stripe Checkout' → user",
+        "SMS Twilio OTP → user",
+        "notifySlack #admin 'Candidature acceptée'",
+        "logAdminAction(accept)",
+        "User paie via Stripe Checkout",
+        "POST /api/webhooks/stripe (vérification HMAC signature)",
+        "checkout.session.completed: UPDATE profiles is_active=true",
+        "Résolution chaîne parrainage → INSERT commissions N1+N2",
+        "notifySlack #admin 'Paiement reçu'",
+        "sendEmail Brevo 'Bienvenue'"
+      ]
+    },
+    {
+      "name": "AI Tool Usage Flow (Réplique)",
+      "trigger": "Member accède à /dashboard/tools/replique",
+      "steps": [
+        "Remplit formulaire (prospect, contexte, objections)",
+        "POST /api/ai/replique",
+        "requireSession() — 401 si non authentifié",
+        "rateLimit('replique:{user_id}', 10, 60) via Supabase RPC",
+        "consumeTokens(user_id, 25) via Supabase RPC atomique",
+        "Appel Anthropic claude-sonnet-4-6",
+        "Retour JSON structuré (script + objections + phrases clés)",
+        "INSERT token_transactions (historique)"
+      ]
+    },
+    {
+      "name": "Support Ticket Flow",
+      "trigger": "User clique le widget SupportWidget (bottom-right du dashboard)",
+      "steps": [
+        "Ouvre popup animée (scale + opacity)",
+        "Remplit type + sujet + message",
+        "POST /api/support/create (rate-limit 5/h/email)",
+        "INSERT support_tickets (open, medium priority)",
+        "sendRawEmail auto-réponse Brevo → user",
+        "notifySlack #support 'Nouveau ticket'",
+        "Admin voit dans /admin/support-tickets",
+        "Admin répond → PATCH /api/admin/support/tickets/[id]",
+        "UPDATE ticket (admin_response, statut → in_progress auto)",
+        "sendRawEmail réponse admin → user",
+        "notifySlack #support 'Réponse envoyée'",
+        "Admin marque résolu → statut → resolved + resolved_at",
+        "notifySlack #support 'Ticket résolu'",
+        "logAdminAction(update_support_ticket)"
+      ]
+    },
+    {
+      "name": "Meeting Request Flow",
+      "trigger": "Member voit un profil dans /dashboard/members",
+      "steps": [
+        "Clique 'Demander un rendez-vous' (MeetingRequestModal)",
+        "POST /api/meetings (check: pas de meeting pending existant)",
+        "Déduction points (deductPoints() Supabase)",
+        "INSERT meeting_requests (pending)",
+        "Email Brevo + SMS Twilio au destinataire",
+        "Destinataire accepte → POST /api/meetings/[id]/accept",
+        "UPDATE statut → confirmed",
+        "Email + SMS de confirmation aux 2 parties"
+      ]
+    }
+  ],
+
+  "components": {
+    "shared": [
+      { "name": "SupportWidget", "path": "src/components/SupportWidget.tsx", "type": "Client Component (floating)", "desc": "Widget chat bottom-right. Popup animée scale+opacity. POST /api/support/create. Auto-close 2.8s après succès." },
+      { "name": "ThemeToggle", "path": "src/components/ThemeToggle.tsx", "type": "Client Component", "desc": "Toggle dark/light mode via data-theme sur document.documentElement." },
+      { "name": "TokenBalance", "path": "src/components/TokenBalance.tsx", "type": "Client Component" },
+      { "name": "NvLogo", "path": "src/components/NvLogo.tsx", "type": "Server Component" },
+      { "name": "Avatar", "path": "src/components/ui/Avatar.tsx" },
+      { "name": "Badge", "path": "src/components/ui/Badge.tsx" },
+      { "name": "Toast", "path": "src/components/ui/Toast.tsx" },
+      { "name": "CopyButton", "path": "src/components/ui/CopyButton.tsx" }
+    ],
+    "feature": [
+      { "name": "AffiliationPipe", "path": "src/components/affiliation/AffiliationPipe.tsx", "desc": "Visualisation pipeline CRM affiliation" },
+      { "name": "AffiliationSimulator", "path": "src/components/affiliation/AffiliationSimulator.tsx", "desc": "Simulateur de revenus d'affiliation" },
+      { "name": "MeetingModal", "path": "src/components/meetings/MeetingModal.tsx" },
+      { "name": "MeetingRequestModal", "path": "src/components/meetings/MeetingRequestModal.tsx" },
+      { "name": "WelcomeTour", "path": "src/components/onboarding/WelcomeTour.tsx", "desc": "Onboarding guided tour pour nouveaux membres" },
+      { "name": "MobileSwipeFeed", "path": "src/components/MobileSwipeFeed.tsx" },
+      { "name": "SectorCloud", "path": "src/components/SectorCloud.tsx" }
+    ]
+  },
+
+  "lib_helpers": {
+    "src/lib/admin-auth.ts": "JWT HS256 admin sessions. createAdminSession(), verifyAdminSession(), requireAdminAuth(), logAdminAction(), checkTotpRateLimit() (in-memory 5/15min).",
+    "src/lib/email.ts": "Brevo: sendEmail() template-based, sendRawEmail() HTML direct. TEMPLATE_IDS map from env vars.",
+    "src/lib/slack.ts": "notifySlack({title, fields, color, channel: 'admin'|'support'}). Fire & forget. AbortSignal.timeout(5000).",
+    "src/lib/sms.ts": "Twilio SMS wrapper.",
+    "src/lib/rate-limit.ts": "rateLimit(key, max, windowSeconds) via Supabase RPC upsert_rate_limit. Fail-open.",
+    "src/lib/tokens.ts": "consumeTokens(userId, amount) via Supabase RPC consume_tokens. Atomique.",
+    "src/lib/supabase/service.ts": "createServiceClient() avec SUPABASE_SERVICE_ROLE_KEY.",
+    "src/lib/supabase/client.ts": "createClient() browser-side.",
+    "src/lib/supabase/server.ts": "createServerClient() SSR.",
+    "src/lib/types.ts": "Types TypeScript partagés.",
+    "src/lib/constants.ts": "Constantes globales.",
+    "src/lib/avatar.ts": "Helpers génération avatar initiales/couleur.",
+    "src/lib/dateUtils.ts": "Formatage dates.",
+    "src/lib/html-escape.ts": "Sanitisation HTML.",
+    "src/lib/n8n.ts": "Legacy — notifyN8N() encore appelé dans /api/apply."
+  },
+
+  "constraints": {
+    "security": [
+      "SUPABASE_SERVICE_ROLE_KEY : server-only, jamais dans NEXT_PUBLIC_",
+      "STRIPE_WEBHOOK_SECRET : Production only (pas de Preview/Development)",
+      "ADMIN_JWT_SECRET : Production only",
+      "RLS activé sur toutes les tables Supabase",
+      "requireAdminAuth() sur toutes les routes /api/admin/*",
+      "Stripe webhook: vérification signature HMAC obligatoire",
+      "Input validation Zod sur tous les POST",
+      "Ne jamais exposer les clés API dans le code source"
+    ],
+    "performance": [
+      "Landing ISR revalidate 60s",
+      "Rate limiting persistant via Supabase pour résister aux redéploiements",
+      "Fire & forget pour Slack/email/SMS (ne bloque pas la réponse principale)",
+      "consumeTokens() atomique via RPC (évite double-spend)"
+    ],
+    "deployment": [
+      "Pas de connexion Git — deploy manuel: vercel --prod",
+      "Après chaque deploy: vercel alias set <url> app.nouveauvariable.fr PUIS nouveauvariable.fr PUIS www.nouveauvariable.fr (3 commandes)",
+      "Migrations SQL appliquées manuellement via Supabase SQL Editor"
+    ],
+    "business": [
+      "Lien d'affiliation permanent même après expiration abonnement",
+      "Prix communiqué uniquement après acceptation candidature",
+      "Founders (is_founder=true) exemptés du process d'acceptation standard",
+      "N1: 20% commission, N2: 10% commission"
+    ]
+  },
+
+  "known_issues": [
+    { "severity": "medium", "area": "Email sending", "issue": "9 fichiers font des fetch() directs vers api.brevo.com au lieu d'utiliser sendRawEmail() de src/lib/email.ts", "impact": "Code dupliqué, gestion d'erreur inconsistante", "fix": "Centraliser dans email.ts" },
+    { "severity": "medium", "area": "Auth", "issue": "Pas de middleware.ts — toute l'auth est gérée en-route", "impact": "Risque d'oubli sur une nouvelle route", "fix": "Ajouter middleware.ts pour protéger /dashboard/* et /admin/* au niveau edge" },
+    { "severity": "medium", "area": "Database", "issue": "Points/tokens non transactionnels: deductPoints() puis INSERT transaction séparés", "impact": "Race condition possible en cas d'erreur entre les deux opérations", "fix": "Utiliser une transaction Supabase ou une RPC qui fait les 2 atomiquement" },
+    { "severity": "low", "area": "Rate limiting", "issue": "checkTotpRateLimit() utilise un Map in-memory", "impact": "Reset au redéploiement — efficacité réduite en serverless (chaque instance a son propre état)", "fix": "Utiliser le rate limiter Supabase RPC (déjà disponible)" },
+    { "severity": "low", "area": "Performance", "issue": ".select('*') dans 15+ fichiers", "impact": "Over-fetching — données sensibles potentiellement exposées si schéma change", "fix": "Sélectionner explicitement les colonnes nécessaires" },
+    { "severity": "low", "area": "Deployment", "issue": "3 domaines re-aliasés manuellement après chaque deploy", "impact": "Oubli = domaine sur ancienne version", "fix": "Configurer les 3 comme Production Domains dans le dashboard Vercel" },
+    { "severity": "low", "area": "Testing", "issue": "Pas de tests E2E (Playwright) sur les flows critiques", "impact": "Régressions silencieuses possibles", "fix": "Ajouter tests Playwright pour: candidature→payment, support ticket, AI tool usage" },
+    { "severity": "info", "area": "Legacy", "issue": "src/lib/n8n.ts encore référencé dans /api/apply", "impact": "Aucun (fire & forget), mais code mort à nettoyer" }
+  ],
+
+  "architecture_decisions": [
+    { "decision": "Monolithe Next.js plutôt que micro-services", "rationale": "Équipe solo, deploy simplifié, co-location pages+API, Vercel natif", "tradeoffs": "Cold starts, pas de scaling indépendant des services", "verdict": "Correct pour la taille actuelle" },
+    { "decision": "Supabase plutôt que PostgreSQL custom", "rationale": "Auth managé, RLS, migrations, Storage, real-time inclus", "tradeoffs": "Vendor lock-in, coût à l'échelle", "verdict": "Excellent choix pour cette phase" },
+    { "decision": "2 systèmes d'auth séparés (Supabase Auth pour membres, JWT+TOTP pour admin)", "rationale": "Isolation totale admin/membres — un token membre compromis ne donne pas accès admin", "tradeoffs": "2 systèmes à maintenir", "verdict": "Bonne décision de sécurité" },
+    { "decision": "Fire & forget pour Slack/email/SMS", "rationale": "Ne pas bloquer la réponse HTTP sur des services externes lents", "tradeoffs": "Difficile à debugger, pas de retry automatique", "verdict": "Acceptable — ajouter Sentry pour observer les erreurs" },
+    { "decision": "Inline styles plutôt que Tailwind pour les composants", "rationale": "Cohérence avec le code existant, évite les conflits de spécificité", "tradeoffs": "Moins lisible, pas de design tokens Tailwind", "verdict": "Acceptable — globals.css + !important pour les hover states" },
+    { "decision": "Abandon N8N/Airtable → code Next.js direct", "rationale": "Webhooks N8N peu fiables, difficiles à debugger en prod", "tradeoffs": "Plus de code à maintenir", "lesson": "Low-code adapté aux flows non-critiques uniquement" }
+  ],
+
+  "recommendations": [
+    { "priority": "high", "effort": "2h", "area": "Middleware auth", "action": "Créer middleware.ts à la racine pour protéger /dashboard/* et /admin/* au niveau edge — filet de sécurité si une route oublie requireAdminAuth()" },
+    { "priority": "high", "effort": "1h", "area": "Monitoring", "action": "Installer Sentry (@sentry/nextjs) pour tracker les erreurs silencieuses des fire & forget (email, SMS, Slack)" },
+    { "priority": "high", "effort": "3h", "area": "Domain aliases", "action": "Configurer nouveauvariable.fr, www.nouveauvariable.fr, app.nouveauvariable.fr comme Production Domains dans Vercel dashboard — élimine les 3 alias manuels après chaque deploy" },
+    { "priority": "medium", "effort": "4h", "area": "Transactions atomiques", "action": "Créer une RPC Supabase deduct_points_and_log(user_id, amount, reason) pour atomiser la déduction points + log" },
+    { "priority": "medium", "effort": "2h", "area": "Email centralization", "action": "Remplacer les 9 fetch() directs vers Brevo par sendRawEmail() depuis src/lib/email.ts" },
+    { "priority": "medium", "effort": "6h", "area": "E2E Tests", "action": "Playwright: tester candidature→payment, support ticket, AI tool (Réplique), meeting request" },
+    { "priority": "low", "effort": "1h", "area": "TOTP rate limit", "action": "Migrer checkTotpRateLimit() de in-memory vers Supabase RPC pour résister aux redéploiements" },
+    { "priority": "low", "effort": "3h", "area": "Select optimization", "action": "Remplacer select('*') par sélection explicite dans les 15+ fichiers concernés" }
+  ]
+}

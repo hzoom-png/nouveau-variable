@@ -9,6 +9,7 @@ const Schema = z.object({
   id:         z.string().uuid(),
   status:     z.enum(['received', 'reviewed', 'accepted', 'rejected']),
   admin_note: z.string().max(2000).optional(),
+  blocked:    z.boolean().optional(),
 })
 
 export async function POST(request: NextRequest) {
@@ -18,11 +19,12 @@ export async function POST(request: NextRequest) {
   const parsed = Schema.safeParse(await request.json())
   if (!parsed.success) return NextResponse.json({ error: 'Payload invalide' }, { status: 400 })
 
-  const { id, status, admin_note } = parsed.data
+  const { id, status, admin_note, blocked } = parsed.data
   const svc = createServiceClient()
 
   const update: Record<string, unknown> = { status }
   if (admin_note !== undefined) update.admin_note = admin_note
+  if (blocked !== undefined) update.blocked = blocked
 
   const { error } = await svc.from('candidatures').update(update).eq('id', id)
   if (error) {

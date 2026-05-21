@@ -35,6 +35,7 @@ type Candidature = {
   created_at: string
   is_founder?: boolean
   founder_activated_at?: string | null
+  blocked?: boolean
 }
 
 const COLUMNS: { key: Status; label: string; color: string; bgHex: string }[] = [
@@ -89,6 +90,7 @@ export default function CandidaturesPage() {
   const [selected, setSelected]   = useState<Candidature | null>(null)
   const [note, setNote]           = useState('')
   const [working, setWorking]     = useState(false)
+  const [blockEmail, setBlockEmail] = useState(false)
   const [error, setError]         = useState('')
   const [successMsg, setSuccessMsg] = useState('')
   const [view, setView]           = useState<'table' | 'kanban'>('table')
@@ -117,21 +119,27 @@ export default function CandidaturesPage() {
   function open(c: Candidature) {
     setSelected(c)
     setNote(c.admin_note ?? '')
+    setBlockEmail(c.blocked ?? false)
     setError('')
     setSuccessMsg('')
   }
 
-  async function updateStatus(c: Candidature, status: Status) {
+  async function updateStatus(c: Candidature, status: Status, blocked?: boolean) {
     setWorking(true)
     setError('')
+    const body: Record<string, unknown> = { id: c.id, status, admin_note: note }
+    if (blocked !== undefined) body.blocked = blocked
     const res = await fetch('/api/admin/candidatures/update-status', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: c.id, status, admin_note: note }),
+      body: JSON.stringify(body),
     })
     if (res.ok) {
       await load()
-      setSelected(prev => prev?.id === c.id ? { ...prev, status, admin_note: note } : prev)
+      setSelected(prev => prev?.id === c.id
+        ? { ...prev, status, admin_note: note, ...(blocked !== undefined ? { blocked } : {}) }
+        : prev)
+      if (blocked !== undefined) setBlockEmail(blocked)
     } else {
       const d = await res.json()
       setError(d.error ?? 'Erreur')
@@ -450,7 +458,7 @@ export default function CandidaturesPage() {
             {error && <p style={{ color: C.error, fontSize: 12, marginBottom: 12 }}>{error}</p>}
             {successMsg && <p style={{ color: C.greenL, fontSize: 12, marginBottom: 12 }}>✓ {successMsg}</p>}
 
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
               {selected.status !== 'accepted' && (
                 <button
                   style={{ ...btnPrimary, background: C.greenL }}
@@ -463,12 +471,35 @@ export default function CandidaturesPage() {
               {selected.status !== 'rejected' && (
                 <button
                   style={{ ...btnPrimary, background: 'rgba(224,82,82,0.15)', color: C.error, border: `1px solid rgba(224,82,82,0.3)` }}
-                  onClick={() => updateStatus(selected, 'rejected')}
+                  onClick={() => updateStatus(selected, 'rejected', blockEmail)}
                   disabled={working}
                 >
-                  Refuser
+                  {working ? '…' : 'Refuser'}
                 </button>
               )}
+            </div>
+
+            {/* Bloquer l'email */}
+            <div style={{ marginTop: 12 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={blockEmail}
+                  onChange={async e => {
+                    const val = e.target.checked
+                    setBlockEmail(val)
+                    if (selected.status === 'rejected') {
+                      await updateStatus(selected, 'rejected', val)
+                    }
+                  }}
+                  style={{ width: 14, height: 14, accentColor: C.error, cursor: 'pointer' }}
+                />
+                <span style={{ fontSize: 12, color: blockEmail ? C.error : C.text2 }}>
+                  {blockEmail
+                    ? 'Email bloqué — ne peut plus soumettre de candidature'
+                    : 'Bloquer les nouvelles candidatures pour cet email'}
+                </span>
+              </label>
             </div>
 
             {/* ── MODE FOUNDER ── */}

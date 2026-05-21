@@ -25,6 +25,17 @@ export async function POST(req: NextRequest) {
   // À partir d'ici, l'événement est authentifié
   const svc = createServiceClient()
 
+  // ── IDEMPOTENCY — ignorer les events déjà traités (retries Stripe) ──
+  const { data: alreadyProcessed } = await svc
+    .from('processed_stripe_events')
+    .select('stripe_event_id')
+    .eq('stripe_event_id', event.id)
+    .maybeSingle()
+
+  if (alreadyProcessed) {
+    return NextResponse.json({ received: true, duplicate: true })
+  }
+
   // ── PAIEMENT RÉUSSI ──────────────────────────────────────────────
   if (event.type === 'checkout.session.completed') {
     const session    = event.data.object as Stripe.Checkout.Session
@@ -69,92 +80,32 @@ export async function POST(req: NextRequest) {
         tags: ['paiement', 'bienvenue'],
       })
 
-      const commN1 = plan === 'annual' ? 89.90 : 9.70
-      const commN2 = plan === 'annual' ? 44.95 : 4.85
       const paymentIntent = session.payment_intent as string | null
 
+      // Commissions calculées manuellement via /dashboard/commissions (système de factures)
+      // Les affiliés soumettent leurs factures chaque mois pour validation admin.
+
+      // Notifier le parrain N1 qu'il a un nouveau filleul (sans calcul de commission)
       if (profile.referred_by) {
-        const { data: parrain1 } = await svc
+        const { data: parrain1Profile } = await svc
           .from('profiles')
-          .select('id, referred_by')
+          .select('id, email, first_name')
           .eq('referral_code', profile.referred_by)
           .single()
 
-        // Anti-fraude : parrain != payeur
-        if (parrain1 && parrain1.id !== profile.id) {
-          const { count: existN1 } = await svc
-            .from('affiliate_commissions')
-            .select('id', { count: 'exact', head: true })
-            .eq('payer_user_id', profile.id)
-            .eq('beneficiary_id', parrain1.id)
-            .eq('level', 1)
-            .eq('stripe_payment_intent', paymentIntent ?? '')
-
-          if ((existN1 ?? 0) === 0) {
-            await svc.from('affiliate_commissions').insert({
-              payer_user_id:         profile.id,
-              beneficiary_id:        parrain1.id,
-              level:                 1,
-              plan,
-              amount_eur:            commN1,
-              status:                'pending',
-              stripe_payment_intent: paymentIntent,
-            })
-
-            // 2f — Notifier le parrain N1
-            const { data: parrain1Profile } = await svc
-              .from('profiles')
-              .select('email, first_name')
-              .eq('id', parrain1.id)
-              .single()
-
-            if (parrain1Profile) {
-              await sendEmail({
-                to: { email: parrain1Profile.email, name: parrain1Profile.first_name },
-                templateId: TEMPLATE_IDS.NOUVEAU_FILLEUL,
-                params: {
-                  prenom:           parrain1Profile.first_name,
-                  filleul_prenom:   prenom,
-                  commission:       commN1.toString(),
-                  date_versement:   new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-                    .toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }),
-                  lien_affiliation: 'https://app.nouveauvariable.fr/dashboard/affiliation',
-                },
-                tags: ['affiliation', 'commission'],
-              })
-            }
-          }
-
-          if (parrain1.referred_by) {
-            const { data: parrain2 } = await svc
-              .from('profiles')
-              .select('id')
-              .eq('referral_code', parrain1.referred_by)
-              .single()
-
-            // Anti-fraude : parrain2 != payeur et != parrain1
-            if (parrain2 && parrain2.id !== profile.id && parrain2.id !== parrain1.id) {
-              const { count: existN2 } = await svc
-                .from('affiliate_commissions')
-                .select('id', { count: 'exact', head: true })
-                .eq('payer_user_id', profile.id)
-                .eq('beneficiary_id', parrain2.id)
-                .eq('level', 2)
-                .eq('stripe_payment_intent', paymentIntent ?? '')
-
-              if ((existN2 ?? 0) === 0) {
-                await svc.from('affiliate_commissions').insert({
-                  payer_user_id:         profile.id,
-                  beneficiary_id:        parrain2.id,
-                  level:                 2,
-                  plan,
-                  amount_eur:            commN2,
-                  status:                'pending',
-                  stripe_payment_intent: paymentIntent,
-                })
-              }
-            }
-          }
+        if (parrain1Profile && parrain1Profile.id !== profile.id) {
+          sendEmail({
+            to: { email: parrain1Profile.email, name: parrain1Profile.first_name },
+            templateId: TEMPLATE_IDS.NOUVEAU_FILLEUL,
+            params: {
+              prenom:           parrain1Profile.first_name,
+              filleul_prenom:   prenom,
+              commission:       '',
+              date_versement:   '',
+              lien_affiliation: 'https://app.nouveauvariable.fr/dashboard/affiliation',
+            },
+            tags: ['affiliation', 'nouveau-filleul'],
+          }).catch(() => null)
         }
       }
 
@@ -287,6 +238,12 @@ export async function POST(req: NextRequest) {
       }
     }
   }
+
+  // Marquer l'event comme traité (upsert pour résistance aux race conditions)
+  await svc
+    .from('processed_stripe_events')
+    .upsert({ stripe_event_id: event.id, event_type: event.type })
+    .eq('stripe_event_id', event.id)
 
   return NextResponse.json({ received: true })
 }

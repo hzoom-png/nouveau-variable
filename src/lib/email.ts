@@ -44,6 +44,7 @@ export async function sendEmail(opts: SendEmailOptions): Promise<boolean> {
 
 // IDs des templates — à remplir après import dans Brevo
 export const TEMPLATE_IDS = {
+  WAITLIST_BIENVENUE:   16,
   CANDIDATURE_RECUE:    parseInt(process.env.BREVO_TPL_CANDIDATURE_RECUE    ?? '0'),
   CANDIDATURE_ACCEPTEE: parseInt(process.env.BREVO_TPL_CANDIDATURE_ACCEPTEE ?? '0'),
   CANDIDATURE_REFUSEE:  parseInt(process.env.BREVO_TPL_CANDIDATURE_REFUSEE  ?? '0'),
@@ -61,6 +62,44 @@ export const TEMPLATE_IDS = {
   SUPPORT_RECUE:        parseInt(process.env.BREVO_TPL_SUPPORT_RECUE        ?? '0'),
   SUPPORT_REPONSE:      parseInt(process.env.BREVO_TPL_SUPPORT_REPONSE      ?? '0'),
   FOUNDER_ACCES_VIP:    parseInt(process.env.BREVO_TPL_FOUNDER_ACCES_VIP    ?? '0'),
+  // Commissions manuelles
+  COMMISSION_FACTURE_ADMIN: parseInt(process.env.BREVO_TPL_COMMISSION_FACTURE_ADMIN ?? '0'),
+  COMMISSION_VALIDEE:       parseInt(process.env.BREVO_TPL_COMMISSION_VALIDEE       ?? '0'),
+  COMMISSION_REJETEE:       parseInt(process.env.BREVO_TPL_COMMISSION_REJETEE       ?? '0'),
+  COMMISSION_PAYEE:         parseInt(process.env.BREVO_TPL_COMMISSION_PAYEE         ?? '0'),
+}
+
+export async function sendWaitlistBienvenueEmail(params: {
+  email: string
+  prenom: string
+  code_parrain: string
+}): Promise<void> {
+  console.log('[BREVO] sendWaitlistBienvenueEmail', { email: params.email.slice(0, 4) + '****' })
+  await sendEmail({
+    to: { email: params.email, name: params.prenom },
+    templateId: TEMPLATE_IDS.WAITLIST_BIENVENUE,
+    params: { prenom: params.prenom, code_parrain: params.code_parrain },
+    tags: ['waitlist', 'bienvenue'],
+  })
+}
+
+export async function sendCandidatureRecueEmail(params: {
+  email: string
+  prenom: string
+  code_parrain: string
+  current_count?: string
+}): Promise<void> {
+  console.log('[BREVO] sendCandidatureRecueEmail', { email: params.email.slice(0, 4) + '****' })
+  await sendEmail({
+    to: { email: params.email, name: params.prenom },
+    templateId: TEMPLATE_IDS.CANDIDATURE_RECUE,
+    params: {
+      prenom: params.prenom,
+      code_parrain: params.code_parrain,
+      current_count: params.current_count ?? '0',
+    },
+    tags: ['candidature', 'confirmation'],
+  })
 }
 
 export async function sendRawEmail(opts: {

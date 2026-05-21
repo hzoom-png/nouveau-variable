@@ -81,12 +81,15 @@ function AuthPageInner() {
       return
     }
     setLoading(true)
-    const { error: err } = await supabase.auth.signInWithOtp({
-      phone: formatted,
+    const res = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: formatted }),
     })
     setLoading(false)
-    if (err) {
-      setError('Impossible d\'envoyer le SMS : ' + err.message)
+    if (!res.ok) {
+      const d = await res.json()
+      setError(d.error ?? 'Impossible d\'envoyer le SMS.')
       return
     }
     setStep('otp')

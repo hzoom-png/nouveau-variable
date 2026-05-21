@@ -1,25 +1,16 @@
 import { createServiceClient } from '@/lib/supabase/service'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { rateLimit } from '@/lib/rate-limit'
 
-const rateLimitMap = new Map<string, { count: number; reset: number }>()
-const RATE_LIMIT = 5
-const WINDOW_MS = 60 * 60 * 1000
-
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const ip =
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     request.headers.get('x-real-ip') ||
     'unknown'
 
-  const now = Date.now()
-  const entry = rateLimitMap.get(ip)
-  if (entry && now < entry.reset) {
-    if (entry.count >= RATE_LIMIT) {
-      return NextResponse.json({ error: 'Trop de demandes. Réessaie dans une heure.' }, { status: 429 })
-    }
-    entry.count++
-  } else {
-    rateLimitMap.set(ip, { count: 1, reset: now + WINDOW_MS })
+  const allowed = await rateLimit(`meeting:${ip}`, 5, 3600)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Trop de demandes. Réessaie dans une heure.' }, { status: 429 })
   }
 
   const body = await request.json() as {

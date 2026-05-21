@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Nouveau Variable — Architecture Map</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080e0b;--bg2:#0c1510;--bg3:#101c16;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#e0ece6;--text2:#5a8a72;--text3:#2d5040;
+  --fe:#4f8ef7;--fe-dim:rgba(79,142,247,.07);--fe-line:rgba(79,142,247,.28);
+  --api:#3ecf6e;--api-dim:rgba(62,207,110,.07);--api-line:rgba(62,207,110,.28);
+  --db:#b06ef5;--db-dim:rgba(176,110,245,.07);--db-line:rgba(176,110,245,.28);
+  --svc:#f5844a;--svc-dim:rgba(245,132,74,.07);--svc-line:rgba(245,132,74,.28);
+  --warn:#f0c040;
+}
+body{font-family:-apple-system,'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;font-size:13px;line-height:1.4}
+.hdr{height:50px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
+.logo{width:28px;height:28px;background:linear-gradient(135deg,#024f41,#1a7b5e);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.hdr-text h1{font-size:13px;font-weight:600}
+.hdr-text p{font-size:10px;color:var(--text2)}
+.chips{display:flex;gap:5px;margin-left:auto}
+.chip{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--border2);color:var(--text2)}
+.layout{display:flex;flex:1;overflow:hidden}
+.sb{width:195px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.sb-block{padding:10px 12px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.ltog{display:flex;align-items:center;gap:7px;padding:4px 7px;border-radius:5px;cursor:pointer;font-size:11px;color:var(--text2);transition:background .12s;user-select:none;margin-bottom:1px}
+.ltog:hover{background:rgba(255,255,255,.04)}
+.ltog.off{opacity:.4}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.flow-btn{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:5px;cursor:pointer;font-size:11px;color:var(--text2);transition:all .12s;margin-bottom:1px;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.flow-btn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.flow-btn.active{background:rgba(62,207,110,.1);color:var(--api)}
+.fdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.sbox{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:6px 8px}
+.sn{font-size:18px;font-weight:700;line-height:1}
+.sl{font-size:9px;color:var(--text2);margin-top:2px}
+.issue{font-size:10px;padding:4px 7px;border-radius:4px;border-left:2px solid;color:var(--text2);background:rgba(255,255,255,.02);margin-bottom:3px;line-height:1.4}
+.canvas{flex:1;overflow:auto;padding:16px 20px;background:var(--bg)}
+.lband{border-radius:10px;margin-bottom:6px;border:1px solid var(--border);overflow:hidden;transition:opacity .2s}
+.lband.hidden{opacity:.1;pointer-events:none}
+.lhead{display:flex;align-items:center;gap:8px;padding:7px 14px}
+.lhead-count{margin-left:auto;font-size:9px;padding:1px 7px;border-radius:20px;font-weight:600}
+.lbody{padding:8px 10px 10px;display:flex;flex-wrap:wrap;gap:7px}
+.ngrp{background:rgba(255,255,255,.022);border:1px solid rgba(255,255,255,.055);border-radius:7px;padding:6px 8px;display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+.glbl{font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:3px}
+.node{display:flex;align-items:center;gap:6px;padding:4px 9px;border-radius:5px;border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:all .13s;font-size:11px;font-weight:500}
+.node:hover{transform:translateY(-1px)}
+.nicon{font-size:11px;flex-shrink:0;line-height:1}
+.ntxt{display:flex;flex-direction:column}
+.nlbl{font-size:11px;font-weight:500;line-height:1.2}
+.nsub{font-size:9px;opacity:.55}
+.node.dim{opacity:.18}
+.node.lit{transform:translateY(-1px);box-shadow:0 0 0 1.5px currentColor,0 2px 8px rgba(0,0,0,.3)}
+.conn{display:flex;justify-content:center;align-items:center;height:14px;color:var(--text3);font-size:10px;letter-spacing:3px}
+.dp{width:0;flex-shrink:0;background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .22s cubic-bezier(.16,1,.3,1)}
+.dp.open{width:300px}
+.dp-top{padding:14px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.dp-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.dp-meta{flex:1;min-width:0}
+.dp-icon{font-size:20px;line-height:1;margin-bottom:4px}
+.dp-name{font-size:13px;font-weight:600}
+.dp-type{font-size:10px;color:var(--text2);margin-top:2px}
+.xbtn{width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,.07);border:none;color:var(--text2);cursor:pointer;flex-shrink:0;font-size:12px;display:flex;align-items:center;justify-content:center;transition:background .12s;font-family:inherit}
+.xbtn:hover{background:rgba(255,255,255,.14);color:var(--text)}
+.dp-body{flex:1;overflow-y:auto;padding:12px 14px}
+.dsec{margin-bottom:14px}
+.dslbl{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.dstxt{font-size:11px;color:var(--text2);line-height:1.6}
+.dsrows{display:flex;flex-direction:column;gap:2px}
+.dsrow{display:flex;gap:6px;font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(255,255,255,.025);border-left:2px solid rgba(255,255,255,.08);align-items:flex-start}
+.dsrow b{color:var(--text);min-width:70px;flex-shrink:0;font-weight:600}
+.dsrow span{color:var(--text2);line-height:1.4}
+.slist{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:1px}
+.slist li{counter-increment:s;display:flex;gap:8px;font-size:10px;color:var(--text2);padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.4}
+.slist li::before{content:counter(s);display:flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:50%;font-size:8px;font-weight:700;flex-shrink:0;margin-top:1px;background:rgba(255,255,255,.07);color:var(--text3)}
+.ftr{height:34px;background:var(--bg3);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:16px;flex-shrink:0}
+.leg{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--text2)}
+.legsq{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.sep{width:1px;height:14px;background:var(--border)}
+.hint{font-size:9px;color:var(--text3);margin-left:auto}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--text3);border-radius:2px}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">NV</div>
+  <div class="hdr-text">
+    <h1>Nouveau Variable — Architecture Map</h1>
+    <p>Next.js 16.2 · React 19 · Supabase · Vercel · ~18k LOC · 240+ fichiers</p>
+  </div>
+  <div class="chips">
+    <span class="chip">68 API routes</span>
+    <span class="chip">19 migrations</span>
+    <span class="chip">14 tables DB</span>
+    <span class="chip">5 services ext.</span>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sb">
+    <div class="sb-block">
+      <div class="sb-title">Layers</div>
+      <div class="ltog" id="tog-frontend" onclick="toggleLayer('frontend',this)"><span class="dot" style="background:var(--fe)"></span>Frontend</div>
+      <div class="ltog" id="tog-api" onclick="toggleLayer('api',this)"><span class="dot" style="background:var(--api)"></span>API Layer</div>
+      <div class="ltog" id="tog-database" onclick="toggleLayer('database',this)"><span class="dot" style="background:var(--db)"></span>Database</div>
+      <div class="ltog" id="tog-services" onclick="toggleLayer('services',this)"><span class="dot" style="background:var(--svc)"></span>Services</div>
+    </div>
+    <div class="sb-block">
+      <div class="sb-title">Data Flows</div>
+      <div id="flows-nav"></div>
+    </div>
+    <div class="sb-block">
+      <div class="sb-title">Stats</div>
+      <div class="sgrid">
+        <div class="sbox"><div class="sn" style="color:var(--api)">68</div><div class="sl">Routes API</div></div>
+        <div class="sbox"><div class="sn" style="color:var(--db)">19</div><div class="sl">Migrations</div></div>
+        <div class="sbox"><div class="sn" style="color:var(--fe)">14</div><div class="sl">Tables DB</div></div>
+        <div class="sbox"><div class="sn" style="color:var(--svc)">5</div><div class="sl">Services</div></div>
+        <div class="sbox"><div class="sn" style="color:var(--warn)">15</div><div class="sl">Templates email</div></div>
+        <div class="sbox"><div class="sn">18</div><div class="sl">Composants</div></div>
+      </div>
+    </div>
+    <div class="sb-block">
+      <div class="sb-title">Issues (7)</div>
+      <div id="issues-nav"></div>
+    </div>
+  </aside>
+
+  <div class="canvas" id="canvas" onclick="canvasClick()">
+    <div id="diagram"></div>
+  </div>
+
+  <div class="dp" id="dp">
+    <div class="dp-top">
+      <div class="dp-row">
+        <div class="dp-meta">
+          <div class="dp-icon" id="d-icon"></div>
+          <div class="dp-name" id="d-name"></div>
+          <div class="dp-type" id="d-type"></div>
+        </div>
+        <button class="xbtn" onclick="closeDetail()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="dp-body" id="d-body"></div>
+  </div>
+</div>
+
+<div class="ftr">
+  <div class="leg"><div class="legsq" style="background:var(--fe)"></div>Frontend</div>
+  <div class="leg"><div class="legsq" style="background:var(--api)"></div>API</div>
+  <div class="leg"><div class="legsq" style="background:var(--db)"></div>Database</div>
+  <div class="leg"><div class="legsq" style="background:var(--svc)"></div>Services</div>
+  <div class="sep"></div>
+  <div class="hint">Cliquer un noeud pour les details &nbsp;|&nbsp; Cliquer un flow pour le highlight &nbsp;|&nbsp; ESC pour fermer</div>
+</div>
+
+<script>
+var LAYERS = [
+  {
+    id:"frontend", label:"Frontend - Pages et Composants", icon:"🌐",
+    color:"#4f8ef7", dim:"rgba(79,142,247,.07)", line:"rgba(79,142,247,.28)",
+    groups:[
+      { label:"Landing et Public", nodes:[
+        {id:"n-landing",      icon:"🏠", lbl:"/",             sub:"Landing Page (ISR 60s)"},
+        {id:"n-auth",         icon:"🔐", lbl:"/auth",          sub:"Authentification"},
+        {id:"n-subscribe",    icon:"💳", lbl:"/subscribe",     sub:"Abonnement"},
+        {id:"n-legal",        icon:"📄", lbl:"/(legal)/*",     sub:"CGU, CGV, Mentions"},
+        {id:"n-dl",           icon:"🔗", lbl:"/dl/[slug]",     sub:"DealLink public"},
+        {id:"n-pub-profile",  icon:"👤", lbl:"/p/[slug]",      sub:"Profil public"}
+      ]},
+      { label:"Dashboard (/dashboard/*)", nodes:[
+        {id:"n-dash",      icon:"📊", lbl:"/dashboard",     sub:"Hub principal"},
+        {id:"n-members",   icon:"👥", lbl:"/members",       sub:"Annuaire"},
+        {id:"n-projects",  icon:"🚀", lbl:"/projects",      sub:"Side hustles"},
+        {id:"n-missions",  icon:"🎯", lbl:"/missions",      sub:"Missions freelance"},
+        {id:"n-meetings",  icon:"🤝", lbl:"/meetings",      sub:"Rendez-vous"},
+        {id:"n-network",   icon:"🕸", lbl:"/network/n1+n2", sub:"Reseau parrainage"},
+        {id:"n-affil",     icon:"🔗", lbl:"/affiliation",   sub:"Parrainage + commissions"},
+        {id:"n-billing",   icon:"💰", lbl:"/billing",       sub:"Facturation"},
+        {id:"n-profile",   icon:"👤", lbl:"/profile",       sub:"Mon profil"},
+        {id:"n-library",   icon:"📚", lbl:"/library",       sub:"Bibliotheque"}
+      ]},
+      { label:"Tools (/dashboard/tools/*)", nodes:[
+        {id:"n-replique",    icon:"🎙", lbl:"Replique",    sub:"Scripts IA - 25 tokens"},
+        {id:"n-deallink",    icon:"🔗", lbl:"DealLink",    sub:"Link-in-bio - 20 tokens"},
+        {id:"n-keyaccount",  icon:"🏢", lbl:"KeyAccount",  sub:"CRM leger"},
+        {id:"n-sidehustle",  icon:"💡", lbl:"SideHustle",  sub:"Idees IA - 40 tokens"}
+      ]},
+      { label:"Admin (/admin/*)", nodes:[
+        {id:"n-adm-dash",      icon:"📈", lbl:"Dashboard KPIs",   sub:"Stats + candidatures"},
+        {id:"n-adm-cand",      icon:"📋", lbl:"Candidatures",     sub:"Kanban pipeline"},
+        {id:"n-adm-membres",   icon:"👥", lbl:"Membres",          sub:"CRUD complet"},
+        {id:"n-adm-broadcast", icon:"📢", lbl:"Broadcast",        sub:"SMS + Email masse"},
+        {id:"n-adm-events",    icon:"📅", lbl:"Evenements",       sub:"CRUD"},
+        {id:"n-adm-support",   icon:"🎧", lbl:"Support Tickets",  sub:"Gestion tickets"},
+        {id:"n-adm-affil",     icon:"💸", lbl:"Affiliations",     sub:"Commissions"},
+        {id:"n-adm-activity",  icon:"🔍", lbl:"Activite",         sub:"Audit trail"}
+      ]}
+    ]
+  },
+  {
+    id:"api", label:"API Layer - 68 Routes (Next.js API Routes)", icon:"⚡",
+    color:"#3ecf6e", dim:"rgba(62,207,110,.07)", line:"rgba(62,207,110,.28)",
+    groups:[
+      { label:"Public", nodes:[
+        {id:"a-apply",   icon:"📝", lbl:"POST /api/apply",          sub:"Candidature - rate-limited"},
+        {id:"a-count",   icon:"📊", lbl:"GET /api/count",           sub:"Compteur membres"},
+        {id:"a-waitlist",icon:"⏳", lbl:"POST /api/waitlist",       sub:"Waitlist"},
+        {id:"a-search",  icon:"🔍", lbl:"GET /api/members/search",  sub:"Annuaire public"}
+      ]},
+      { label:"Auth", nodes:[
+        {id:"a-login",    icon:"🔐", lbl:"POST /api/auth/login",   sub:"Connexion Supabase"},
+        {id:"a-signup",   icon:"✍", lbl:"POST /api/auth/signup",  sub:"Inscription + parrainage"},
+        {id:"a-callback", icon:"🔄", lbl:"GET /auth/callback",     sub:"OAuth callback"}
+      ]},
+      { label:"User (Protected)", nodes:[
+        {id:"a-profile",   icon:"👤", lbl:"/api/profile",                       sub:"PATCH profil"},
+        {id:"a-projects",  icon:"🚀", lbl:"/api/projects",                      sub:"CRUD projets"},
+        {id:"a-meetings",  icon:"🤝", lbl:"/api/meetings",                      sub:"Rendez-vous + points"},
+        {id:"a-pipe",      icon:"🔗", lbl:"/api/affiliation/pipe",              sub:"Pipeline CRM"},
+        {id:"a-support",   icon:"🎧", lbl:"POST /api/support/create",           sub:"Ticket support"},
+        {id:"a-checkout",  icon:"🛒", lbl:"POST /api/stripe/create-checkout",   sub:"Session paiement"}
+      ]},
+      { label:"AI Tools", nodes:[
+        {id:"a-replique",   icon:"🎙", lbl:"POST /api/ai/replique",   sub:"Scripts IA - 25 tokens"},
+        {id:"a-dlai",       icon:"🔗", lbl:"POST /api/ai/deallink",   sub:"Analyse IA - 20 tokens"},
+        {id:"a-shai",       icon:"💡", lbl:"POST /api/ai/sidehustle", sub:"Idees IA - 40 tokens"},
+        {id:"a-extract",    icon:"📄", lbl:"POST /api/extract",       sub:"PDF/DOCX parsing"}
+      ]},
+      { label:"Admin (/api/admin/*)", nodes:[
+        {id:"a-adm-cand",    icon:"📋", lbl:"Candidatures (5)",  sub:"list, accept, update, resend, founder"},
+        {id:"a-adm-members", icon:"👥", lbl:"Membres (7)",        sub:"list, create, detail, update, activate, delete, visibility"},
+        {id:"a-adm-events",  icon:"📅", lbl:"Events (4)",         sub:"list, create, update, delete"},
+        {id:"a-adm-bcast",   icon:"📢", lbl:"Broadcast (2)",      sub:"list, send"},
+        {id:"a-adm-tickets", icon:"🎧", lbl:"Support (2)",        sub:"list, patch"},
+        {id:"a-adm-stats",   icon:"📈", lbl:"Stats + Settings",   sub:"KPIs, config"},
+        {id:"a-adm-auth",    icon:"🔑", lbl:"Auth Admin (4)",     sub:"TOTP, logout"}
+      ]},
+      { label:"Webhooks + Crons", nodes:[
+        {id:"a-stripe-wh",  icon:"💳", lbl:"POST /api/webhooks/stripe",     sub:"Paiements - signature HMAC"},
+        {id:"a-cron",       icon:"⏰", lbl:"GET /api/cron/onboarding",      sub:"Emails J1/J3/J7/J14"}
+      ]}
+    ]
+  },
+  {
+    id:"database", label:"Database - Supabase PostgreSQL + RLS", icon:"🗄",
+    color:"#b06ef5", dim:"rgba(176,110,245,.07)", line:"rgba(176,110,245,.28)",
+    groups:[
+      { label:"Core", nodes:[
+        {id:"db-auth",   icon:"🔐", lbl:"auth.users",    sub:"Supabase Auth (managed)"},
+        {id:"db-prof",   icon:"👤", lbl:"profiles",      sub:"Table centrale membres"},
+        {id:"db-cand",   icon:"📋", lbl:"candidatures",  sub:"Pipeline candidatures"}
+      ]},
+      { label:"Business", nodes:[
+        {id:"db-events",    icon:"📅", lbl:"events",           sub:"Evenements club"},
+        {id:"db-projects",  icon:"🚀", lbl:"projects",         sub:"Side hustles membres"},
+        {id:"db-missions",  icon:"🎯", lbl:"missions",         sub:"Missions freelance"},
+        {id:"db-meetings",  icon:"🤝", lbl:"meeting_requests", sub:"Demandes RDV"},
+        {id:"db-tickets",   icon:"🎧", lbl:"support_tickets",  sub:"Tickets support"}
+      ]},
+      { label:"Finance", nodes:[
+        {id:"db-referrals",    icon:"🔗", lbl:"referrals",           sub:"Parrainage N1 + N2"},
+        {id:"db-commissions",  icon:"💸", lbl:"commissions",         sub:"Commissions dues/payees"},
+        {id:"db-tokens",       icon:"🪙", lbl:"token_transactions",  sub:"Historique tokens AI"}
+      ]},
+      { label:"Infrastructure", nodes:[
+        {id:"db-audit",     icon:"📝", lbl:"admin_audit_log",  sub:"Audit trail admin"},
+        {id:"db-rate",      icon:"🚦", lbl:"rate_limits",      sub:"Rate limiting RPC"},
+        {id:"db-settings",  icon:"⚙", lbl:"club_settings",    sub:"Config club (singleton)"}
+      ]}
+    ]
+  },
+  {
+    id:"services", label:"External Services - Integrations", icon:"🔌",
+    color:"#f5844a", dim:"rgba(245,132,74,.07)", line:"rgba(245,132,74,.28)",
+    groups:[
+      { label:"Services", nodes:[
+        {id:"s-stripe",    icon:"💳", lbl:"Stripe",           sub:"Paiements + Abonnements"},
+        {id:"s-brevo",     icon:"✉", lbl:"Brevo",            sub:"Email - 15 templates"},
+        {id:"s-twilio",    icon:"📱", lbl:"Twilio",           sub:"SMS OTP"},
+        {id:"s-anthropic", icon:"🤖", lbl:"Anthropic Claude", sub:"LLM - claude-sonnet-4-6"},
+        {id:"s-slack",     icon:"💬", lbl:"Slack",            sub:"Notifs - 2 webhooks"},
+        {id:"s-supabase",  icon:"🗄", lbl:"Supabase",         sub:"DB + Auth + Storage"},
+        {id:"s-vercel",    icon:"▲",  lbl:"Vercel",           sub:"Deploy + Blob + Crons"}
+      ]}
+    ]
+  }
+];
+
+var FLOWS = [
+  {
+    id:"candidature", label:"📝 Candidature Flow", color:"#3ecf6e",
+    nodeIds:["n-landing","a-apply","db-cand","n-adm-dash","a-adm-cand","s-brevo","s-twilio","s-slack","a-stripe-wh","db-prof","db-commissions"],
+    steps:["User remplit le formulaire sur /","POST /api/apply (rate-limit 5/h/IP, Zod)","INSERT candidatures (statut: received)","Slack notification #admin","Admin accepte dans /admin/candidatures","UPDATE statut accepted","Email Brevo acceptation + lien Stripe","SMS Twilio OTP","User paie -> POST /api/webhooks/stripe","Verification signature HMAC","UPDATE profiles is_active=true","INSERT commissions N1 (20%) + N2 (10%)","Slack paiement recu","Email Brevo bienvenue"]
+  },
+  {
+    id:"ai-tool", label:"🤖 AI Tool Flow", color:"#b06ef5",
+    nodeIds:["n-replique","a-replique","db-rate","db-tokens","s-anthropic"],
+    steps:["Member ouvre /dashboard/tools/replique","Remplit le formulaire (prospect, contexte)","POST /api/ai/replique","requireSession() - 401 si non auth","rateLimit(key, 10, 60) via Supabase RPC","consumeTokens(user_id, 25) atomique via RPC","Appel Anthropic claude-sonnet-4-6","Retour JSON structure (script + objections)","INSERT token_transactions"]
+  },
+  {
+    id:"support", label:"🎧 Support Flow", color:"#4f8ef7",
+    nodeIds:["n-dash","a-support","db-tickets","n-adm-support","a-adm-tickets","s-brevo","s-slack"],
+    steps:["User clique widget SupportWidget (bottom-right)","Remplit type + sujet + message","POST /api/support/create (rate-limit 5/h/email)","INSERT support_tickets (open, medium)","sendRawEmail auto-reponse Brevo -> user","notifySlack #support","Admin repond -> PATCH /api/admin/support/tickets/[id]","UPDATE statut in_progress (auto)","sendRawEmail reponse admin -> user","Admin marque resolu -> statut resolved"]
+  },
+  {
+    id:"payment", label:"💳 Payment Flow", color:"#f5844a",
+    nodeIds:["a-checkout","a-stripe-wh","db-prof","db-referrals","db-commissions","s-stripe","s-slack","s-brevo"],
+    steps:["POST /api/stripe/create-checkout -> URL session","Redirect Stripe Checkout","Paiement OK -> webhook HMAC-verified","checkout.session.completed","UPDATE profiles is_active=true","Resolution chaine parrainage (referrals)","INSERT commissions: N1 (20%) + N2 (10%)","notifySlack #admin paiement recu","sendEmail Brevo bienvenue"]
+  },
+  {
+    id:"meeting", label:"🤝 Meeting Flow", color:"#f0c040",
+    nodeIds:["n-members","a-meetings","db-meetings","db-prof","s-twilio","s-brevo"],
+    steps:["Member voit un profil dans /dashboard/members","Clique Demander un RDV","POST /api/meetings (check: pas de doublon pending)","Deduction points (deductPoints() Supabase)","INSERT meeting_requests (statut: pending)","Email + SMS au destinataire","Destinataire accepte -> POST /api/meetings/[id]/accept","UPDATE statut confirmed","Email + SMS confirmation aux 2 parties"]
+  }
+];
+
+var ISSUES = [
+  {text:"9 fetch() directs vers Brevo (vs sendRawEmail centralisee)",  color:"var(--warn)"},
+  {text:"Pas de middleware.ts - auth 100% en-route (risque d'oubli)", color:"var(--warn)"},
+  {text:"Points/tokens non transactionnels (race condition possible)", color:"var(--warn)"},
+  {text:"TOTP rate limit in-memory - reset au redeploy",              color:"var(--text2)"},
+  {text:'select("*") dans 15+ fichiers - over-fetching',              color:"var(--text2)"},
+  {text:"3 alias domaines manuels apres chaque deploy",               color:"var(--text2)"},
+  {text:"Pas de tests E2E Playwright sur les flows critiques",         color:"var(--text2)"}
+];
+
+var DETAILS = {
+  "n-landing":     {desc:"Page principale ISR (revalidate 60s). Candidature, comparaison 1vs5, section affiliation avec fill-title effect (useRef, zero re-renders React), support widget.",rows:[["Composant","LandingClient.tsx (use client)"],["Type","ISR - revalidate 60s"],["Appels","POST /api/apply - GET waitlistCount"],["Technique","fill-title: useRef + direct DOM, pas de useState"]]},
+  "n-replique":    {desc:"Outil IA scripts commerciaux. Rate-limited. Token-gated.",rows:[["Route","POST /api/ai/replique"],["Modele","claude-sonnet-4-6"],["Cout","25 tokens / generation"],["Rate limit","10 req/min/user (Supabase RPC)"]]},
+  "n-deallink":    {desc:"Builder link-in-bio pour commerciaux. Page publique /dl/[slug]. Analyse IA.",rows:[["Routes","POST /api/ai/deallink - /api/deallink/update"],["Cout IA","20 tokens / analyse"],["Stockage","Vercel Blob pour logos"]]},
+  "n-sidehustle":  {desc:"Generateur d'idees de side hustle avec Anthropic. Le plus cher en tokens.",rows:[["Route","POST /api/ai/sidehustle"],["Cout","40 tokens / generation"],["Modele","claude-sonnet-4-6"]]},
+  "n-keyaccount":  {desc:"Mini-CRM grands comptes. Contacts, notes, pipeline Kanban, terrain visualization.",rows:[["Tables","accounts - contacts - ka_notes"],["Features","Pipeline visuel - Notes - Terrain"]]},
+  "n-adm-dash":    {desc:"KPIs temps reel: membres actifs, MRR, ARR, courbe 12 mois, top tools. Pipeline candidatures avec modal accept/reject.",rows:[["Appels","GET /api/admin/stats - /api/admin/candidatures/list"],["Auth","JWT admin_session + TOTP 2FA"],["Actions","Accepter - Refuser - Reviewer - Renvoyer email"]]},
+  "a-apply":       {desc:"Route d'entree du funnel candidature. Rate-limited, validee, fire & forget pour notifs.",rows:[["Auth","Aucune (public)"],["Rate limit","5 req/heure/IP via Supabase RPC"],["Validation","Zod schema complet"],["Triggers","INSERT candidatures - notifySlack #admin - notifyN8N (legacy)"],["Retourne","{ candidatureId, code_parrain }"]]},
+  "a-signup":      {desc:"Cree user Supabase Auth + profil. Resout code parrain: INSERT referrals N1+N2 si parrain valide.",rows:[["Tables","profiles - referrals (N1+N2)"],["Parrainage","2 lignes referrals creees si code_parrain fourni"]]},
+  "a-replique":    {desc:"Route IA la plus utilisee. Rate-limited. Deduction tokens atomique via RPC Supabase.",rows:[["Auth","Supabase session obligatoire"],["Rate limit","10 req/min/user (Supabase RPC)"],["Cout","consumeTokens(user_id, 25) atomique"],["Modele","claude-sonnet-4-6"]]},
+  "a-stripe-wh":   {desc:"Webhook critique. Verifie signature HMAC. Active membres apres paiement. Calcule commissions.",rows:[["Auth","Stripe HMAC signature (STRIPE_WEBHOOK_SECRET)"],["checkout.session.completed","UPDATE is_active=true - INSERT commissions - Slack - Brevo"],["invoice.payment_failed","notifySlack #admin warning"],["Env","STRIPE_WEBHOOK_SECRET = Production ONLY"]]},
+  "a-adm-cand":    {desc:"5 routes pour gerer le pipeline candidatures. Toutes protegees JWT + loguees.",rows:[["Auth","JWT admin_session (requireAdminAuth())"],["Routes","GET list - POST accept - POST update-status - POST resend-acceptance - POST toggle-founder"],["Audit","logAdminAction() sur chaque mutation"],["accept","Email Brevo - SMS Twilio - Slack #admin"]]},
+  "a-adm-auth":    {desc:"Auth admin: TOTP 2FA + JWT HS256. Rate-limit TOTP in-memory (bug: reset au redeploy).",rows:[["JWT","HS256 - 8h expiry - cookie admin_session"],["TOTP","otpauth library - setup QR code"],["Rate limit","5 tentatives/15min/IP - IN MEMORY (bug: reset au redeploy)"],["Env","ADMIN_JWT_SECRET = Production ONLY"]]},
+  "a-support":     {desc:"Cree ticket support. Auth optionnelle. Rate-limited par email.",rows:[["Auth","Optionnelle (user_id nullable)"],["Rate limit","5 req/heure/email"],["Triggers","INSERT support_tickets - sendRawEmail auto-reply - notifySlack #support"]]},
+  "db-prof":       {desc:"Table centrale du produit. Etend auth.users. Contient profil commercial et donnees Stripe.",rows:[["PK","id UUID FK auth.users"],["Metier","tokens - points - is_active - member_number - referral_code"],["Stripe","stripe_customer_id - stripe_subscription_id - plan"],["RLS","SELECT/UPDATE own row only"],["Index","email - referral_code - is_active - slug"]]},
+  "db-cand":       {desc:"Pipeline complet des candidatures. Unique par email. Contient donnees projet optionnelles.",rows:[["Statuts","received > reviewed > accepted / rejected"],["Cles","email UNIQUE - code_parrain - is_founder - admin_notes"],["Projet","projet_nom - concept - avancement - besoins JSONB"],["Index","email - status - code_parrain - created_at DESC"]]},
+  "db-events":     {desc:"Evenements du club crees depuis le backoffice admin.",rows:[["RLS","SELECT: is_published=true uniquement pour les membres"],["Colonnes","title - event_date TIMESTAMPTZ - location - cover_image_url - max_attendees - is_published"],["Migration","20250006_events.sql"]]},
+  "db-tickets":    {desc:"Tickets support avec workflow open > in_progress > resolved/closed.",rows:[["Statuts","open - in_progress - resolved - closed"],["Priorites","low - medium - high"],["Types","bug - feature - billing - general - other"],["RLS","SELECT own (user_id OR email) - INSERT - Admin: service client"],["Migration","20250005_support_tickets.sql"]]},
+  "db-rate":       {desc:"Rate limiting persistant via Supabase RPC. Resiste aux redeploiements. Fail-open.",rows:[["RPC","upsert_rate_limit(key TEXT, max INT, window_sec INT) -> BOOL"],["Fail-open","Si RPC indisponible -> request autorisee"],["Usages","apply 5/h - support 5/h - replique 10/min"]]},
+  "db-commissions":{desc:"Calculees automatiquement au webhook Stripe. Marquees paid manuellement par admin.",rows:[["N1","20% du montant mensuel -> parrain direct"],["N2","10% du montant mensuel -> parrain du parrain"],["Migration","stripe_integration.sql"]]},
+  "db-audit":      {desc:"Audit trail complet. Toutes mutations admin loguees. Fire & forget (non bloquant).",rows:[["Colonnes","admin_id - action - entity_type - entity_id - data JSONB - created_at"],["Pattern","logAdminAction() fire & forget (.catch(noop))"]]},
+  "s-stripe":      {desc:"Paiements et abonnements. Checkout pre-filled. Portal client self-service.",rows:[["SDK","stripe v22.1.0"],["Env (prod only)","STRIPE_WEBHOOK_SECRET - STRIPE_SECRET_KEY"],["Events","checkout.session.completed - invoice.payment_failed"]]},
+  "s-brevo":       {desc:"Tous les emails transactionnels. 15 templates. 2 modes d'envoi.",rows:[["SDK","@getbrevo/brevo v3.0.4"],["Templates","15 (candidature, onboarding J1/J3/J7/J14, support, commissions...)"],["Helpers","sendEmail() template-based - sendRawEmail() HTML direct"],["Issue","9 fichiers font encore fetch() direct au lieu de sendRawEmail()"]]},
+  "s-twilio":      {desc:"SMS OTP et confirmations meeting. Broadcast admin possible.",rows:[["SDK","twilio v6.0.1"],["Env","TWILIO_ACCOUNT_SID - TWILIO_AUTH_TOKEN - TWILIO_FROM"],["Usages","Acceptation candidature - Confirmation meeting - Broadcast admin"]]},
+  "s-anthropic":   {desc:"LLM pour tous les outils IA. Token-gated avec consumeTokens() atomique.",rows:[["SDK","@anthropic-ai/sdk v0.92.0"],["Modele","claude-sonnet-4-6"],["Tools","Replique (25t) - DealLink (20t) - SideHustle (40t)"],["Rate limit","10 req/min/user via Supabase RPC"]]},
+  "s-slack":       {desc:"Notifications internes admin et support. Fire & forget. Timeout 5s.",rows:[["Env","SLACK_WEBHOOK_ADMIN - SLACK_WEBHOOK_SUPPORT"],["#admin","Nouvelle cand. - acceptee - refusee - paiement recu/echoue"],["#support","Nouveau ticket - reponse admin - resolution"],["Pattern","Fire & forget - AbortSignal.timeout(5000)"]]},
+  "s-supabase":    {desc:"Infrastructure principale. PostgreSQL manage, RLS, Auth, Storage.",rows:[["Env","NEXT_PUBLIC_SUPABASE_URL - NEXT_PUBLIC_SUPABASE_ANON_KEY - SUPABASE_SERVICE_ROLE_KEY (server only)"],["Clients","createClient() user - createServerClient() SSR - createServiceClient() admin"],["RLS","Active sur toutes les tables"]]},
+  "s-vercel":      {desc:"Deploiement prod. PAS connecte a Git - deploy + alias manuels apres chaque push.",rows:[["Deploy","vercel --prod (manuel)"],["Alias manuels","vercel alias set <url> app.nouveauvariable.fr + nouveauvariable.fr + www.nouveauvariable.fr"],["Blob","Avatars et logos DealLink"],["Crons","/api/cron/onboarding - /api/cron/check-100-candidates"]]}
+};
+
+// ── STATE ──
+var sel = null;
+var selFlow = null;
+var hidden = {};
+
+// ── HELPERS ──
+function getLayer(nodeId) {
+  for (var i = 0; i < LAYERS.length; i++) {
+    var l = LAYERS[i];
+    for (var j = 0; j < l.groups.length; j++) {
+      var g = l.groups[j];
+      for (var k = 0; k < g.nodes.length; k++) {
+        if (g.nodes[k].id === nodeId) return l;
+      }
+    }
+  }
+  return null;
+}
+
+// ── RENDER DIAGRAM ──
+function renderDiagram() {
+  var diag = document.getElementById("diagram");
+  diag.innerHTML = "";
+
+  for (var li = 0; li < LAYERS.length; li++) {
+    var layer = LAYERS[li];
+
+    if (li > 0) {
+      var conn = document.createElement("div");
+      conn.className = "conn";
+      conn.textContent = "v v v";
+      diag.appendChild(conn);
+    }
+
+    var band = document.createElement("div");
+    band.className = "lband" + (hidden[layer.id] ? " hidden" : "");
+    band.id = "band-" + layer.id;
+    band.style.background = layer.dim;
+    band.style.borderColor = layer.line;
+
+    var total = 0;
+    for (var gi = 0; gi < layer.groups.length; gi++) total += layer.groups[gi].nodes.length;
+
+    var head = document.createElement("div");
+    head.className = "lhead";
+    head.style.background = layer.dim;
+    head.innerHTML =
+      '<span style="font-size:14px">' + layer.icon + '</span>' +
+      '<span style="font-size:11px;font-weight:700;letter-spacing:.04em;color:' + layer.color + '">' + layer.label + '</span>' +
+      '<span class="lhead-count" style="background:' + layer.line + ';color:' + layer.color + '">' + total + ' noeuds</span>';
+    band.appendChild(head);
+
+    var body = document.createElement("div");
+    body.className = "lbody";
+
+    for (var gi2 = 0; gi2 < layer.groups.length; gi2++) {
+      var grp = layer.groups[gi2];
+      var grpEl = document.createElement("div");
+      grpEl.className = "ngrp";
+
+      var glbl = document.createElement("div");
+      glbl.className = "glbl";
+      glbl.textContent = grp.label;
+      grpEl.appendChild(glbl);
+
+      for (var ni = 0; ni < grp.nodes.length; ni++) {
+        var node = grp.nodes[ni];
+        var nel = document.createElement("div");
+        nel.className = "node";
+        nel.id = "node-" + node.id;
+        nel.style.background = layer.dim;
+        nel.style.borderColor = layer.line;
+        nel.style.color = layer.color;
+
+        var ispan = document.createElement("span");
+        ispan.className = "nicon";
+        ispan.textContent = node.icon;
+
+        var txdiv = document.createElement("div");
+        txdiv.className = "ntxt";
+        txdiv.innerHTML =
+          '<span class="nlbl">' + node.lbl + '</span>' +
+          '<span class="nsub">' + (node.sub || "") + '</span>';
+
+        nel.appendChild(ispan);
+        nel.appendChild(txdiv);
+
+        (function(n, l) {
+          nel.addEventListener("click", function(e) {
+            e.stopPropagation();
+            selFlow = null;
+            sel = n.id;
+            applyHL();
+            showNodeDetail(n, l);
+            renderFlows();
+          });
+          nel.addEventListener("mouseenter", function() {
+            if (!selFlow && sel !== n.id) nel.style.borderColor = l.color;
+          });
+          nel.addEventListener("mouseleave", function() {
+            if (!selFlow && sel !== n.id) nel.style.borderColor = l.line;
+          });
+        })(node, layer);
+
+        grpEl.appendChild(nel);
+      }
+      body.appendChild(grpEl);
+    }
+    band.appendChild(body);
+    diag.appendChild(band);
+  }
+}
+
+// ── RENDER FLOWS ──
+function renderFlows() {
+  var nav = document.getElementById("flows-nav");
+  nav.innerHTML = "";
+  for (var i = 0; i < FLOWS.length; i++) {
+    var flow = FLOWS[i];
+    var btn = document.createElement("button");
+    btn.className = "flow-btn" + (selFlow === flow.id ? " active" : "");
+    btn.innerHTML = '<span class="fdot" style="background:' + flow.color + '"></span>' + flow.label;
+    (function(f) {
+      btn.addEventListener("click", function() {
+        if (selFlow === f.id) {
+          selFlow = null; sel = null;
+          clearHL(); closeDetail(); renderFlows();
+        } else {
+          selFlow = f.id; sel = null;
+          applyHL(); showFlowDetail(f); renderFlows();
+        }
+      });
+    })(flow);
+    nav.appendChild(btn);
+  }
+}
+
+// ── RENDER ISSUES ──
+function renderIssues() {
+  var nav = document.getElementById("issues-nav");
+  for (var i = 0; i < ISSUES.length; i++) {
+    var el = document.createElement("div");
+    el.className = "issue";
+    el.style.borderColor = ISSUES[i].color;
+    el.textContent = ISSUES[i].text;
+    nav.appendChild(el);
+  }
+}
+
+// ── HIGHLIGHTS ──
+function applyHL() {
+  var all = document.querySelectorAll(".node");
+  if (selFlow) {
+    var flow = null;
+    for (var i = 0; i < FLOWS.length; i++) { if (FLOWS[i].id === selFlow) { flow = FLOWS[i]; break; } }
+    if (!flow) return;
+    var set = {};
+    for (var j = 0; j < flow.nodeIds.length; j++) set[flow.nodeIds[j]] = true;
+    for (var k = 0; k < all.length; k++) {
+      var id = all[k].id.replace("node-", "");
+      if (set[id]) {
+        all[k].classList.remove("dim"); all[k].classList.add("lit");
+        all[k].style.borderColor = flow.color;
+      } else {
+        all[k].classList.add("dim"); all[k].classList.remove("lit");
+      }
+    }
+  } else if (sel) {
+    for (var m = 0; m < all.length; m++) {
+      var nid = all[m].id.replace("node-", "");
+      all[m].classList.remove("dim");
+      if (nid === sel) {
+        all[m].classList.add("lit");
+        var l = getLayer(nid);
+        if (l) all[m].style.borderColor = l.color;
+      } else {
+        all[m].classList.remove("lit");
+      }
+    }
+  }
+}
+
+function clearHL() {
+  var all = document.querySelectorAll(".node");
+  for (var i = 0; i < all.length; i++) {
+    all[i].classList.remove("dim", "lit");
+    var nid = all[i].id.replace("node-", "");
+    var l = getLayer(nid);
+    if (l) all[i].style.borderColor = l.line;
+  }
+}
+
+// ── DETAIL PANELS ──
+function showNodeDetail(node, layer) {
+  document.getElementById("dp").classList.add("open");
+  document.getElementById("d-icon").textContent = node.icon;
+  document.getElementById("d-name").textContent = node.lbl;
+  document.getElementById("d-type").innerHTML = '<span style="color:' + layer.color + '">' + layer.label.split("-")[0].trim() + '</span>';
+
+  var det = DETAILS[node.id];
+  var html = "";
+  if (det) {
+    if (det.desc) html += '<div class="dsec"><div class="dslbl">Description</div><div class="dstxt">' + det.desc + '</div></div>';
+    if (det.rows && det.rows.length) {
+      html += '<div class="dsec"><div class="dslbl">Details</div><div class="dsrows">';
+      for (var i = 0; i < det.rows.length; i++) {
+        html += '<div class="dsrow"><b>' + det.rows[i][0] + '</b><span>' + det.rows[i][1] + '</span></div>';
+      }
+      html += '</div></div>';
+    }
+  } else {
+    html = '<div class="dstxt" style="color:var(--text3)">Sous-titre: ' + (node.sub || "-") + '<br>Layer: ' + layer.label.split("-")[0].trim() + '</div>';
+  }
+  document.getElementById("d-body").innerHTML = html;
+}
+
+function showFlowDetail(flow) {
+  document.getElementById("dp").classList.add("open");
+  var parts = flow.label.split(" ");
+  document.getElementById("d-icon").textContent = parts[0];
+  document.getElementById("d-name").textContent = parts.slice(1).join(" ");
+  document.getElementById("d-type").innerHTML = '<span style="color:' + flow.color + '">Data Flow - ' + flow.steps.length + ' etapes</span>';
+
+  var html = '<div class="dsec"><div class="dslbl">Etapes</div><ol class="slist">';
+  for (var i = 0; i < flow.steps.length; i++) {
+    html += "<li>" + flow.steps[i] + "</li>";
+  }
+  html += '</ol></div>';
+  document.getElementById("d-body").innerHTML = html;
+}
+
+function closeDetail() {
+  document.getElementById("dp").classList.remove("open");
+}
+
+function canvasClick() {
+  sel = null; selFlow = null;
+  clearHL(); closeDetail(); renderFlows();
+}
+
+function toggleLayer(id, el) {
+  hidden[id] = !hidden[id];
+  el.classList.toggle("off");
+  var band = document.getElementById("band-" + id);
+  if (band) band.classList.toggle("hidden");
+}
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") canvasClick();
+});
+
+// ── INIT ──
+renderDiagram();
+renderFlows();
+renderIssues();
+</script>
+</body>
+</html>
