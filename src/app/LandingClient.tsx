@@ -15,12 +15,6 @@ const inp: CSSProperties = {
   boxSizing: 'border-box',
 }
 
-const lbl: CSSProperties = {
-  display: 'block', fontSize: 11, fontWeight: 600,
-  color: 'var(--text-2)', textTransform: 'uppercase',
-  letterSpacing: '.07em', marginBottom: 6,
-  fontFamily: 'var(--font-inter), Inter, sans-serif',
-}
 
 export default function LandingClient({ waitlistCount }: { waitlistCount: number }) {
   const [scrolled, setScrolled] = useState(false)
@@ -38,6 +32,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
     projet_avancement: '', projet_besoins: [] as string[],
   })
   const [otherRole, setOtherRole] = useState('')
+  const [isFormHovered, setIsFormHovered] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [codeParrain, setCodeParrain] = useState('')
   const [copied, setCopied] = useState(false)
@@ -186,6 +181,14 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
   }
 
   const isAboveGoal = waitlistCount >= GOAL
+
+  const lbl: CSSProperties = {
+    display: 'block', fontSize: 11, fontWeight: 600,
+    color: isFormHovered ? '#36a64f' : 'var(--text-2)',
+    textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: 6,
+    fontFamily: 'var(--font-inter), Inter, sans-serif',
+    transition: 'color 0.3s ease',
+  }
 
   return (
     <div className="nv-landing">
@@ -693,11 +696,19 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             </p>
           </div>
 
-          <div className="form-wrap" style={{
-            background: '#fff', borderRadius: 20, padding: 48,
-            border: '1px solid var(--border)',
-            boxShadow: '0 2px 24px rgba(2,79,65,0.07)',
-          }}>
+          <div
+            className="form-wrap"
+            onMouseEnter={() => setIsFormHovered(true)}
+            onMouseLeave={() => setIsFormHovered(false)}
+            style={{
+              background: '#fff', borderRadius: 20, padding: 48,
+              border: `1.5px solid ${isFormHovered ? '#36a64f' : 'var(--border)'}`,
+              boxShadow: isFormHovered
+                ? '0 8px 24px rgba(54,166,79,0.15)'
+                : '0 2px 24px rgba(2,79,65,0.07)',
+              transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+            }}
+          >
             {status === 'success' ? (
               /* ── SUCCESS ── */
               <div style={{ textAlign: 'center', padding: '32px 0 8px' }}>
