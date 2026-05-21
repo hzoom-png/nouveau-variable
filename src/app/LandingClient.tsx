@@ -414,13 +414,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           }}>
             Candidater au club →
           </a>
-          <a href="#comment-ca-marche" className="btn-ghost" style={{
-            fontFamily: 'var(--fi)', fontSize: 14, fontWeight: 500,
-            color: 'var(--text-2)', textDecoration: 'underline',
-            textUnderlineOffset: 3,
-          }}>
-            Voir comment ça marche ↓
-          </a>
         </div>
 
         {/* Waitlist counter */}
