@@ -1,9 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { motion, MotionValue } from 'framer-motion'
 import { CONTENT_POINTS } from '../constants'
-
-const ICONS = ['🛠️', '🎯', '🤝', '💚']
 
 interface ContentPointsProps {
   opacities: MotionValue<number>[]
@@ -12,7 +11,6 @@ interface ContentPointsProps {
 }
 
 export function ContentPoints({ opacities, isMobile = false, position = 'right' }: ContentPointsProps) {
-  // Centered — one card at a time, graph already gone
   if (position === 'center') {
     return (
       <>
@@ -30,27 +28,25 @@ export function ContentPoints({ opacities, isMobile = false, position = 'right' 
               zIndex: 3,
             }}
           >
-            <PointCard pt={pt} icon={ICONS[i]} large={!isMobile} />
+            <PointCard pt={pt} large={!isMobile} />
           </motion.div>
         ))}
       </>
     )
   }
 
-  // Stacked column (legacy)
   if (isMobile) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {CONTENT_POINTS.map((pt, i) => (
           <motion.div key={i} style={{ opacity: opacities[i] }}>
-            <PointCard pt={pt} icon={ICONS[i]} />
+            <PointCard pt={pt} />
           </motion.div>
         ))}
       </div>
     )
   }
 
-  // Bottom overlay (legacy)
   if (position === 'bottom') {
     return (
       <>
@@ -68,14 +64,13 @@ export function ContentPoints({ opacities, isMobile = false, position = 'right' 
               zIndex: 3,
             }}
           >
-            <PointCard pt={pt} icon={ICONS[i]} compact />
+            <PointCard pt={pt} compact />
           </motion.div>
         ))}
       </>
     )
   }
 
-  // Right panel (legacy desktop)
   return (
     <>
       {CONTENT_POINTS.map((pt, i) => (
@@ -90,7 +85,7 @@ export function ContentPoints({ opacities, isMobile = false, position = 'right' 
             pointerEvents: 'none',
           }}
         >
-          <PointCard pt={pt} icon={ICONS[i]} />
+          <PointCard pt={pt} />
         </motion.div>
       ))}
     </>
@@ -98,48 +93,53 @@ export function ContentPoints({ opacities, isMobile = false, position = 'right' 
 }
 
 function PointCard({
-  pt, icon, compact = false, large = false,
+  pt, compact = false, large = false,
 }: {
   pt: typeof CONTENT_POINTS[number]
-  icon: string
   compact?: boolean
   large?: boolean
 }) {
-  const pad    = large ? '28px 32px' : compact ? '12px 16px' : '18px 22px'
-  const radius = large ? 20 : compact ? 12 : 14
-  const iconSz = large ? 32 : compact ? 18 : 22
-  const iconMb = large ? 14 : compact ? 6 : 10
-  const titleSz = large ? 22 : compact ? 14 : 15
-  const titleMb = large ? 12 : compact ? 4 : 6
+  const [hovered, setHovered] = useState(false)
+
+  const pad     = large ? '28px 32px' : compact ? '12px 16px' : '18px 22px'
+  const titleSz = large ? 20 : compact ? 14 : 15
+  const titleMb = large ? 10 : compact ? 4 : 6
   const descSz  = large ? 15 : compact ? 12 : 13
   const dotMt   = large ? 18 : compact ? 8 : 12
   const tagSz   = large ? 11 : 10
 
   return (
-    <div style={{
-      background: 'rgba(10,26,20,0.92)',
-      backdropFilter: 'blur(16px)',
-      WebkitBackdropFilter: 'blur(16px)',
-      border: '1px solid rgba(54,166,79,0.35)',
-      borderRadius: radius,
-      padding: pad,
-      boxShadow: '0 8px 48px rgba(0,0,0,0.28), 0 0 0 1px rgba(54,166,79,0.1)',
-    }}>
-      <div style={{ fontSize: iconSz, marginBottom: iconMb }}>{icon}</div>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: '#fff',
+        border: `1px solid ${hovered ? '#36a64f' : '#E4EEEA'}`,
+        borderRadius: 12,
+        padding: pad,
+        boxShadow: hovered
+          ? '0 8px 32px rgba(54,166,79,0.15)'
+          : '0 2px 12px rgba(0,0,0,0.06)',
+        transform: hovered ? 'translateY(-8px)' : 'translateY(0)',
+        transition: 'border-color 0.2s, box-shadow 0.2s, transform 0.2s',
+        pointerEvents: 'auto',
+      }}
+    >
       <h3 style={{
         fontFamily: "'Inter', system-ui, sans-serif",
-        fontWeight: 400,
+        fontWeight: 600,
         fontSize: titleSz,
-        color: '#ffffff',
+        color: hovered ? '#36a64f' : '#0F1C17',
         lineHeight: 1.3,
         margin: `0 0 ${titleMb}px`,
+        transition: 'color 0.2s',
       }}>
         {pt.title}
       </h3>
       <p style={{
         fontFamily: "'Inter', system-ui, sans-serif",
         fontSize: descSz,
-        color: 'rgba(255,255,255,0.72)',
+        color: '#4B6358',
         lineHeight: 1.6,
         margin: 0,
       }}>
@@ -151,11 +151,7 @@ function PointCard({
         alignItems: 'center',
         gap: 6,
       }}>
-        <div style={{
-          width: 5, height: 5, borderRadius: '50%',
-          background: '#36a64f',
-          boxShadow: '0 0 6px #36a64f',
-        }} />
+        <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#36a64f' }} />
         <span style={{
           fontFamily: "'Inter', system-ui, sans-serif",
           fontSize: tagSz,

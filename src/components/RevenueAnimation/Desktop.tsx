@@ -95,11 +95,11 @@ export function Desktop({ isMobile = false }: DesktopProps) {
     el.textContent    = Math.round(gv).toLocaleString('fr-FR') + ' €'
   })
 
-  // ── Content points — 4 × 10% = 40% of scroll, each centered ────
-  const p0op = useTransform(progress, [0.62, 0.65, 0.68, 0.70], [0, 1, 1, 0])
-  const p1op = useTransform(progress, [0.70, 0.73, 0.78, 0.80], [0, 1, 1, 0])
-  const p2op = useTransform(progress, [0.80, 0.83, 0.88, 0.90], [0, 1, 1, 0])
-  const p3op = useTransform(progress, [0.90, 0.93, 0.98, 1.00], [0, 1, 1, 0])
+  // ── Content points — 4 × ~9.5% = 38% of scroll, slower dwell ──
+  const p0op = useTransform(progress, [0.620, 0.640, 0.695, 0.715], [0, 1, 1, 0])
+  const p1op = useTransform(progress, [0.715, 0.735, 0.790, 0.810], [0, 1, 1, 0])
+  const p2op = useTransform(progress, [0.810, 0.830, 0.885, 0.905], [0, 1, 1, 0])
+  const p3op = useTransform(progress, [0.905, 0.925, 0.980, 1.000], [0, 1, 1, 0])
   const pointOpacities: MotionValue<number>[] = [p0op, p1op, p2op, p3op]
 
   return (
