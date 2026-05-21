@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useDashboard } from '@/lib/dashboard-context'
 import { LockedSection } from '@/components/LockedSection'
 import SideHustleAIPanel from './SideHustleAIPanel'
+import { SlidersHorizontal, Map, LayoutGrid, TrendingUp, Calendar, CheckCircle2, Download, Share2, type LucideIcon } from 'lucide-react'
 
 // ── Types ──────────────────────────────────────────────────────────
 type Stage = 'idea' | 'validation' | 'build' | 'launch' | 'growth'
@@ -78,7 +79,7 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
   const [projects, setProjects]   = useState<SHProject[]>(initialProjects)
   const [view,     setView]       = useState<View>('list')
   const [active,   setActive]     = useState<SHProject | null>(null)
-  const [drawer,   setDrawer]     = useState<'bmc'|'forecast'|'ai'|null>(null)
+  const [drawer,   setDrawer]     = useState<'bmc'|'forecast'|'ai'|'roadmap'|null>(null)
   const [pushing,  setPushing]    = useState(false)
   const [generating, setGenerating] = useState(false)
   const [genError,   setGenError]   = useState('')
@@ -358,7 +359,7 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
     return (
       <div>
         <div className="tool-header">
-          <div className="tool-badge">🚀 Side Hustle</div>
+          <div className="tool-badge">Side Hustle</div>
           <h1 className="tool-h1">Pilote ton projet perso.</h1>
           <p className="tool-desc">Roadmap, Business Model Canvas, prévisionnel — tout en un.</p>
           <div className="tool-actions">
@@ -392,7 +393,9 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
 
         {projects.length === 0 ? (
           <div style={{ background:'var(--white)',border:'1px solid var(--border)',borderRadius:'var(--r-lg)',padding:'56px',textAlign:'center' }}>
-            <div style={{ fontSize:32,marginBottom:12 }}>🚀</div>
+            <div style={{ width:48,height:48,borderRadius:'var(--r-md)',background:'var(--green-3)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 16px' }}>
+              <Map size={22} color="var(--green)" />
+            </div>
             <p style={{ fontWeight:600,color:'var(--text)',marginBottom:6 }}>Aucun projet Side Hustle</p>
             <p style={{ fontSize:13,color:'var(--text-3)',marginBottom:20 }}>Crée ton premier projet et obtiens une roadmap complète en quelques secondes.</p>
             <button className="tbtn-primary" onClick={() => { setForm({ stage: 'idea' }); setEditing(false); setView('form') }}>
@@ -528,103 +531,192 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
     const proj = projects.find(p => p.id === active.id) ?? active
     const progress = pct(proj)
     const allTasks = proj.roadmap?.flatMap(p => p.tasks) ?? []
+    const doneTasks = allTasks.filter(t => t.done).length
+
+    // Basic forecast summary from generated forecast (12-month simple)
+    const forecastMonths = proj.forecast?.months ?? []
+    const totalRevenue = forecastMonths.reduce((s, m) => s + (m.revenue ?? 0), 0)
+    const breakevenMonth = forecastMonths.findIndex(m => m.margin >= 0)
 
     return (
       <div>
         {/* Header */}
-        <div style={{ display:'flex',alignItems:'center',gap:12,marginBottom:24,flexWrap:'wrap' }}>
+        <div style={{ display:'flex',alignItems:'center',gap:12,marginBottom:32,flexWrap:'wrap' }}>
           <button onClick={() => setView('list')} style={{ fontSize:13,color:'var(--text-3)',background:'none',border:'none',cursor:'pointer' }}>← Mes projets</button>
-          <h1 style={{ fontFamily:'var(--font-jost)',fontWeight:800,fontSize:22,color:'var(--text)',flex:1 }}>{proj.name}</h1>
+          <h1 style={{ fontFamily:'Inter, sans-serif',fontWeight:800,fontSize:22,color:'var(--text)',flex:1 }}>{proj.name}</h1>
           <button onClick={() => { setForm({ ...proj }); setEditing(true); setView('form') }}
             style={{ fontSize:12,padding:'7px 16px',borderRadius:'var(--r-full)',border:'1.5px solid var(--border)',background:'var(--white)',color:'var(--text-2)',cursor:'pointer',fontWeight:600 }}>
             Modifier
           </button>
-          <button onClick={() => setDrawer('bmc')}
-            style={{ fontSize:12,padding:'7px 16px',borderRadius:'var(--r-full)',border:'1.5px solid var(--green)',background:'var(--green-3)',color:'var(--green)',cursor:'pointer',fontWeight:600 }}>
-            Business Model Canvas
-          </button>
-          <button onClick={() => setDrawer('forecast')}
-            style={{ fontSize:12,padding:'7px 16px',borderRadius:'var(--r-full)',border:'1.5px solid var(--green)',background:'var(--green-3)',color:'var(--green)',cursor:'pointer',fontWeight:600 }}>
-            Prévisionnel
-          </button>
-          <button onClick={() => setDrawer('ai')}
-            style={{ fontSize:12,padding:'7px 16px',borderRadius:'var(--r-full)',border:'1.5px solid var(--green)',background:'var(--green)',color:'#fff',cursor:'pointer',fontWeight:700 }}>
-            Hypothèses & Prévisionnel IA ✦
-          </button>
           <button onClick={() => window.open(`/api/side-hustle/${proj.id}/export`, '_blank')}
-            style={{ fontSize:12,padding:'7px 14px',borderRadius:'var(--r-full)',border:'1.5px solid var(--border)',background:'var(--white)',color:'var(--text-2)',cursor:'pointer',fontWeight:600 }}>
-            Exporter ↗
+            style={{ fontSize:12,padding:'7px 14px',borderRadius:'var(--r-full)',border:'1.5px solid var(--border)',background:'var(--white)',color:'var(--text-2)',cursor:'pointer',fontWeight:600,display:'flex',alignItems:'center',gap:6 }}>
+            <Download size={13} /> Exporter
           </button>
-          {!proj.project_id ? (
-            <button onClick={() => pushToProjects(proj.id)} disabled={pushing}
-              style={{ fontSize:12,padding:'7px 14px',borderRadius:'var(--r-full)',border:'1.5px solid var(--border)',background:'var(--white)',color:'var(--text-2)',cursor:pushing?'not-allowed':'pointer',fontWeight:600,opacity:pushing?.7:1 }}>
-              {pushing ? 'Création…' : 'Lier aux Projets →'}
-            </button>
-          ) : (
-            <span style={{ fontSize:11,padding:'5px 12px',borderRadius:'var(--r-full)',background:'var(--green-3,#EAF2EE)',color:'var(--green)',fontWeight:700,border:'1px solid var(--green)' }}>
-              ✓ Projet lié
-            </span>
-          )}
         </div>
 
-        <div style={{ display:'grid',gridTemplateColumns:'280px 1fr',gap:24,alignItems:'start' }}>
+        {genError && (
+          <div style={{ background:'var(--red-2)',border:'1px solid #FADBD8',borderRadius:'var(--r-md)',padding:'12px 16px',marginBottom:20,fontSize:13,color:'var(--red)' }}>
+            {genError}
+            <button onClick={() => setGenError('')} style={{ marginLeft:12,fontSize:12,color:'var(--red)',textDecoration:'underline',cursor:'pointer',background:'none',border:'none' }}>Fermer</button>
+          </div>
+        )}
 
-          {/* Left col */}
-          <div style={{ display:'flex',flexDirection:'column',gap:14 }}>
-            <div style={{ background:'var(--white)',border:'1px solid var(--border)',borderRadius:'var(--r-md)',padding:18 }}>
-              <div style={{ display:'flex',alignItems:'center',gap:8,marginBottom:12 }}>
-                <span style={{ fontSize:10,fontWeight:700,padding:'3px 9px',borderRadius:'var(--r-full)',
-                  background:`${STAGE_COLORS[proj.stage]}18`,color:STAGE_COLORS[proj.stage] }}>
-                  {STAGE_LABELS[proj.stage]}
-                </span>
+        {/* ── 3 cartes ── */}
+        <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16,marginBottom:20 }}>
+
+          <SHCard
+            title="Roadmap"
+            description={proj.roadmap ? `${proj.roadmap.length} phase${proj.roadmap.length > 1 ? 's' : ''} · ${allTasks.length} tâches` : 'Roadmap non générée'}
+            icon={Map}
+            onClick={() => setDrawer('roadmap')}
+            badge={proj.roadmap ? `${progress}%` : undefined}
+          />
+
+          <SHCard
+            title="Hypothèses & Prévisionnel"
+            description="Gère tes hypothèses, tes prévisions et tes scénarios"
+            icon={SlidersHorizontal}
+            onClick={() => setDrawer('ai')}
+          />
+
+          <SHCard
+            title="Business Model Canvas"
+            description={proj.bmc ? '9 cases — canvas rempli' : '9 cases pour structurer ton modèle'}
+            icon={LayoutGrid}
+            onClick={() => setDrawer('bmc')}
+            badge={proj.bmc ? 'Rempli' : undefined}
+          />
+        </div>
+
+        {/* ── Synthèse & Avancement ── */}
+        <div style={{ background:'var(--white)',border:'1px solid var(--border)',borderRadius:'var(--r-lg)',padding:'24px 28px' }}>
+          <h2 style={{ fontFamily:'Inter, sans-serif',fontWeight:700,fontSize:16,color:'var(--text)',marginBottom:20 }}>
+            Synthèse & Avancement
+          </h2>
+
+          {/* Key stats */}
+          <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(120px,1fr))',gap:12,marginBottom:20 }}>
+            <div style={{ background:'var(--surface)',borderRadius:'var(--r-md)',padding:'14px 16px' }}>
+              <div style={{ display:'flex',alignItems:'center',gap:6,marginBottom:6 }}>
+                <TrendingUp size={13} color="var(--text-3)" />
+                <span style={{ fontSize:11,color:'var(--text-3)',fontWeight:500 }}>Stade</span>
               </div>
-              {proj.objective && (
-                <div style={{ marginBottom:12 }}>
-                  <div style={{ fontSize:10,fontWeight:600,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4 }}>Objectif</div>
-                  <div style={{ fontSize:13,color:'var(--text)',lineHeight:1.5 }}>{proj.objective}</div>
-                </div>
-              )}
-              {proj.target_date && (
-                <div style={{ marginBottom:12 }}>
-                  <div style={{ fontSize:10,fontWeight:600,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4 }}>Date cible</div>
-                  <div style={{ fontSize:13,color:'var(--text)' }}>{new Date(proj.target_date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</div>
-                </div>
-              )}
-              <div>
-                <div style={{ display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--text-3)',marginBottom:6 }}>
-                  <span>Progression globale</span>
-                  <span style={{ fontWeight:600,color:'var(--green)' }}>{progress}%</span>
-                </div>
-                <div style={{ height:6,background:'var(--surface)',borderRadius:99,overflow:'hidden' }}>
-                  <div style={{ height:'100%',width:`${progress}%`,background:'var(--green)',borderRadius:99,transition:'width .4s' }}/>
-                </div>
-                <div style={{ fontSize:11,color:'var(--text-3)',marginTop:6 }}>
-                  {allTasks.filter(t=>t.done).length} / {allTasks.length} tâches
-                </div>
-              </div>
+              <span style={{ fontSize:13,fontWeight:700,padding:'2px 8px',borderRadius:'var(--r-full)',
+                background:`${STAGE_COLORS[proj.stage]}18`,color:STAGE_COLORS[proj.stage] }}>
+                {STAGE_LABELS[proj.stage]}
+              </span>
             </div>
 
+            {proj.target_date && (
+              <div style={{ background:'var(--surface)',borderRadius:'var(--r-md)',padding:'14px 16px' }}>
+                <div style={{ display:'flex',alignItems:'center',gap:6,marginBottom:6 }}>
+                  <Calendar size={13} color="var(--text-3)" />
+                  <span style={{ fontSize:11,color:'var(--text-3)',fontWeight:500 }}>Date cible</span>
+                </div>
+                <div style={{ fontSize:13,fontWeight:600,color:'var(--text)' }}>
+                  {new Date(proj.target_date).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}
+                </div>
+              </div>
+            )}
+
+            {totalRevenue > 0 && (
+              <div style={{ background:'var(--surface)',borderRadius:'var(--r-md)',padding:'14px 16px' }}>
+                <div style={{ display:'flex',alignItems:'center',gap:6,marginBottom:6 }}>
+                  <TrendingUp size={13} color="var(--text-3)" />
+                  <span style={{ fontSize:11,color:'var(--text-3)',fontWeight:500 }}>CA prévisionnel</span>
+                </div>
+                <div style={{ fontSize:13,fontWeight:700,color:'var(--green)' }}>
+                  {totalRevenue >= 1000 ? `${(totalRevenue/1000).toFixed(0)} k€` : `${totalRevenue} €`}
+                </div>
+              </div>
+            )}
+
+            {breakevenMonth >= 0 && (
+              <div style={{ background:'var(--surface)',borderRadius:'var(--r-md)',padding:'14px 16px' }}>
+                <div style={{ display:'flex',alignItems:'center',gap:6,marginBottom:6 }}>
+                  <CheckCircle2 size={13} color="var(--text-3)" />
+                  <span style={{ fontSize:11,color:'var(--text-3)',fontWeight:500 }}>Breakeven</span>
+                </div>
+                <div style={{ fontSize:13,fontWeight:700,color:'var(--text)' }}>Mois {breakevenMonth + 1}</div>
+              </div>
+            )}
+          </div>
+
+          {/* Roadmap progress */}
+          {proj.roadmap && (
+            <div style={{ marginBottom:20 }}>
+              <div style={{ display:'flex',justifyContent:'space-between',fontSize:12,color:'var(--text-2)',marginBottom:8 }}>
+                <span style={{ fontWeight:500 }}>Roadmap complétée</span>
+                <span style={{ fontWeight:700,color:'var(--green)' }}>{progress}% · {doneTasks}/{allTasks.length} tâches</span>
+              </div>
+              <div style={{ height:6,background:'var(--surface)',borderRadius:99,overflow:'hidden' }}>
+                <div style={{ height:'100%',width:`${progress}%`,background:'var(--green)',borderRadius:99,transition:'width .4s' }}/>
+              </div>
+            </div>
+          )}
+
+          {proj.objective && (
+            <div style={{ marginBottom:20,padding:'12px 16px',background:'var(--surface)',borderRadius:'var(--r-md)' }}>
+              <div style={{ fontSize:10,fontWeight:600,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4 }}>Objectif</div>
+              <div style={{ fontSize:13,color:'var(--text)',lineHeight:1.5 }}>{proj.objective}</div>
+            </div>
+          )}
+
+          {/* CTAs */}
+          <div style={{ display:'flex',gap:10,flexWrap:'wrap' }}>
+            {!proj.project_id ? (
+              <button onClick={() => pushToProjects(proj.id)} disabled={pushing}
+                style={{ padding:'10px 20px',borderRadius:'var(--r-sm)',background:'var(--green)',color:'#fff',border:'none',
+                  fontFamily:'Inter, sans-serif',fontWeight:600,fontSize:13,cursor:pushing?'not-allowed':'pointer',
+                  opacity:pushing?.7:1,display:'flex',alignItems:'center',gap:8 }}>
+                <Share2 size={14} /> {pushing ? 'Création…' : 'Push to Projets'}
+              </button>
+            ) : (
+              <div style={{ display:'flex',alignItems:'center',gap:8,padding:'10px 16px',borderRadius:'var(--r-sm)',
+                background:'var(--green-3)',border:'1px solid var(--green)',fontSize:12,fontWeight:700,color:'var(--green)' }}>
+                <CheckCircle2 size={14} /> Projet lié
+                <button onClick={() => unlinkFromProject(proj.id)}
+                  style={{ marginLeft:4,fontSize:11,color:'var(--text-3)',background:'none',border:'none',cursor:'pointer',textDecoration:'underline' }}>
+                  Délier
+                </button>
+              </div>
+            )}
+            <button onClick={() => window.open(`/api/side-hustle/${proj.id}/export`, '_blank')}
+              style={{ padding:'10px 20px',borderRadius:'var(--r-sm)',background:'var(--white)',color:'var(--text-2)',
+                border:'1.5px solid var(--border)',fontFamily:'Inter, sans-serif',fontWeight:600,fontSize:13,cursor:'pointer',
+                display:'flex',alignItems:'center',gap:8 }}>
+              <Download size={14} /> Export PDF
+            </button>
             {!proj.roadmap && (
               <button onClick={() => generate(proj)}
-                style={{ width:'100%',padding:'12px',background:'var(--green)',color:'#fff',border:'none',
-                  borderRadius:'var(--r-full)',fontFamily:'var(--font-jost)',fontWeight:700,fontSize:14,cursor:'pointer' }}>
+                style={{ padding:'10px 20px',borderRadius:'var(--r-sm)',background:'var(--green-3)',color:'var(--green)',
+                  border:'1.5px solid var(--green)',fontFamily:'Inter, sans-serif',fontWeight:700,fontSize:13,cursor:'pointer' }}>
                 Générer la roadmap →
               </button>
             )}
           </div>
+        </div>
 
-          {/* Right col - Roadmap */}
-          <div>
+        {/* ── Modals ── */}
+
+        {/* Roadmap modal */}
+        {drawer === 'roadmap' && (
+          <Modal title="Roadmap" onClose={() => setDrawer(null)} wide>
             {!proj.roadmap ? (
-              <div style={{ background:'var(--white)',border:'1px solid var(--border)',borderRadius:'var(--r-lg)',padding:'48px',textAlign:'center' }}>
-                <p style={{ color:'var(--text-3)',fontSize:14 }}>Aucune roadmap générée. Clique sur &ldquo;Générer la roadmap&rdquo; pour démarrer.</p>
+              <div style={{ textAlign:'center',padding:'40px 0' }}>
+                <p style={{ color:'var(--text-3)',fontSize:14,marginBottom:20 }}>Aucune roadmap générée pour l&rsquo;instant.</p>
+                <button onClick={() => { setDrawer(null); generate(proj) }}
+                  style={{ padding:'11px 24px',borderRadius:'var(--r-full)',background:'var(--green)',color:'#fff',
+                    border:'none',fontFamily:'Inter, sans-serif',fontWeight:700,fontSize:14,cursor:'pointer' }}>
+                  Générer la roadmap →
+                </button>
               </div>
             ) : (
-              <div style={{ display:'flex',flexDirection:'column',gap:16 }}>
+              <div style={{ display:'flex',flexDirection:'column',gap:14 }}>
                 {proj.roadmap.map((phase, pi) => (
                   <div key={pi} style={{ background:'var(--white)',border:'1px solid var(--border)',borderRadius:'var(--r-lg)',overflow:'hidden' }}>
-                    <div style={{ padding:'14px 18px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:10 }}>
-                      <span style={{ fontFamily:'var(--font-jost)',fontWeight:700,fontSize:14,color:'var(--text)',flex:1 }}>{phase.phase}</span>
+                    <div style={{ padding:'13px 18px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:10 }}>
+                      <span style={{ fontFamily:'Inter, sans-serif',fontWeight:700,fontSize:14,color:'var(--text)',flex:1 }}>{phase.phase}</span>
                       <span style={{ fontSize:11,color:'var(--text-3)',background:'var(--surface)',border:'1px solid var(--border)',borderRadius:'var(--r-full)',padding:'2px 10px' }}>{phase.duration}</span>
                     </div>
                     <div style={{ padding:'8px 0' }}>
@@ -654,24 +746,37 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
                 </button>
               </div>
             )}
-          </div>
-        </div>
-
-        {/* BMC Drawer */}
-        {drawer === 'bmc' && proj.bmc && (
-          <Drawer title="Business Model Canvas" onClose={() => setDrawer(null)}>
-            <p style={{ fontSize:12,color:'var(--text-3)',marginBottom:16 }}>Clique sur un champ pour le modifier — sauvegarde automatique.</p>
-            <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:12 }}>
-              {(Object.entries(BMC_LABELS) as [keyof BmcKey, string][]).map(([key, label]) => (
-                <BmcField key={key} label={label} value={proj.bmc![key]} onSave={v => saveBmc(proj.id, key, v)} />
-              ))}
-            </div>
-          </Drawer>
+          </Modal>
         )}
 
-        {/* Forecast Drawer */}
+        {/* BMC modal */}
+        {drawer === 'bmc' && (
+          <Modal title="Business Model Canvas" onClose={() => setDrawer(null)} wide>
+            {!proj.bmc ? (
+              <div style={{ textAlign:'center',padding:'40px 0' }}>
+                <p style={{ color:'var(--text-3)',fontSize:14,marginBottom:20 }}>BMC non encore généré — génère la roadmap complète d&rsquo;abord.</p>
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize:12,color:'var(--text-3)',marginBottom:16 }}>Clique sur un champ pour le modifier — sauvegarde automatique.</p>
+                <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:12 }}>
+                  {(Object.entries(BMC_LABELS) as [keyof BmcKey, string][]).map(([key, label]) => (
+                    <BmcField key={key} label={label} value={proj.bmc![key]} onSave={v => saveBmc(proj.id, key, v)} />
+                  ))}
+                </div>
+              </>
+            )}
+          </Modal>
+        )}
+
+        {/* Hypothèses & Prévisionnel IA */}
+        {drawer === 'ai' && (
+          <SideHustleAIPanel projectId={proj.id} onClose={() => setDrawer(null)} />
+        )}
+
+        {/* Prévisionnel simple (accessible via forecast) */}
         {drawer === 'forecast' && proj.forecast && (
-          <Drawer title="Prévisionnel 12 mois" onClose={() => setDrawer(null)}>
+          <Modal title="Prévisionnel 12 mois" onClose={() => setDrawer(null)} wide>
             <p style={{ fontSize:12,color:'var(--text-3)',marginBottom:16 }}>Modifie le CA et les charges — la marge se recalcule automatiquement.</p>
             <div style={{ overflowX:'auto' }}>
               <table style={{ width:'100%',borderCollapse:'collapse',fontSize:13 }}>
@@ -693,12 +798,7 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
               <div style={{ fontSize:11,fontWeight:700,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:6 }}>Hypothèses</div>
               <AssumptionsField value={proj.forecast.assumptions ?? ''} onSave={v => saveForecastAssumptions(proj.id, v)} />
             </div>
-          </Drawer>
-        )}
-
-        {/* AI Panel — hypothèses & prévisionnel structuré */}
-        {drawer === 'ai' && (
-          <SideHustleAIPanel projectId={proj.id} onClose={() => setDrawer(null)} />
+          </Modal>
         )}
       </div>
     )
@@ -804,19 +904,59 @@ function AssumptionsField({ value, onSave }: { value: string; onSave: (v: string
   )
 }
 
-function Drawer({ title, onClose, children }: { title:string; onClose:()=>void; children:React.ReactNode }) {
+function Modal({ title, onClose, children, wide }: { title:string; onClose:()=>void; children:React.ReactNode; wide?:boolean }) {
   return (
     <>
-      <div onClick={onClose} style={{ position:'fixed',inset:0,background:'rgba(0,0,0,.32)',zIndex:200 }}/>
-      <div style={{ position:'fixed',top:0,right:0,width:640,maxWidth:'95vw',height:'100vh',
-        background:'var(--white)',borderLeft:'1px solid var(--border)',zIndex:201,
-        display:'flex',flexDirection:'column',overflow:'hidden' }}>
-        <div style={{ padding:'18px 24px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0 }}>
-          <h2 style={{ fontFamily:'var(--font-jost)',fontWeight:800,fontSize:18,color:'var(--text)' }}>{title}</h2>
-          <button onClick={onClose} style={{ width:30,height:30,borderRadius:'var(--r-sm)',background:'var(--surface)',border:'1px solid var(--border)',cursor:'pointer',fontSize:16,color:'var(--text-2)' }}>×</button>
+      <div onClick={onClose} style={{ position:'fixed',inset:0,background:'rgba(1,39,34,.5)',zIndex:200 }}/>
+      <div style={{
+        position:'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)',
+        width: wide ? 'min(720px, 94vw)' : 'min(520px, 94vw)',
+        maxHeight:'86vh',background:'var(--white)',borderRadius:'var(--r-lg)',
+        boxShadow:'0 20px 60px rgba(0,0,0,.14)',zIndex:201,
+        display:'flex',flexDirection:'column',overflow:'hidden',
+      }}>
+        <div style={{ padding:'20px 24px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0 }}>
+          <h2 style={{ fontFamily:'Inter, sans-serif',fontWeight:700,fontSize:17,color:'var(--text)' }}>{title}</h2>
+          <button onClick={onClose} style={{ width:30,height:30,borderRadius:'var(--r-sm)',background:'var(--surface)',border:'1px solid var(--border)',cursor:'pointer',fontSize:18,color:'var(--text-2)',lineHeight:1 }}>×</button>
         </div>
         <div style={{ flex:1,overflowY:'auto',padding:'20px 24px' }}>{children}</div>
       </div>
     </>
+  )
+}
+
+function SHCard({ title, description, icon: Icon, onClick, badge }: { title:string; description:string; icon:LucideIcon; onClick:()=>void; badge?:string }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background:'var(--white)',
+        border:`1.5px solid ${hovered ? 'var(--green)' : 'var(--border)'}`,
+        borderRadius:'var(--r-lg)',padding:'24px',cursor:'pointer',
+        transition:'border-color .15s, box-shadow .15s',
+        boxShadow: hovered ? '0 4px 14px rgba(2,79,65,.08)' : 'none',
+        minHeight:160,display:'flex',flexDirection:'column',
+        alignItems:'center',justifyContent:'center',textAlign:'center',gap:12,
+        position:'relative',width:'100%',
+      }}
+    >
+      {badge && (
+        <span style={{
+          position:'absolute',top:12,right:12,fontSize:10,fontWeight:700,
+          padding:'2px 8px',borderRadius:'var(--r-full)',
+          background:'var(--green-3)',color:'var(--green)',
+        }}>{badge}</span>
+      )}
+      <div style={{ width:44,height:44,borderRadius:'var(--r-md)',background:'var(--green-3)',display:'flex',alignItems:'center',justifyContent:'center' }}>
+        <Icon size={20} color="var(--green)" />
+      </div>
+      <div>
+        <h3 style={{ fontFamily:'Inter, sans-serif',fontSize:14,fontWeight:700,color:'var(--text)',marginBottom:5 }}>{title}</h3>
+        <p style={{ fontFamily:'Inter, sans-serif',fontSize:12,color:'var(--text-3)',lineHeight:1.45 }}>{description}</p>
+      </div>
+    </button>
   )
 }
