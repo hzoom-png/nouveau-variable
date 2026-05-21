@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useDashboard } from '@/lib/dashboard-context'
 import { LockedSection } from '@/components/LockedSection'
+import SideHustleAIPanel from './SideHustleAIPanel'
 
 // ── Types ──────────────────────────────────────────────────────────
 type Stage = 'idea' | 'validation' | 'build' | 'launch' | 'growth'
@@ -77,7 +78,8 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
   const [projects, setProjects]   = useState<SHProject[]>(initialProjects)
   const [view,     setView]       = useState<View>('list')
   const [active,   setActive]     = useState<SHProject | null>(null)
-  const [drawer,   setDrawer]     = useState<'bmc'|'forecast'|null>(null)
+  const [drawer,   setDrawer]     = useState<'bmc'|'forecast'|'ai'|null>(null)
+  const [pushing,  setPushing]    = useState(false)
   const [generating, setGenerating] = useState(false)
   const [genError,   setGenError]   = useState('')
   const [genStep,    setGenStep]    = useState('')
@@ -293,6 +295,29 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
     } catch (e) {
       setGenError(e instanceof Error ? e.message : 'Erreur réseau')
       setGenerating(false)
+    }
+  }
+
+  async function pushToProjects(projId: string) {
+    setPushing(true); setGenError('')
+    try {
+      const res = await fetch(`/api/side-hustle/${projId}/push-to-projects`, { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) { setGenError(data.error || 'Erreur'); return }
+      if (data.project_id) {
+        setProjects(ps => ps.map(p => p.id === projId ? { ...p, project_id: data.project_id } : p))
+        setActive(prev => prev?.id === projId ? { ...prev, project_id: data.project_id } : prev)
+      }
+    } catch {
+      setGenError('Erreur réseau')
+    } finally { setPushing(false) }
+  }
+
+  async function unlinkFromProject(projId: string) {
+    const res = await fetch(`/api/side-hustle/${projId}/unlink`, { method: 'POST' })
+    if (res.ok) {
+      setProjects(ps => ps.map(p => p.id === projId ? { ...p, project_id: undefined } : p))
+      setActive(prev => prev?.id === projId ? { ...prev, project_id: undefined } : prev)
     }
   }
 
@@ -522,6 +547,24 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
             style={{ fontSize:12,padding:'7px 16px',borderRadius:'var(--r-full)',border:'1.5px solid var(--green)',background:'var(--green-3)',color:'var(--green)',cursor:'pointer',fontWeight:600 }}>
             Prévisionnel
           </button>
+          <button onClick={() => setDrawer('ai')}
+            style={{ fontSize:12,padding:'7px 16px',borderRadius:'var(--r-full)',border:'1.5px solid var(--green)',background:'var(--green)',color:'#fff',cursor:'pointer',fontWeight:700 }}>
+            Hypothèses & Prévisionnel IA ✦
+          </button>
+          <button onClick={() => window.open(`/api/side-hustle/${proj.id}/export`, '_blank')}
+            style={{ fontSize:12,padding:'7px 14px',borderRadius:'var(--r-full)',border:'1.5px solid var(--border)',background:'var(--white)',color:'var(--text-2)',cursor:'pointer',fontWeight:600 }}>
+            Exporter ↗
+          </button>
+          {!proj.project_id ? (
+            <button onClick={() => pushToProjects(proj.id)} disabled={pushing}
+              style={{ fontSize:12,padding:'7px 14px',borderRadius:'var(--r-full)',border:'1.5px solid var(--border)',background:'var(--white)',color:'var(--text-2)',cursor:pushing?'not-allowed':'pointer',fontWeight:600,opacity:pushing?.7:1 }}>
+              {pushing ? 'Création…' : 'Lier aux Projets →'}
+            </button>
+          ) : (
+            <span style={{ fontSize:11,padding:'5px 12px',borderRadius:'var(--r-full)',background:'var(--green-3,#EAF2EE)',color:'var(--green)',fontWeight:700,border:'1px solid var(--green)' }}>
+              ✓ Projet lié
+            </span>
+          )}
         </div>
 
         <div style={{ display:'grid',gridTemplateColumns:'280px 1fr',gap:24,alignItems:'start' }}>
@@ -651,6 +694,11 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
               <AssumptionsField value={proj.forecast.assumptions ?? ''} onSave={v => saveForecastAssumptions(proj.id, v)} />
             </div>
           </Drawer>
+        )}
+
+        {/* AI Panel — hypothèses & prévisionnel structuré */}
+        {drawer === 'ai' && (
+          <SideHustleAIPanel projectId={proj.id} onClose={() => setDrawer(null)} />
         )}
       </div>
     )
