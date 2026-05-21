@@ -18,7 +18,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const { data: meeting } = await service
     .from('meeting_requests')
-    .select('*')
+    .select('id, recipient_id, requester_id, points_cost, status')
     .eq('id', id)
     .single()
 

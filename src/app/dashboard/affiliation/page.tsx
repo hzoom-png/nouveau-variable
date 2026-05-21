@@ -10,7 +10,7 @@ export default async function AffiliationPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+  const { data: profile } = await supabase.from('profiles').select('referral_code').eq('id', user.id).single()
   if (!profile) redirect('/auth/login')
 
   const { count: n1Count } = await supabase

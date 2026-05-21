@@ -22,7 +22,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (!parsed.success) return NextResponse.json({ error: 'Payload invalide' }, { status: 400 })
 
   const svc = createServiceClient()
-  const { data: existing } = await svc.from('support_tickets').select('*').eq('id', id).single()
+  const { data: existing } = await svc.from('support_tickets').select('id, user_name, user_email, status').eq('id', id).single()
   if (!existing) return NextResponse.json({ error: 'Ticket introuvable' }, { status: 404 })
 
   const patch: Record<string, unknown> = {}

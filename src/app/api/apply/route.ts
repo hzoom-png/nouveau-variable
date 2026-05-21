@@ -146,6 +146,7 @@ export async function POST(request: NextRequest) {
   if (adminEmail) {
     fetch('https://api.brevo.com/v3/smtp/email', {
       method:  'POST',
+      signal:  AbortSignal.timeout(10_000),
       headers: { 'api-key': process.env.BREVO_API_KEY!, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         to:      [{ email: adminEmail }],

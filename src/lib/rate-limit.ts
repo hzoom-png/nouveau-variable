@@ -20,9 +20,9 @@ export async function rateLimit(
   })
 
   if (error) {
-    // Si le RPC n'existe pas encore (migration non appliquée) : fail open
-    console.error('[rateLimit] RPC indisponible, passage autorisé:', error.message)
-    return true
+    // RPC indisponible → fail-closed : bloquer plutôt que laisser passer
+    console.error('[rateLimit] RPC indisponible, requête bloquée (fail-closed):', error.message)
+    return false
   }
 
   return data as boolean

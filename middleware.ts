@@ -1,7 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
+import { randomBytes } from 'crypto'
 
 const ADMIN_PUBLIC = ['/admin/login', '/admin/setup-totp']
+
+function buildCsp(nonce: string): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: blob: https://*.supabase.co",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.anthropic.com https://api.brevo.com",
+    "frame-src 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; ')
+}
 
 function getAdminSecret(): Uint8Array | null {
   const s = process.env.ADMIN_JWT_SECRET
@@ -38,14 +54,6 @@ async function checkAdminJwt(request: NextRequest): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // ── /dashboard/* + /onboarding/* — Supabase session cookie gate ──
-  if (pathname.startsWith('/dashboard') || pathname.startsWith('/onboarding')) {
-    if (!hasSupabaseSession(request)) {
-      return NextResponse.redirect(new URL('/', request.url))
-    }
-    return NextResponse.next()
-  }
-
   // ── /api/admin/auth/* — login flow endpoints, pass through ───────
   if (pathname.startsWith('/api/admin/auth')) {
     return NextResponse.next()
@@ -59,22 +67,38 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // ── /admin/* — admin JWT check → redirect ────────────────────────
-  if (pathname.startsWith('/admin')) {
-    if (ADMIN_PUBLIC.some(p => pathname === p || pathname.startsWith(p + '/'))) {
-      return NextResponse.next()
+  // ── Pages HTML (dashboard, onboarding, admin, landing) ───────────
+  // Génère un nonce par requête pour la CSP script-src
+  const nonce = randomBytes(16).toString('base64')
+  const csp   = buildCsp(nonce)
+
+  // Inject nonce dans les headers de la requête pour que le layout puisse le lire
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-nonce', nonce)
+
+  // Auth gates — construit la réponse avec le nonce déjà dans les headers
+  if (pathname.startsWith('/dashboard') || pathname.startsWith('/onboarding')) {
+    if (!hasSupabaseSession(request)) {
+      return NextResponse.redirect(new URL('/', request.url))
     }
-    if (!await checkAdminJwt(request)) {
-      const res = NextResponse.redirect(new URL('/admin/login', request.url))
-      res.cookies.delete('admin_session')
-      return res
-    }
-    return NextResponse.next()
   }
 
-  return NextResponse.next()
+  if (pathname.startsWith('/admin')) {
+    if (!ADMIN_PUBLIC.some(p => pathname === p || pathname.startsWith(p + '/'))) {
+      if (!await checkAdminJwt(request)) {
+        const res = NextResponse.redirect(new URL('/admin/login', request.url))
+        res.cookies.delete('admin_session')
+        return res
+      }
+    }
+  }
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } })
+  response.headers.set('Content-Security-Policy', csp)
+  return response
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/onboarding/:path*', '/admin/:path*', '/api/admin/:path*'],
+  // Toutes les pages HTML — exclure _next/static, _next/image, et fichiers statiques
+  matcher: ['/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff2?|ttf|eot)$).*)'],
 }

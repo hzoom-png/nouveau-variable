@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Jost, Inter } from 'next/font/google'
+import { headers } from 'next/headers'
 import './globals.css'
 import { ThemeProvider } from '@/lib/theme'
 import { LenisInit } from '@/components/LenisInit'
@@ -27,11 +28,12 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const nonce = (await headers()).get('x-nonce') ?? ''
   return (
     <html lang="fr" className={`${jost.variable} ${inter.variable}`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
               var saved = localStorage.getItem('nv-theme');
