@@ -28,6 +28,8 @@ export async function OPTIONS(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const origin = req.headers.get('origin')
+  const allowedOrigin = isAllowed(origin) ? origin : ALLOWED_ORIGINS[0]
+
   const svc = createServiceClient()
   const { count } = await svc
     .from('candidatures')
@@ -35,9 +37,7 @@ export async function GET(req: NextRequest) {
     .in('status', ['pending', 'received', 'reviewed'])
 
   const res = NextResponse.json({ count: count ?? 0 })
-  if (isAllowed(origin)) {
-    res.headers.set('Access-Control-Allow-Origin', origin)
-    res.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
-  }
+  res.headers.set('Access-Control-Allow-Origin', allowedOrigin)
+  res.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
   return res
 }
