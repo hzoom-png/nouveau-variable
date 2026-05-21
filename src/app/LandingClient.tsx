@@ -1428,9 +1428,10 @@ function TargetAudienceCards() {
             fontFamily: 'var(--fi)',
             fontSize: 16,
             fontWeight: 600,
-            color: 'var(--text)',
+            color: hovered === idx ? 'var(--green)' : 'var(--text)',
             marginBottom: 10,
             lineHeight: 1.4,
+            transition: 'color 0.3s ease',
           }}>
             {item.title}
           </h3>
