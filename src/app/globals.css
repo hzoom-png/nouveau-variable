@@ -277,33 +277,6 @@ img { display: block; max-width: 100%; }
   to   { transform: translateY(0); opacity: 1; }
 }
 
-/* ── Target audience scroll animations ── */
-.ta-title-anim {
-  opacity: 0;
-  filter: blur(8px);
-  transition: opacity 0.8s ease, filter 0.8s ease;
-}
-.ta-title-anim.ta-visible { opacity: 1; filter: blur(0); }
-
-.ta-card-1-anim {
-  opacity: 0;
-  transition: opacity 0.6s ease 0.1s;
-}
-.ta-card-1-anim.ta-visible { opacity: 1; }
-
-.ta-card-2-anim {
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
-}
-.ta-card-2-anim.ta-visible { opacity: 1; transform: translateX(0); }
-
-.ta-card-3-anim {
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity 0.7s ease 0.5s, transform 0.7s ease 0.5s;
-}
-.ta-card-3-anim.ta-visible { opacity: 1; transform: translateX(0); }
 
 @media (max-width: 768px) {
   .project-modal { width: 100vw; }

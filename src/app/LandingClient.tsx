@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef, type CSSProperties } from 'react'
+import { useMotionValueEvent } from 'framer-motion'
+import { useScrollProgress } from '@/components/RevenueAnimation/hooks/useScrollHijack'
 import { RevenueAnimation, USE_REVENUE_ANIMATION } from '@/components/RevenueAnimation'
 import { OneVsFive } from '@/components/OneVsFive'
 
@@ -455,20 +457,9 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       </section>
 
       {/* ──────────────────────────────────────────────────────────────
-          [C] BOUCLE DE VALEUR
+          [C] A QUI S'ADRESSE NV — scroll-driven sticky
       ────────────────────────────────────────────────────────────── */}
-      <section
-        id="a-qui-sadresse"
-        className="sf sec-pad"
-        style={{
-          padding: '80px 40px', background: '#fff',
-          borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
-        }}
-      >
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <TargetAudienceCards />
-        </div>
-      </section>
+      <TargetAudienceScrollSection />
 
       {/* ──────────────────────────────────────────────────────────────
           [D] REVENUE ANIMATION (ou fallback outils classique)
@@ -1390,99 +1381,131 @@ const TARGET_AUDIENCE = [
   },
 ]
 
-function TargetAudienceCards() {
+function TargetAudienceScrollSection() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const titleRef     = useRef<HTMLDivElement>(null)
+  const cardRefs     = useRef<(HTMLDivElement | null)[]>([null, null, null])
   const [hovered, setHovered] = useState<number | null>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([null, null, null])
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('ta-visible')
-            observer.unobserve(entry.target)
-          }
-        })
-      },
-      { threshold: 0.15 }
-    )
-    if (titleRef.current) observer.observe(titleRef.current)
-    cardRefs.current.forEach(el => el && observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
+  const progress = useScrollProgress(containerRef)
+
+  useMotionValueEvent(progress, 'change', (p) => {
+    const clamp = (v: number) => Math.min(1, Math.max(0, v))
+
+    // Title: fade + blur  p=0.05 → 0.22
+    const t = titleRef.current
+    if (t) {
+      const op = clamp((p - 0.05) / 0.17)
+      const bl = (1 - op) * 8
+      t.style.opacity = String(op)
+      t.style.filter  = `blur(${bl.toFixed(1)}px)`
+    }
+
+    // Card 1: fade  p=0.25 → 0.40
+    const c0 = cardRefs.current[0]
+    if (c0) {
+      const op = clamp((p - 0.25) / 0.15)
+      c0.style.opacity = String(op)
+    }
+
+    // Card 2: slide from right  p=0.47 → 0.62
+    const c1 = cardRefs.current[1]
+    if (c1) {
+      const op = clamp((p - 0.47) / 0.15)
+      const tx = (1 - op) * 60
+      c1.style.opacity   = String(op)
+      c1.style.transform = `translateX(${tx.toFixed(1)}px)`
+    }
+
+    // Card 3: slide from right  p=0.68 → 0.83
+    const c2 = cardRefs.current[2]
+    if (c2) {
+      const op = clamp((p - 0.68) / 0.15)
+      const tx = (1 - op) * 60
+      c2.style.opacity   = String(op)
+      c2.style.transform = `translateX(${tx.toFixed(1)}px)`
+    }
+  })
 
   return (
-    <>
-      <div style={{ textAlign: 'center', marginBottom: 52 }}>
-        <h2
-          ref={titleRef}
-          className="ta-title-anim"
-          style={{
-            fontFamily: 'var(--fi)', fontWeight: 600,
-            fontSize: 'clamp(22px, 3.5vw, 36px)', color: 'var(--text)',
-            letterSpacing: '-.02em',
-          }}
-        >
-          À qui s&apos;adresse Nouveau Variable ?
-        </h2>
-        <p style={{
-          fontFamily: 'var(--fi)', fontSize: 16, color: 'var(--text-2)',
-          marginTop: 12, maxWidth: 580, margin: '12px auto 0',
-        }}>
-          Nouveau Variable s&apos;adresse à 3 profils qui veulent créer de la valeur, progresser et transformer leurs revenus.
-        </p>
-      </div>
+    <div
+      ref={containerRef}
+      style={{
+        height: '360vh', position: 'relative',
+        borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
+      }}
+    >
+      <div style={{
+        position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
+        background: '#fff', display: 'flex', alignItems: 'center',
+        justifyContent: 'center', padding: '0 40px',
+      }}>
+        <div style={{ maxWidth: 1100, width: '100%' }}>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
-        {TARGET_AUDIENCE.map((item, idx) => (
-          // Wrapper handles slide/fade animation — inner div handles hover
-          <div key={idx} ref={el => { cardRefs.current[idx] = el }} className={`ta-card-${idx + 1}-anim`}>
-            <div
-              onMouseEnter={() => setHovered(idx)}
-              onMouseLeave={() => setHovered(null)}
-              style={{
-                background: '#fff',
-                border: `1px solid ${hovered === idx ? '#36a64f' : 'var(--border)'}`,
-                borderRadius: 12,
-                padding: '28px 24px',
-                minHeight: 180,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                cursor: 'default',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                transform: hovered === idx ? 'translateY(-8px)' : 'translateY(0)',
-                boxShadow: hovered === idx
-                  ? '0 12px 32px rgba(47, 84, 70, 0.12)'
-                  : '0 2px 8px rgba(0,0,0,0.04)',
-              }}
-            >
-              <h3 style={{
-                fontFamily: 'var(--fi)',
-                fontSize: 16,
-                fontWeight: 600,
-                color: hovered === idx ? '#36a64f' : 'var(--text)',
-                marginBottom: 10,
-                lineHeight: 1.4,
-                transition: 'color 0.3s ease',
-              }}>
-                {item.title}
-              </h3>
-              <p style={{
-                fontFamily: 'var(--fi)',
-                fontSize: 14,
-                fontWeight: 400,
-                color: 'var(--text-2)',
-                lineHeight: 1.65,
-                margin: 0,
-              }}>
-                {item.description}
-              </p>
-            </div>
+          {/* Title block */}
+          <div ref={titleRef} style={{ textAlign: 'center', marginBottom: 52, opacity: 0 }}>
+            <h2 style={{
+              fontFamily: 'var(--fi)', fontWeight: 600,
+              fontSize: 'clamp(22px, 3.5vw, 36px)', color: 'var(--text)',
+              letterSpacing: '-.02em', marginBottom: 12,
+            }}>
+              À qui s&apos;adresse Nouveau Variable ?
+            </h2>
+            <p style={{
+              fontFamily: 'var(--fi)', fontSize: 16, color: 'var(--text-2)',
+              maxWidth: 580, margin: '0 auto',
+            }}>
+              Nouveau Variable s&apos;adresse à 3 profils qui veulent créer de la valeur, progresser et transformer leurs revenus.
+            </p>
           </div>
-        ))}
+
+          {/* Cards grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+            {TARGET_AUDIENCE.map((item, idx) => (
+              // Outer div: scroll-driven opacity/transform (manipulated via ref)
+              // Inner div: hover effect (React state)
+              <div key={idx} ref={el => { cardRefs.current[idx] = el }} style={{ opacity: 0 }}>
+                <div
+                  onMouseEnter={() => setHovered(idx)}
+                  onMouseLeave={() => setHovered(null)}
+                  style={{
+                    background: '#fff',
+                    border: `1px solid ${hovered === idx ? '#36a64f' : 'var(--border)'}`,
+                    borderRadius: 12,
+                    padding: '28px 24px',
+                    minHeight: 180,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    cursor: 'default',
+                    transition: 'border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+                    transform: hovered === idx ? 'translateY(-8px)' : 'translateY(0)',
+                    boxShadow: hovered === idx
+                      ? '0 12px 32px rgba(47,84,70,0.12)'
+                      : '0 2px 8px rgba(0,0,0,0.04)',
+                  }}
+                >
+                  <h3 style={{
+                    fontFamily: 'var(--fi)', fontSize: 16, fontWeight: 600,
+                    color: hovered === idx ? '#36a64f' : 'var(--text)',
+                    marginBottom: 10, lineHeight: 1.4,
+                    transition: 'color 0.3s ease',
+                  }}>
+                    {item.title}
+                  </h3>
+                  <p style={{
+                    fontFamily: 'var(--fi)', fontSize: 14, fontWeight: 400,
+                    color: 'var(--text-2)', lineHeight: 1.65, margin: 0,
+                  }}>
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
       </div>
-    </>
+    </div>
   )
 }
