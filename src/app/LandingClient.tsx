@@ -354,14 +354,26 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             NOUVEAU VARIABLE
           </span>
         </div>
-        <a href="#candidature" className="nav-cta" style={{
-          fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 13,
-          color: '#fff', background: 'var(--green)',
-          borderRadius: 99, padding: '9px 20px',
-          textDecoration: 'none',
-        }}>
-          Candidater →
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          <a href="/outils" style={{
+            fontFamily: 'var(--fi)', fontWeight: 500, fontSize: 14,
+            color: 'var(--text-2)', textDecoration: 'none',
+            transition: 'color 0.15s',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#36a64f')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-2)')}
+          >
+            Outils
+          </a>
+          <a href="#candidature" className="nav-cta" style={{
+            fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 13,
+            color: '#fff', background: 'var(--green)',
+            borderRadius: 99, padding: '9px 20px',
+            textDecoration: 'none',
+          }}>
+            Candidater →
+          </a>
+        </div>
       </nav>
 
       {/* ──────────────────────────────────────────────────────────────
