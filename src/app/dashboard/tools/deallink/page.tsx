@@ -15,7 +15,7 @@ const inp: React.CSSProperties = {
   background: 'var(--white)', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
 }
 const lbl: React.CSSProperties = {
-  fontSize: '11px', fontWeight: 700, color: 'var(--text-2)',
+  fontSize: '11px', fontWeight: 600, color: 'var(--text-2)',
   letterSpacing: '.06em', textTransform: 'uppercase', display: 'block', marginBottom: '5px',
 }
 
@@ -125,7 +125,7 @@ export default function DealLinkPage() {
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                 <div style={{
                   width: '28px', height: '28px', borderRadius: '50%', display: 'grid', placeItems: 'center',
-                  fontFamily: 'var(--font-jost)', fontSize: '12px', fontWeight: 700,
+                  fontFamily: 'var(--font-inter)', fontSize: '12px', fontWeight: 600,
                   background: (done || active) ? 'var(--green)' : 'var(--surface-2)',
                   color: (done || active) ? '#fff' : 'var(--text-3)',
                   border: (done || active) ? 'none' : '1.5px solid var(--border)',
@@ -168,7 +168,7 @@ export default function DealLinkPage() {
       {step === 1 && (
         <div style={{ maxWidth: '560px' }}>
           <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '22px 24px', marginBottom: '16px' }}>
-            <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '15px', fontWeight: 700, color: 'var(--text)', marginBottom: '16px' }}>Qui est ton prospect ?</h3>
+            <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px' }}>Qui est ton prospect ?</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
               <div>
                 <label style={lbl}>Prénom *</label>
@@ -208,7 +208,7 @@ export default function DealLinkPage() {
       {step === 2 && (
         <div style={{ maxWidth: '560px' }}>
           <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '22px 24px', marginBottom: '16px' }}>
-            <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '15px', fontWeight: 700, color: 'var(--text)', marginBottom: '16px' }}>Ton offre</h3>
+            <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px' }}>Ton offre</h3>
             <div style={{ marginBottom: '12px' }}>
               <label style={lbl}>Produit / Service *</label>
               <input style={inp} value={form.productName} onChange={e => setForm(f => ({ ...f, productName: e.target.value }))} placeholder="Ex: Logiciel CRM BtoB" autoFocus />
@@ -224,7 +224,7 @@ export default function DealLinkPage() {
           </div>
 
           <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '18px 24px', marginBottom: '16px' }}>
-            <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '15px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>Ton de communication</h3>
+            <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>Ton de communication</h3>
             <div style={{ fontSize: '12px', color: 'var(--text-3)', marginBottom: '12px' }}>Adapte le registre au profil de ton prospect</div>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {TONES.map(t => (
@@ -240,7 +240,7 @@ export default function DealLinkPage() {
           </div>
 
           <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '18px 24px', marginBottom: '16px' }}>
-            <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '15px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>Sites web</h3>
+            <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>Sites web</h3>
             <div style={{ fontSize: '12px', color: 'var(--text-3)', marginBottom: '12px' }}>Optionnel — enrichit le contexte de la génération</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <div><label style={lbl}>Ton site</label><input style={inp} value={form.myWebsite} onChange={e => setForm(f => ({ ...f, myWebsite: e.target.value }))} placeholder="https://ton-site.fr" /></div>
@@ -289,7 +289,7 @@ export default function DealLinkPage() {
 
           <div style={{ display: 'flex', gap: '10px' }}>
             <button onClick={() => setStep(1)} className="tbtn-secondary" style={{ padding: '12px 20px' }}>← Retour</button>
-            <button onClick={generate} style={{ flex: 1, background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: 'var(--r-sm)', fontFamily: 'var(--font-jost)', fontSize: '14px', fontWeight: 700, cursor: 'pointer', border: 'none' }}>
+            <button onClick={generate} style={{ flex: 1, background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: 'var(--r-sm)', fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, cursor: 'pointer', border: 'none' }}>
               ✦ Générer le DealLink
             </button>
           </div>
@@ -302,7 +302,7 @@ export default function DealLinkPage() {
           <div style={{ width: '52px', height: '52px', background: 'var(--green-3)', borderRadius: 'var(--r-lg)', display: 'grid', placeItems: 'center', margin: '0 auto 20px', animation: 'spin 1.6s linear infinite' }}>
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--green)" strokeWidth="1.8"><path d="M11 2v4M11 16v4M2 11h4M16 11h4M4.5 4.5l2.8 2.8M14.7 14.7l2.8 2.8M4.5 17.5l2.8-2.8M14.7 7.3l2.8-2.8"/></svg>
           </div>
-          <p style={{ fontFamily: 'var(--font-jost)', fontSize: '17px', fontWeight: 800, color: 'var(--text)', marginBottom: '8px' }}>Génération en cours…</p>
+          <p style={{ fontFamily: 'var(--font-inter)', fontSize: '17px', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>Génération en cours…</p>
           <p style={{ fontSize: '13px', color: 'var(--text-2)' }}>Page personnalisée pour {form.prospectName}</p>
         </div>
       )}

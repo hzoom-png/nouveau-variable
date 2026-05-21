@@ -203,7 +203,7 @@ export default function CommissionsPage() {
               <thead>
                 <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                   {['Affilié', 'Mois', 'Montant déclaré', 'À payer', 'Statut', 'Date', 'Actions'].map(h => (
-                    <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                    <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                       {h}
                     </th>
                   ))}
@@ -221,10 +221,10 @@ export default function CommissionsPage() {
                         <div style={{ fontSize: 11, color: C.text2 }}>{req.affiliate?.email ?? ''}</div>
                       </td>
                       <td style={{ padding: '12px 16px', color: C.text2 }}>{req.month_year}</td>
-                      <td style={{ padding: '12px 16px', fontWeight: 700, color: C.text }}>{fmtEur(req.revenue_earned)}</td>
-                      <td style={{ padding: '12px 16px', fontWeight: 700, color: C.greenL }}>{fmtEur(req.commission_amount)}</td>
+                      <td style={{ padding: '12px 16px', fontWeight: 600, color: C.text }}>{fmtEur(req.revenue_earned)}</td>
+                      <td style={{ padding: '12px 16px', fontWeight: 600, color: C.greenL }}>{fmtEur(req.commission_amount)}</td>
                       <td style={{ padding: '12px 16px' }}>
-                        <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, letterSpacing: '0.06em', textTransform: 'uppercase', background: sc.bg, color: sc.color }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 10, letterSpacing: '0.06em', textTransform: 'uppercase', background: sc.bg, color: sc.color }}>
                           {STATUS_LABELS[req.status] ?? req.status}
                         </span>
                       </td>
@@ -283,12 +283,12 @@ export default function CommissionsPage() {
         {/* Totaux */}
         <div style={{ display: 'flex', gap: 16 }}>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '16px 24px', flex: 1 }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: C.amber, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Factures à valider</p>
-            <p style={{ fontSize: 24, fontWeight: 800, color: C.text }}>{fmtEur(pendingTotal)}</p>
+            <p style={{ fontSize: 10, fontWeight: 600, color: C.amber, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Factures à valider</p>
+            <p style={{ fontSize: 24, fontWeight: 600, color: C.text }}>{fmtEur(pendingTotal)}</p>
           </div>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '16px 24px', flex: 1 }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: '#4B7BF5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Validées, à payer</p>
-            <p style={{ fontSize: 24, fontWeight: 800, color: C.text }}>{fmtEur(validatedTotal)}</p>
+            <p style={{ fontSize: 10, fontWeight: 600, color: '#4B7BF5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Validées, à payer</p>
+            <p style={{ fontSize: 24, fontWeight: 600, color: C.text }}>{fmtEur(validatedTotal)}</p>
           </div>
         </div>
       </div>
@@ -305,7 +305,7 @@ export default function CommissionsPage() {
           >
             {modal.type === 'validate' && (
               <>
-                <h3 style={{ color: C.text, margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>Valider la commission</h3>
+                <h3 style={{ color: C.text, margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>Valider la commission</h3>
                 <p style={{ color: C.text2, fontSize: 13, margin: '0 0 20px' }}>
                   {modal.request.affiliate?.prenom} — {modal.request.month_year}
                   <br />Montant déclaré : {fmtEur(modal.request.revenue_earned)}
@@ -327,7 +327,7 @@ export default function CommissionsPage() {
 
             {modal.type === 'reject' && (
               <>
-                <h3 style={{ color: C.error, margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>Rejeter la demande</h3>
+                <h3 style={{ color: C.error, margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>Rejeter la demande</h3>
                 <p style={{ color: C.text2, fontSize: 13, margin: '0 0 20px' }}>
                   {modal.request.affiliate?.prenom} — {modal.request.month_year}
                 </p>
@@ -344,7 +344,7 @@ export default function CommissionsPage() {
 
             {modal.type === 'pay' && (
               <>
-                <h3 style={{ color: C.text, margin: '0 0 8px', fontSize: 16, fontWeight: 700 }}>Marquer comme payé</h3>
+                <h3 style={{ color: C.text, margin: '0 0 8px', fontSize: 16, fontWeight: 600 }}>Marquer comme payé</h3>
                 <p style={{ color: C.text2, fontSize: 13, margin: '0 0 20px' }}>
                   {modal.request.affiliate?.prenom} — {modal.request.month_year}
                   <br />Montant : {fmtEur(modal.request.commission_amount)}

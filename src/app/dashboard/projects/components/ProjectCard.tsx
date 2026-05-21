@@ -31,11 +31,11 @@ export function ProjectCard({ project, onClick, onSave, isMine }: Props) {
           }}>
             {project.logo_url
               ? <img src={project.logo_url} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : <span style={{ fontFamily: 'Jost, sans-serif', fontSize: '14px', fontWeight: 800, color: '#fff' }}>{project.title[0]?.toUpperCase()}</span>
+              : <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', fontWeight: 600, color: '#fff' }}>{project.title[0]?.toUpperCase()}</span>
             }
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', color: 'var(--text)', lineHeight: 1.3, marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', color: 'var(--text)', lineHeight: 1.3, marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {project.title}
             </div>
             <div style={{ fontSize: '11px', color: 'var(--text-3)' }}>{project.sector}</div>
@@ -59,7 +59,7 @@ export function ProjectCard({ project, onClick, onSave, isMine }: Props) {
         )}
 
         {/* Stage badge */}
-        <span style={{ display: 'inline-flex', alignSelf: 'flex-start', padding: '2px 9px', borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 700, background: stage.bg, color: stage.color }}>
+        <span style={{ display: 'inline-flex', alignSelf: 'flex-start', padding: '2px 9px', borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 600, background: stage.bg, color: stage.color }}>
           {stage.label}
         </span>
 
@@ -85,7 +85,7 @@ export function ProjectCard({ project, onClick, onSave, isMine }: Props) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
           <div style={{
             width: '22px', height: '22px', borderRadius: 'var(--r-sm)', background: project.cover_color,
-            display: 'grid', placeItems: 'center', fontSize: '9px', fontWeight: 800, color: '#fff', fontFamily: 'Jost, sans-serif',
+            display: 'grid', placeItems: 'center', fontSize: '9px', fontWeight: 600, color: '#fff', fontFamily: 'Inter, sans-serif',
             overflow: 'hidden', flexShrink: 0,
           }}>
             {project.author?.avatar_url
@@ -102,7 +102,7 @@ export function ProjectCard({ project, onClick, onSave, isMine }: Props) {
                 return (
                   <div key={c.user_id} style={{
                     width: '18px', height: '18px', borderRadius: '50%', background: project.cover_color,
-                    display: 'grid', placeItems: 'center', fontSize: '7px', fontWeight: 800, color: '#fff',
+                    display: 'grid', placeItems: 'center', fontSize: '7px', fontWeight: 600, color: '#fff',
                     overflow: 'hidden', flexShrink: 0, border: '1.5px solid var(--white)',
                     marginLeft: i === 0 ? 0 : '-5px',
                   }}>
@@ -115,7 +115,7 @@ export function ProjectCard({ project, onClick, onSave, isMine }: Props) {
               {project.collaborators.length > 3 && (
                 <div style={{
                   width: '18px', height: '18px', borderRadius: '50%', background: 'var(--surface)',
-                  display: 'grid', placeItems: 'center', fontSize: '7px', fontWeight: 700, color: 'var(--text-3)',
+                  display: 'grid', placeItems: 'center', fontSize: '7px', fontWeight: 600, color: 'var(--text-3)',
                   border: '1.5px solid var(--border)', marginLeft: '-5px', flexShrink: 0,
                 }}>
                   +{project.collaborators.length - 3}

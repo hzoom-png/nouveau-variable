@@ -50,10 +50,10 @@ export default async function N1Page() {
               <div style={{
                 width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,
                 background: '#43695A', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '16px',
+                color: 'white', fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '16px',
               }}>{initials}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text)' }}>
+                <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text)' }}>
                   {String(profile.first_name)} {String(profile.last_name)}
                 </div>
                 <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
@@ -62,7 +62,7 @@ export default async function N1Page() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{
-                  padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 700,
+                  padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600,
                   background: isActive ? 'var(--green-pale)' : 'var(--border)',
                   color: isActive ? '#43695A' : 'var(--muted)',
                 }}>

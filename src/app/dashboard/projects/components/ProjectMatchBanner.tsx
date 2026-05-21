@@ -30,7 +30,7 @@ export function ProjectMatchBanner({ matches, onScrollToMatch }: Props) {
         </svg>
       </div>
       <div style={{ flex: 1 }}>
-        <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', color: 'var(--green)' }}>
+        <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', color: 'var(--green)' }}>
           {matches.length} projet{matches.length > 1 ? 's' : ''} correspondent à votre profil
         </div>
         <div style={{ fontSize: '12px', color: 'var(--text-2)' }}>

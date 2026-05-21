@@ -62,8 +62,8 @@ export default function BillingClient({
     marginBottom:  '16px',
   }
   const sectionTitle: React.CSSProperties = {
-    fontFamily: 'Jost, sans-serif',
-    fontSize:   '15px', fontWeight: 700,
+    fontFamily: 'Inter, sans-serif',
+    fontSize:   '15px', fontWeight: 600,
     color:      'var(--text)', marginBottom: '16px',
   }
   const row: React.CSSProperties = {
@@ -99,7 +99,7 @@ export default function BillingClient({
       <div style={card}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div>
-            <div style={{ fontFamily: 'Jost, sans-serif', fontSize: '18px', fontWeight: 800, color: 'var(--text)', marginBottom: '2px' }}>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '18px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' }}>
               {subscriptionPlan === 'annual' ? 'Plan Annuel' : 'Plan Mensuel'}
             </div>
             <div style={{ fontSize: '13px', color: 'var(--text-3)' }}>
@@ -110,7 +110,7 @@ export default function BillingClient({
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '5px',
               padding: '4px 10px', borderRadius: 'var(--r-full)',
-              fontSize: '11px', fontWeight: 700,
+              fontSize: '11px', fontWeight: 600,
               background: statusStyle.bg, color: statusStyle.color,
               border: `1px solid ${statusStyle.border}`,
             }}>
@@ -118,7 +118,7 @@ export default function BillingClient({
               {STATUS_LABEL[subscriptionStatus] ?? 'Inconnu'}
             </span>
             {isManuallyActivated && (
-              <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 'var(--r-full)', background: 'var(--green-3)', color: 'var(--green)', border: '1px solid var(--green-4)' }}>
+              <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 'var(--r-full)', background: 'var(--green-3)', color: 'var(--green)', border: '1px solid var(--green-4)' }}>
                 Accès manuel
               </span>
             )}
@@ -170,7 +170,7 @@ export default function BillingClient({
                 background:  portalLoading ? 'var(--surface)' : 'var(--green)',
                 border:      portalLoading ? '1.5px solid var(--border)' : 'none',
                 color:       portalLoading ? 'var(--text-3)' : '#fff',
-                fontFamily:  'Jost, sans-serif',
+                fontFamily:  'Inter, sans-serif',
                 fontSize:    '13px', fontWeight: 600,
                 cursor:      portalLoading ? 'wait' : 'pointer',
                 display:     'inline-flex', alignItems: 'center', gap: '6px',
@@ -189,7 +189,7 @@ export default function BillingClient({
             style={{
               display: 'inline-block', padding: '10px 20px', borderRadius: 'var(--r-sm)',
               background: 'var(--green)', color: '#fff', textDecoration: 'none',
-              fontFamily: 'Jost, sans-serif', fontSize: '13px', fontWeight: 600,
+              fontFamily: 'Inter, sans-serif', fontSize: '13px', fontWeight: 600,
             }}
           >
             Activer mon abonnement →
@@ -209,7 +209,7 @@ export default function BillingClient({
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border)' }}>
                 {['Date', 'Montant', 'Période', ''].map(h => (
-                  <th key={h} style={{ padding: '8px 0', textAlign: 'left', fontSize: 10, fontWeight: 700, color: 'var(--text-3)', letterSpacing: '.08em', textTransform: 'uppercase' }}>
+                  <th key={h} style={{ padding: '8px 0', textAlign: 'left', fontSize: 10, fontWeight: 600, color: 'var(--text-3)', letterSpacing: '.08em', textTransform: 'uppercase' }}>
                     {h}
                   </th>
                 ))}

@@ -194,7 +194,7 @@ export default function KaMap({ account, dispatch, activeContactId: _activeConta
           alignItems: 'center', justifyContent: 'center',
           gap: '2px', boxShadow: '0 4px 16px rgba(47,84,70,.2)',
         }}>
-          <div style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{getInitials(account.name)}</div>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{getInitials(account.name)}</div>
           <div style={{ fontSize: '9px', color: 'rgba(255,255,255,.75)', textAlign: 'center', lineHeight: 1.2, padding: '0 6px' }}>
             {account.name.split(' ')[0]}
           </div>

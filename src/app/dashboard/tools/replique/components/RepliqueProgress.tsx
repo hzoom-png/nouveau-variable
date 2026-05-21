@@ -16,7 +16,7 @@ export default function RepliqueProgress({ steps, currentStep }: Props) {
             <path d="M5 3V2M9 3V2"/>
           </svg>
         </div>
-        <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '18px', fontWeight: 800, color: 'var(--text)', marginBottom: '8px' }}>
+        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '18px', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>
           Script en préparation…
         </div>
         <div style={{ fontSize: '13px', color: 'var(--text-2)', marginBottom: '24px', minHeight: '20px', transition: 'all .3s' }}>

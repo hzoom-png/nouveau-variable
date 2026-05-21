@@ -24,7 +24,7 @@ export default function KaAccountPicker({ accounts, activeIdx, dispatch, onClose
 
   return (
     <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-md)', marginBottom: '12px', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
-      <div style={{ padding: '10px 14px', fontSize: '10px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', borderBottom: '1px solid var(--border)' }}>
+      <div style={{ padding: '10px 14px', fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', borderBottom: '1px solid var(--border)' }}>
         Choisir le compte à afficher
       </div>
       {accounts.map((acc, i) => {
@@ -51,7 +51,7 @@ export default function KaAccountPicker({ accounts, activeIdx, dispatch, onClose
               width: '32px', height: '32px', borderRadius: 'var(--r-sm)',
               background: isActive ? 'var(--green)' : 'var(--green-3)',
               display: 'grid', placeItems: 'center',
-              fontSize: '11px', fontWeight: 700,
+              fontSize: '11px', fontWeight: 600,
               color: isActive ? '#fff' : 'var(--green)',
               flexShrink: 0,
             }}>

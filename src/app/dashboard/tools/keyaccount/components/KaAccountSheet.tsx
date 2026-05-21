@@ -15,12 +15,12 @@ interface Props {
 const STAGES: Stage[] = ['Qualification', 'Démo', 'Proposition', 'Négociation', 'Closing']
 
 const lbl: React.CSSProperties = {
-  display: 'block', fontSize: '10px', fontWeight: 700, color: 'var(--text-2)',
+  display: 'block', fontSize: '10px', fontWeight: 600, color: 'var(--text-2)',
   textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '5px',
 }
 
 const sectionTitle: React.CSSProperties = {
-  fontSize: '10px', fontWeight: 700, color: 'var(--text-3)',
+  fontSize: '10px', fontWeight: 600, color: 'var(--text-3)',
   textTransform: 'uppercase', letterSpacing: '.1em',
   borderBottom: '1px solid var(--border)', paddingBottom: '8px', marginBottom: '14px',
 }
@@ -81,7 +81,7 @@ function ContactRow({
   return (
     <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--r-md)', overflow: 'hidden', marginBottom: '6px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: 'var(--surface)', cursor: 'default' }}>
-        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: s.bg, border: `1.5px solid ${s.border}`, display: 'grid', placeItems: 'center', fontSize: '10px', fontWeight: 700, color: s.text, flexShrink: 0 }}>
+        <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: s.bg, border: `1.5px solid ${s.border}`, display: 'grid', placeItems: 'center', fontSize: '10px', fontWeight: 600, color: s.text, flexShrink: 0 }}>
           {initials}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -196,7 +196,7 @@ export default function KaAccountSheet({ account, onClose, showToast }: Props) {
         {/* Header */}
         <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', position: 'sticky', top: 0, background: 'var(--white)', zIndex: 1 }}>
           <div>
-            <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '17px', fontWeight: 800, color: 'var(--text)', marginBottom: '6px' }}>{account.name}</div>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '17px', fontWeight: 600, color: 'var(--text)', marginBottom: '6px' }}>{account.name}</div>
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
               <span style={{ padding: '2px 10px', borderRadius: 'var(--r-full)', background: 'var(--green-3)', color: 'var(--green)', border: '1px solid var(--green-4)', fontSize: '11px', fontWeight: 600 }}>{account.stage}</span>
               {account.sector && <span style={{ padding: '2px 10px', borderRadius: 'var(--r-full)', background: 'var(--surface)', color: 'var(--text-2)', border: '1px solid var(--border)', fontSize: '11px', fontWeight: 500 }}>{account.sector}</span>}
@@ -315,7 +315,7 @@ export default function KaAccountSheet({ account, onClose, showToast }: Props) {
           <button
             onClick={handleSave}
             disabled={saving}
-            style={{ padding: '9px 20px', borderRadius: 'var(--r-sm)', background: saving ? 'var(--green-4)' : 'var(--green)', border: 'none', color: '#fff', fontFamily: "'Jost', sans-serif", fontSize: '13px', fontWeight: 700, cursor: saving ? 'default' : 'pointer', transition: '.14s' }}
+            style={{ padding: '9px 20px', borderRadius: 'var(--r-sm)', background: saving ? 'var(--green-4)' : 'var(--green)', border: 'none', color: '#fff', fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, cursor: saving ? 'default' : 'pointer', transition: '.14s' }}
           >
             {saving ? 'Enregistrement…' : 'Sauvegarder →'}
           </button>

@@ -113,7 +113,7 @@ export default function CommissionsPage() {
     fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box',
   }
   const labelSt: React.CSSProperties = {
-    fontSize: 11, fontWeight: 700, color: 'var(--muted)', letterSpacing: '0.08em',
+    fontSize: 11, fontWeight: 600, color: 'var(--muted)', letterSpacing: '0.08em',
     textTransform: 'uppercase', display: 'block', marginBottom: 6,
   }
 
@@ -121,7 +121,7 @@ export default function CommissionsPage() {
 
   return (
     <div style={{ maxWidth: 800 }}>
-      <h1 style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: 24, color: 'var(--text)', marginBottom: 24 }}>
+      <h1 style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: 24, color: 'var(--text)', marginBottom: 24 }}>
         Mes commissions
       </h1>
 
@@ -168,7 +168,7 @@ export default function CommissionsPage() {
                 >
                   {/* Mois */}
                   <div style={{ minWidth: 80 }}>
-                    <div style={{ fontSize: 18, fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, color: 'var(--text)' }}>
+                    <div style={{ fontSize: 18, fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, color: 'var(--text)' }}>
                       {req.month_year}
                     </div>
                   </div>
@@ -176,24 +176,24 @@ export default function CommissionsPage() {
                   {/* Montants */}
                   <div style={{ flex: 1, display: 'flex', gap: 24, flexWrap: 'wrap' }}>
                     <div>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Déclaré</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text)' }}>{fmtEur(req.revenue_earned)}</div>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Déclaré</div>
+                      <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text)' }}>{fmtEur(req.revenue_earned)}</div>
                     </div>
                     {req.commission_amount != null && (
                       <div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>À recevoir</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: '#43695A' }}>{fmtEur(req.commission_amount)}</div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>À recevoir</div>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: '#43695A' }}>{fmtEur(req.commission_amount)}</div>
                       </div>
                     )}
                     {req.payment_date && (
                       <div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Payé le</div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Payé le</div>
                         <div style={{ fontSize: 14, color: 'var(--text)' }}>{fmtDate(req.payment_date)}</div>
                       </div>
                     )}
                     {req.payment_reference && (
                       <div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Référence</div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>Référence</div>
                         <div style={{ fontSize: 12, color: 'var(--text)', fontFamily: 'monospace' }}>{req.payment_reference}</div>
                       </div>
                     )}
@@ -202,7 +202,7 @@ export default function CommissionsPage() {
                   {/* Statut + actions */}
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
                     <span style={{
-                      fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 20,
+                      fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 20,
                       background: `${STATUS_COLORS[req.status]}22`,
                       color: STATUS_COLORS[req.status] ?? 'var(--muted)',
                       letterSpacing: '0.06em',
@@ -242,7 +242,7 @@ export default function CommissionsPage() {
       {/* Formulaire de soumission */}
       {tab === 'submit' && (
         <div style={{ background: 'var(--white)', borderRadius: 14, padding: '28px 32px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
-          <h2 style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: 18, color: 'var(--text)', margin: '0 0 20px' }}>
+          <h2 style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: 18, color: 'var(--text)', margin: '0 0 20px' }}>
             Soumettre une facture de commission
           </h2>
 
@@ -332,7 +332,7 @@ export default function CommissionsPage() {
               disabled={submitting || alreadySubmittedThisMonth}
               style={{
                 padding: '12px 24px', borderRadius: 10, background: '#43695A', border: 'none',
-                color: 'white', fontSize: 14, fontWeight: 700, cursor: submitting ? 'wait' : 'pointer',
+                color: 'white', fontSize: 14, fontWeight: 600, cursor: submitting ? 'wait' : 'pointer',
                 fontFamily: 'inherit', opacity: alreadySubmittedThisMonth ? 0.4 : 1,
               }}
             >

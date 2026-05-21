@@ -98,13 +98,13 @@ export default function KaMeddiccPanel({ contact, account, dispatch, onClose, sh
         <div style={{
           width: '40px', height: '40px', borderRadius: '50%',
           display: 'grid', placeItems: 'center',
-          fontSize: '13px', fontWeight: 700, flexShrink: 0,
+          fontSize: '13px', fontWeight: 600, flexShrink: 0,
           background: s.avBg, color: s.avColor, border: `2px solid ${s.border}`,
         }}>
           {getInitials(contact.name)}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{contact.name}</div>
+          <div style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{contact.name}</div>
           <div style={{ fontSize: '12px', color: 'var(--text-2)', marginTop: '2px' }}>{contact.role || '—'}</div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
@@ -137,7 +137,7 @@ export default function KaMeddiccPanel({ contact, account, dispatch, onClose, sh
       {/* Edit mode */}
       {editMode ? (
         <div style={{ padding: '16px' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 14 }}>
             Modifier le contact
           </div>
 
@@ -179,7 +179,7 @@ export default function KaMeddiccPanel({ contact, account, dispatch, onClose, sh
                   <button
                     key={t}
                     onClick={() => setForm(prev => ({ ...prev, type: t }))}
-                    style={{ padding: '5px 12px', borderRadius: 'var(--r-full)', fontSize: 11, fontWeight: 700, cursor: 'pointer', transition: '.14s', border: `1.5px solid ${form.type === t ? ts.border : 'var(--border)'}`, background: form.type === t ? ts.bg : 'var(--white)', color: form.type === t ? ts.text : 'var(--text-3)' }}
+                    style={{ padding: '5px 12px', borderRadius: 'var(--r-full)', fontSize: 11, fontWeight: 600, cursor: 'pointer', transition: '.14s', border: `1.5px solid ${form.type === t ? ts.border : 'var(--border)'}`, background: form.type === t ? ts.bg : 'var(--white)', color: form.type === t ? ts.text : 'var(--text-3)' }}
                   >
                     {ts.label}
                   </button>
@@ -192,7 +192,7 @@ export default function KaMeddiccPanel({ contact, account, dispatch, onClose, sh
             <button
               onClick={handleSave}
               disabled={!form.name.trim()}
-              style={{ flex: 1, padding: '9px', background: form.name.trim() ? 'var(--green)' : 'var(--surface)', color: form.name.trim() ? '#fff' : 'var(--text-3)', border: `1px solid ${form.name.trim() ? 'var(--green)' : 'var(--border)'}`, borderRadius: 'var(--r-sm)', fontSize: 13, fontWeight: 700, cursor: form.name.trim() ? 'pointer' : 'not-allowed', transition: '.14s', fontFamily: "'Jost', sans-serif" }}
+              style={{ flex: 1, padding: '9px', background: form.name.trim() ? 'var(--green)' : 'var(--surface)', color: form.name.trim() ? '#fff' : 'var(--text-3)', border: `1px solid ${form.name.trim() ? 'var(--green)' : 'var(--border)'}`, borderRadius: 'var(--r-sm)', fontSize: 13, fontWeight: 600, cursor: form.name.trim() ? 'pointer' : 'not-allowed', transition: '.14s', fontFamily: "'Inter', sans-serif" }}
             >
               Sauvegarder
             </button>
@@ -222,7 +222,7 @@ export default function KaMeddiccPanel({ contact, account, dispatch, onClose, sh
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             {contact.checks.map((sec, si) => (
               <div key={sec.cat} style={{ marginTop: '12px' }}>
-                <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '7px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '7px' }}>
                   {sec.cat}
                 </div>
                 {sec.items.map((item, ii) => (
@@ -252,7 +252,7 @@ export default function KaMeddiccPanel({ contact, account, dispatch, onClose, sh
 
           {/* Prochaine action */}
           <div style={{ marginTop: '18px', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-md)', padding: '12px 14px' }}>
-            <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '5px' }}>Prochaine action</div>
+            <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '5px' }}>Prochaine action</div>
             <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.4 }}>{nextAction}</div>
           </div>
 

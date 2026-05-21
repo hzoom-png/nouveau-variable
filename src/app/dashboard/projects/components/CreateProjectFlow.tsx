@@ -46,7 +46,7 @@ const inp: React.CSSProperties = {
 }
 
 const lbl: React.CSSProperties = {
-  fontSize: '12px', fontWeight: 700, color: 'var(--text-2)',
+  fontSize: '12px', fontWeight: 600, color: 'var(--text-2)',
   textTransform: 'uppercase', letterSpacing: '.06em',
   marginBottom: '6px', display: 'block',
 }
@@ -170,7 +170,7 @@ export function CreateProjectFlow({ currentUserId, onSubmit, onCancel }: Props) 
         }}>
           <div>
             <h2 style={{
-              fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '20px',
+              fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '20px',
               color: 'var(--text)', marginBottom: '4px',
             }}>
               {STEPS[step - 1]}
@@ -248,7 +248,7 @@ export function CreateProjectFlow({ currentUserId, onSubmit, onCancel }: Props) 
                     return (
                       <button key={s} type="button" onClick={() => set('stage', s)} style={{
                         padding: '7px 14px', borderRadius: 'var(--r-full)', fontSize: '12px',
-                        fontWeight: 700, border: '1.5px solid', cursor: 'pointer', transition: '.14s',
+                        fontWeight: 600, border: '1.5px solid', cursor: 'pointer', transition: '.14s',
                         borderColor: active ? cfg.color : 'var(--border)',
                         background: active ? cfg.bg : 'var(--white)',
                         color: active ? cfg.color : 'var(--text-2)',
@@ -470,7 +470,7 @@ export function CreateProjectFlow({ currentUserId, onSubmit, onCancel }: Props) 
                 style={{
                   padding: '9px 22px', borderRadius: 'var(--r-sm)',
                   background: 'var(--green)', color: '#fff', border: 'none',
-                  fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px',
+                  fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13px',
                   cursor: 'pointer', transition: 'background .15s',
                 }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'var(--green-2)')}
@@ -486,7 +486,7 @@ export function CreateProjectFlow({ currentUserId, onSubmit, onCancel }: Props) 
                   padding: '9px 22px', borderRadius: 'var(--r-sm)',
                   background: loading ? 'var(--border)' : 'var(--green)',
                   color: loading ? 'var(--text-3)' : '#fff', border: 'none',
-                  fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px',
+                  fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13px',
                   cursor: loading ? 'not-allowed' : 'pointer', transition: 'background .15s',
                 }}
               >

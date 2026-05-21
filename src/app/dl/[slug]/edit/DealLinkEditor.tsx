@@ -52,7 +52,7 @@ const inp: React.CSSProperties = {
   background: 'var(--white)', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
 }
 const lbl: React.CSSProperties = {
-  fontSize: '11px', fontWeight: 700, color: 'var(--text-2)',
+  fontSize: '11px', fontWeight: 600, color: 'var(--text-2)',
   letterSpacing: '.06em', textTransform: 'uppercase', display: 'block', marginBottom: '5px',
 }
 const card: React.CSSProperties = {
@@ -175,7 +175,7 @@ export function DealLinkEditor({ slug, initialData }: Props) {
               background: saved ? 'var(--green-3)' : 'var(--green)',
               color: saved ? 'var(--green)' : '#fff',
               border: 'none', borderRadius: '99px',
-              padding: '8px 18px', fontSize: '13px', fontWeight: 700,
+              padding: '8px 18px', fontSize: '13px', fontWeight: 600,
               cursor: saving ? 'wait' : 'pointer', fontFamily: 'inherit',
               transition: 'all .2s',
             }}
@@ -193,7 +193,7 @@ export function DealLinkEditor({ slug, initialData }: Props) {
 
       {/* Card — Accroche principale */}
       <div style={card}>
-        <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '12px' }}>Accroche principale</h3>
+        <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '12px' }}>Accroche principale</h3>
         <textarea
           rows={2}
           style={{ ...inp, resize: 'none', lineHeight: 1.55 }}
@@ -205,7 +205,7 @@ export function DealLinkEditor({ slug, initialData }: Props) {
 
       {/* Card — Logos */}
       <div style={card}>
-        <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '16px' }}>Logos</h3>
+        <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px' }}>Logos</h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           {/* Seller logo */}
           <div>
@@ -279,7 +279,7 @@ export function DealLinkEditor({ slug, initialData }: Props) {
 
       {/* Card — Actions */}
       <div style={card}>
-        <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '6px' }}>Actions</h3>
+        <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '6px' }}>Actions</h3>
         <p style={{ fontSize: '12px', color: 'var(--text-3)', marginBottom: '16px' }}>Boutons d&apos;action affichés sur la page publique</p>
 
         <div style={{ marginBottom: '16px' }}>
@@ -341,7 +341,7 @@ export function DealLinkEditor({ slug, initialData }: Props) {
 
       {/* Card — Lien cas client */}
       <div style={card}>
-        <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '6px' }}>Lien cas client</h3>
+        <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '6px' }}>Lien cas client</h3>
         <p style={{ fontSize: '12px', color: 'var(--text-3)', marginBottom: '12px' }}>Lien vers une étude de cas réelle. Aucun faux témoignage ne sera généré.</p>
         <input
           style={inp}
@@ -355,7 +355,7 @@ export function DealLinkEditor({ slug, initialData }: Props) {
       {/* Card — Contenu des sections */}
       {editableSections.length > 0 && (
         <div style={card}>
-          <h3 style={{ fontFamily: 'var(--font-jost)', fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '16px' }}>Contenu des sections</h3>
+          <h3 style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px' }}>Contenu des sections</h3>
           {editableSections.map((section, i) => (
             <div
               key={section.id}
@@ -365,7 +365,7 @@ export function DealLinkEditor({ slug, initialData }: Props) {
                 borderBottom: i < editableSections.length - 1 ? '1px solid var(--border)' : 'none',
               }}
             >
-              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '10px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '10px' }}>
                 {SECTION_LABELS[section.type] ?? section.type}
               </div>
               <div style={{ marginBottom: '8px' }}>

@@ -108,11 +108,11 @@ export function DealLinkPublicView({ deallink, result, brand }: Props) {
           {sellerLogo
             // eslint-disable-next-line @next/next/no-img-element
             ? <img src={sellerLogo} alt="" style={{ height: '26px', maxWidth: '120px', objectFit: 'contain' }} />
-            : <span style={{ fontWeight: 700, fontSize: '14px', color: primary }}>{deallink.sellerName}</span>
+            : <span style={{ fontWeight: 600, fontSize: '14px', color: primary }}>{deallink.sellerName}</span>
           }
           {prospectLogo && (
             <>
-              <span style={{ color: primary, fontWeight: 700, fontSize: '14px', opacity: .5 }}>×</span>
+              <span style={{ color: primary, fontWeight: 600, fontSize: '14px', opacity: .5 }}>×</span>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={prospectLogo} alt="" style={{ height: '22px', maxWidth: '100px', objectFit: 'contain' }} />
             </>
@@ -139,7 +139,7 @@ export function DealLinkPublicView({ deallink, result, brand }: Props) {
 
         {result.tagline && (
           <h1 style={{
-            fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 900,
+            fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 600,
             letterSpacing: '-0.03em', lineHeight: 1.15,
             color: textColor, marginBottom: '20px',
           }}>
@@ -167,14 +167,14 @@ export function DealLinkPublicView({ deallink, result, brand }: Props) {
             >
               {(section.type === 'value_prop' || section.type === 'proof') && (
                 <div style={{
-                  fontSize: '11px', fontWeight: 700, letterSpacing: '.1em',
+                  fontSize: '11px', fontWeight: 600, letterSpacing: '.1em',
                   textTransform: 'uppercase', color: accent, marginBottom: '10px',
                 }}>
                   {SECTION_LABELS[section.type]}
                 </div>
               )}
               <h2 style={{
-                fontSize: 'clamp(1.2rem, 3vw, 1.75rem)', fontWeight: 800,
+                fontSize: 'clamp(1.2rem, 3vw, 1.75rem)', fontWeight: 600,
                 color: textColor, marginBottom: '12px', lineHeight: 1.3,
               }}>
                 {section.title}
@@ -204,7 +204,7 @@ export function DealLinkPublicView({ deallink, result, brand }: Props) {
               style={{
                 display: 'inline-block', background: primary, color: '#fff',
                 padding: '10px 22px', borderRadius: '99px',
-                fontSize: '13px', fontWeight: 700, textDecoration: 'none',
+                fontSize: '13px', fontWeight: 600, textDecoration: 'none',
               }}
             >
               Voir le cas client →
@@ -223,7 +223,7 @@ export function DealLinkPublicView({ deallink, result, brand }: Props) {
             background: primary, borderRadius: '20px',
             padding: '52px 40px', textAlign: 'center',
           }}>
-            <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 900, color: '#fff', marginBottom: '14px' }}>
+            <h2 style={{ fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: 600, color: '#fff', marginBottom: '14px' }}>
               {ctaSection.title}
             </h2>
             <p style={{ fontSize: '16px', color: '#fff', opacity: 0.78, marginBottom: '32px', lineHeight: 1.65 }}>

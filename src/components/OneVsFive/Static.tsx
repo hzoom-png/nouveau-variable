@@ -24,7 +24,7 @@ export function OneVsFiveStatic() {
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 56 }}>
           <p style={{
-            fontFamily: 'var(--fi)', fontSize: 11, fontWeight: 700,
+            fontFamily: 'var(--fi)', fontSize: 11, fontWeight: 600,
             letterSpacing: '.12em', textTransform: 'uppercase',
             color: 'var(--green-4)', marginBottom: 14,
           }}>
@@ -55,7 +55,7 @@ export function OneVsFiveStatic() {
             borderRadius: 20, padding: '36px 40px',
           }}>
             <p style={{
-              fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 13,
+              fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 13,
               color: 'var(--text-3)', letterSpacing: '.08em',
               textTransform: 'uppercase', marginBottom: 28,
             }}>
@@ -88,10 +88,10 @@ export function OneVsFiveStatic() {
               </div>
             ))}
             <div style={{ marginTop: 24, paddingTop: 24, borderTop: '1px solid var(--border)' }}>
-              <p style={{ fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 15, color: 'var(--text-3)' }}>
+              <p style={{ fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 15, color: 'var(--text-3)' }}>
                 5 abonnements séparés.
               </p>
-              <p style={{ fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 15, color: 'var(--text-3)', marginTop: 2 }}>
+              <p style={{ fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 15, color: 'var(--text-3)', marginTop: 2 }}>
                 ~210€/mois · 0 synergie.
               </p>
             </div>
@@ -113,7 +113,7 @@ export function OneVsFiveStatic() {
               display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28,
             }}>
               <p style={{
-                fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 13,
+                fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 13,
                 color: 'rgba(255,255,255,0.8)', letterSpacing: '.08em',
                 textTransform: 'uppercase', margin: 0, position: 'relative',
               }}>
@@ -143,7 +143,7 @@ export function OneVsFiveStatic() {
                   width: 22, height: 22, minWidth: 22, borderRadius: '50%',
                   background: 'rgba(255,255,255,0.2)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 12, color: '#fff', fontWeight: 700, flexShrink: 0,
+                  fontSize: 12, color: '#fff', fontWeight: 600, flexShrink: 0,
                 }}>✓</span>
                 <span style={{ fontSize: 14, color: '#fff', fontWeight: 500, lineHeight: 1.5 }}>
                   {item}

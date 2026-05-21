@@ -64,7 +64,7 @@ export function AffiliationSimulator({ n1Actifs = 0 }: Props) {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: '20px' }}>
         <div>
-          <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: '18px', color: 'var(--text)', marginBottom: '2px' }}>
+          <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '18px', color: 'var(--text)', marginBottom: '2px' }}>
             Simule tes revenus d&apos;affiliation
           </div>
           <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
@@ -99,8 +99,8 @@ export function AffiliationSimulator({ n1Actifs = 0 }: Props) {
           { label: 'N2 — 5% du HT',  value: `${fmtDec(commN2)} €`, color: '#4B7BF5', bg: '#EEF2FF', border: '#C7D2FE' },
         ].map(r => (
           <div key={r.label} style={{ flex: 1, minWidth: 140, background: r.bg, border: `1px solid ${r.border}`, borderRadius: 10, padding: '10px 14px' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: r.color, letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 2 }}>{r.label}</div>
-            <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: 18, color: r.color }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: r.color, letterSpacing: '.05em', textTransform: 'uppercase', marginBottom: 2 }}>{r.label}</div>
+            <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: 18, color: r.color }}>
               {r.value} <span style={{ fontSize: 11, fontWeight: 500, opacity: .7 }}>/ filleul</span>
             </div>
           </div>
@@ -111,7 +111,7 @@ export function AffiliationSimulator({ n1Actifs = 0 }: Props) {
       <div style={{ marginBottom: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>Filleuls directs N1</span>
-          <span style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: '20px', color: '#024f41', minWidth: 40, textAlign: 'right' }}>{n1}</span>
+          <span style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '20px', color: '#024f41', minWidth: 40, textAlign: 'right' }}>{n1}</span>
         </div>
         <input type="range" min={0} max={100} step={1} value={n1} onChange={handleN1} className="sim-slider"
           style={{ background: `linear-gradient(to right, #024f41 ${n1}%, var(--border) ${n1}%)` }} />
@@ -121,7 +121,7 @@ export function AffiliationSimulator({ n1Actifs = 0 }: Props) {
       <div style={{ marginBottom: '28px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>Filleuls indirects N2</span>
-          <span style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: '20px', color: '#4B7BF5', minWidth: 40, textAlign: 'right' }}>{n2}</span>
+          <span style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '20px', color: '#4B7BF5', minWidth: 40, textAlign: 'right' }}>{n2}</span>
         </div>
         <input type="range" min={0} max={500} step={1} value={n2} onChange={handleN2} className="sim-slider"
           style={{ background: `linear-gradient(to right, #4B7BF5 ${n2 / 5}%, var(--border) ${n2 / 5}%)` }} />
@@ -131,17 +131,17 @@ export function AffiliationSimulator({ n1Actifs = 0 }: Props) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '12px' }} className="sim-result-grid">
         <div style={{ background: 'var(--surface)', borderRadius: '10px', padding: '14px 16px', border: '1.5px solid var(--border)' }}>
           <div style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Revenus N1</div>
-          <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: '22px', color: '#43695A' }}>{fmt(revenuN1)} €</div>
+          <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '22px', color: '#43695A' }}>{fmt(revenuN1)} €</div>
           <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>/{plan === 'annual' ? 'an' : 'mois'}</div>
         </div>
         <div style={{ background: 'var(--surface)', borderRadius: '10px', padding: '14px 16px', border: '1.5px solid var(--border)' }}>
           <div style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Revenus N2</div>
-          <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: '22px', color: '#4B7BF5' }}>{fmt(revenuN2)} €</div>
+          <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '22px', color: '#4B7BF5' }}>{fmt(revenuN2)} €</div>
           <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>/{plan === 'annual' ? 'an' : 'mois'}</div>
         </div>
         <div style={{ background: '#e8f5ef', borderRadius: '10px', padding: '14px 16px', border: '1.5px solid #56b791' }}>
           <div style={{ fontSize: '11px', color: '#1a7b5e', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Total</div>
-          <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 900, fontSize: '22px', color: '#024f41' }}>{fmt(total)} €</div>
+          <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '22px', color: '#024f41' }}>{fmt(total)} €</div>
           <div style={{ fontSize: '11px', color: '#1a7b5e', marginTop: '2px' }}>/{plan === 'annual' ? 'an' : 'mois'}</div>
         </div>
       </div>

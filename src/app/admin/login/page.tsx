@@ -107,7 +107,7 @@ export default function AdminLoginPage() {
   const btnStyle: React.CSSProperties = {
     width: '100%', padding: '13px', borderRadius: 8,
     background: C.green, border: 'none', color: C.text,
-    fontSize: 14, fontWeight: 700, fontFamily: 'Inter, sans-serif',
+    fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif',
     cursor: loading ? 'wait' : 'pointer', letterSpacing: '0.04em',
     opacity: loading ? 0.7 : 1, transition: 'opacity .15s',
   }
@@ -132,11 +132,11 @@ export default function AdminLoginPage() {
       }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <span style={{ fontSize: 22, fontWeight: 900, color: C.green, letterSpacing: '-0.01em' }}>NV</span>
-          <span style={{ fontSize: 11, color: C.text2, fontWeight: 700, letterSpacing: '0.14em', marginLeft: 8, textTransform: 'uppercase' }}>Admin</span>
+          <span style={{ fontSize: 22, fontWeight: 600, color: C.green, letterSpacing: '-0.01em' }}>NV</span>
+          <span style={{ fontSize: 11, color: C.text2, fontWeight: 600, letterSpacing: '0.14em', marginLeft: 8, textTransform: 'uppercase' }}>Admin</span>
         </div>
 
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: C.text, marginBottom: 4, textAlign: 'center' }}>
+        <h1 style={{ fontSize: 18, fontWeight: 600, color: C.text, marginBottom: 4, textAlign: 'center' }}>
           {stepLabel}
         </h1>
         <p style={{ fontSize: 12, color: C.text2, textAlign: 'center', marginBottom: 28 }}>

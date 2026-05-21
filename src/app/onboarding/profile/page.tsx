@@ -212,11 +212,11 @@ export default function OnboardingProfilePage() {
     padding: '13px',
     borderRadius: '8px',
     fontSize: '15px',
-    fontWeight: 700,
+    fontWeight: 600,
     cursor: loading ? 'not-allowed' : 'pointer',
     border: 'none',
     width: '100%',
-    fontFamily: 'Jost, sans-serif',
+    fontFamily: 'Inter, sans-serif',
   }
 
   return (
@@ -236,7 +236,7 @@ export default function OnboardingProfilePage() {
         <div style={{ padding: '22px 28px 18px', borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
             <NvLogo size={28} />
-            <span style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '11px', color: GREEN, letterSpacing: '.06em', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '11px', color: GREEN, letterSpacing: '.06em', textTransform: 'uppercase' }}>
               Nouveau Variable
             </span>
           </div>
@@ -258,7 +258,7 @@ export default function OnboardingProfilePage() {
             ))}
           </div>
 
-          <div style={{ fontFamily: 'Jost, sans-serif', fontSize: '18px', fontWeight: 800, color: TEXT, marginBottom: '4px' }}>
+          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '18px', fontWeight: 600, color: TEXT, marginBottom: '4px' }}>
             {step === 'identity' && `Salut ${firstName} 👋 On commence par toi`}
             {step === 'parcours' && 'Ton parcours & LinkedIn'}
             {step === 'tutorial' && 'Bienvenue dans le club'}
@@ -421,7 +421,7 @@ export default function OnboardingProfilePage() {
                 }}>
                   {TUTORIAL_SLIDES[slide].icon}
                 </div>
-                <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '16px', color: TEXT }}>
+                <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '16px', color: TEXT }}>
                   {TUTORIAL_SLIDES[slide].title}
                 </div>
                 <div style={{ fontSize: '13px', color: TEXT_2, lineHeight: 1.7 }}>
@@ -489,7 +489,7 @@ function CompletionGauge({ pct }: { pct: number }) {
         <span style={{ fontSize: '11px', color: TEXT_3, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.06em' }}>
           Profil complété
         </span>
-        <span style={{ fontSize: '11px', fontWeight: 700, color: pct >= 50 ? GREEN : TEXT_3 }}>
+        <span style={{ fontSize: '11px', fontWeight: 600, color: pct >= 50 ? GREEN : TEXT_3 }}>
           {pct}%
         </span>
       </div>

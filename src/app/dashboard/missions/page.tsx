@@ -110,7 +110,7 @@ export default function MissionsPage() {
               {/* Badges */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {m.category && (
-                  <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 99, background: '#e8f5ef', color: '#024f41' }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 99, background: '#e8f5ef', color: '#024f41' }}>
                     {CAT_LABEL[m.category] ?? m.category}
                   </span>
                 )}
@@ -123,7 +123,7 @@ export default function MissionsPage() {
 
               {/* Title + company */}
               <div>
-                <div style={{ fontFamily: 'Plus Jakarta Sans, Jost, sans-serif', fontSize: 16, fontWeight: 700, color: '#012722', lineHeight: 1.3, marginBottom: 3 }}>
+                <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 16, fontWeight: 600, color: '#012722', lineHeight: 1.3, marginBottom: 3 }}>
                   {m.title}
                 </div>
                 {m.company && (
@@ -154,7 +154,7 @@ export default function MissionsPage() {
               ) : (
                 <button
                   onClick={() => openDetail(m)}
-                  style={{ alignSelf: 'flex-start', padding: '8px 16px', borderRadius: 'var(--r-sm)', background: '#024f41', border: 'none', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Jost, sans-serif', marginTop: 4 }}
+                  style={{ alignSelf: 'flex-start', padding: '8px 16px', borderRadius: 'var(--r-sm)', background: '#024f41', border: 'none', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif', marginTop: 4 }}
                 >
                   Voir la mission →
                 </button>
@@ -176,7 +176,7 @@ export default function MissionsPage() {
           >
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
               {detail.mission.category && (
-                <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 99, background: '#e8f5ef', color: '#024f41' }}>
+                <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 99, background: '#e8f5ef', color: '#024f41' }}>
                   {CAT_LABEL[detail.mission.category] ?? detail.mission.category}
                 </span>
               )}
@@ -184,7 +184,7 @@ export default function MissionsPage() {
                 <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 9px', borderRadius: 99, background: 'var(--surface)', color: 'var(--text-2)', border: '1px solid var(--border)' }}>Remote</span>
               )}
             </div>
-            <div style={{ fontFamily: 'Plus Jakarta Sans, Jost, sans-serif', fontSize: 20, fontWeight: 700, color: '#012722', marginBottom: 6 }}>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontSize: 20, fontWeight: 600, color: '#012722', marginBottom: 6 }}>
               {detail.mission.title}
             </div>
             {detail.mission.company && (

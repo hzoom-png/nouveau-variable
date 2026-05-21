@@ -197,10 +197,10 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
             }}
           />
           <div style={{ width: 32, height: 32, borderRadius: 7, background: 'var(--green)', display: 'none', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <span style={{ fontFamily: 'var(--font-jost)', fontSize: '11px', fontWeight: 900, color: '#fff', letterSpacing: '.04em' }}>NV</span>
+            <span style={{ fontFamily: 'var(--font-inter)', fontSize: '11px', fontWeight: 600, color: '#fff', letterSpacing: '.04em' }}>NV</span>
           </div>
           <div>
-            <div style={{ fontFamily: 'var(--font-jost)', fontSize: '13px', fontWeight: 900, color: 'var(--green)', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</div>
+            <div style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, color: 'var(--green)', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</div>
             <div style={{ fontSize: '10px', color: 'var(--text-3)', fontWeight: 500, letterSpacing: '.06em', textTransform: 'uppercase', marginTop: '1px' }}>Espace membre</div>
           </div>
         </div>
@@ -209,7 +209,7 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
         <div style={{ flex: 1, padding: '8px 0' }}>
           {SECTIONS.map(section => (
             <div key={section.id}>
-              <div style={{ padding: '16px 20px 4px', fontSize: '10px', fontWeight: 700, color: 'var(--text-3)', letterSpacing: '.12em', textTransform: 'uppercase' }}>
+              <div style={{ padding: '16px 20px 4px', fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', letterSpacing: '.12em', textTransform: 'uppercase' }}>
                 {section.label}
               </div>
               {section.items.map(item => {
@@ -234,7 +234,7 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
                         <span>{item.label}</span>
                         {item.badge === 'soon' && (
                           <span style={{
-                            fontSize: 9, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase',
+                            fontSize: 9, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase',
                             color: 'var(--text-3)', background: 'var(--surface)',
                             border: '1px solid var(--border)', borderRadius: 'var(--r-full)',
                             padding: '2px 6px', marginLeft: 'auto', flexShrink: 0,
@@ -246,7 +246,7 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
                           <span style={{
                             background: '#024f41', color: '#fff',
                             borderRadius: '99px', padding: '1px 7px',
-                            fontSize: 11, fontWeight: 700,
+                            fontSize: 11, fontWeight: 600,
                             marginLeft: 'auto', flexShrink: 0,
                           }}>
                             {pendingMeetings}
@@ -320,7 +320,7 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
         {/* User card */}
         <div style={{ padding: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '9px', padding: '9px 10px', borderRadius: 'var(--r-md)' }}>
-            <div style={{ width: '30px', height: '30px', borderRadius: 'var(--r-sm)', background: 'var(--green)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-jost)', fontSize: '11px', fontWeight: 700, color: '#fff', flexShrink: 0 }}>
+            <div style={{ width: '30px', height: '30px', borderRadius: 'var(--r-sm)', background: 'var(--green)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-inter)', fontSize: '11px', fontWeight: 600, color: '#fff', flexShrink: 0 }}>
               {initials}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -336,14 +336,14 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {/* Topbar */}
         <header style={{ background: 'var(--white)', borderBottom: '1px solid var(--border)', padding: '0 28px', height: '52px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30, flexShrink: 0 }}>
-          <span style={{ fontFamily: 'var(--font-jost)', fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>{pageTitle}</span>
+          <span style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: 'var(--text)' }}>{pageTitle}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {profile.tokens_balance !== undefined && (
               <TokenBalance balance={profile.tokens_balance} />
             )}
             <div style={{ display: 'flex', alignItems: 'center', gap: '7px', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '5px 11px' }}>
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" fill="var(--green)"/></svg>
-              <span style={{ fontFamily: 'var(--font-jost)', fontSize: '13px', fontWeight: 700, color: 'var(--green)' }}>{profile.points_balance}</span>
+              <span style={{ fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, color: 'var(--green)' }}>{profile.points_balance}</span>
               <span style={{ fontSize: '10px', color: 'var(--text-2)', fontWeight: 500 }}>pts</span>
             </div>
           </div>

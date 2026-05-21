@@ -54,7 +54,7 @@ function StatusPill({ status }: { status: string }) {
   const col = COLUMNS.find(c => c.key === status)
   if (!col) return (
     <span style={{
-      fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10,
+      fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 10,
       background: 'rgba(75,99,88,0.1)', color: '#4B6358',
       letterSpacing: '0.06em', textTransform: 'uppercase',
     }}>
@@ -63,7 +63,7 @@ function StatusPill({ status }: { status: string }) {
   )
   return (
     <span style={{
-      fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10,
+      fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 10,
       background: col.bgHex, color: col.color,
       letterSpacing: '0.06em', textTransform: 'uppercase',
     }}>
@@ -289,7 +289,7 @@ export default function CandidaturesPage() {
                 <thead>
                   <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                     {['Nom', 'Entreprise', 'Rôle', 'Parrain', 'Statut', 'Date', ''].map(h => (
-                      <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                      <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                         {h}
                       </th>
                     ))}
@@ -337,7 +337,7 @@ export default function CandidaturesPage() {
                   padding: '8px 10px', borderRadius: 8, background: col.bgHex,
                 }}>
                   <span style={{ width: 8, height: 8, borderRadius: 4, background: col.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 11, fontWeight: 700, color: col.color, letterSpacing: '0.1em', textTransform: 'uppercase', flex: 1 }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: col.color, letterSpacing: '0.1em', textTransform: 'uppercase', flex: 1 }}>
                     {col.label}
                   </span>
                   <span style={{ fontSize: 10, color: C.text2, background: C.input, borderRadius: 10, padding: '1px 6px' }}>
@@ -388,7 +388,7 @@ export default function CandidaturesPage() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
               <div>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: C.text }}>{selected.full_name}</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 600, color: C.text }}>{selected.full_name}</h2>
                 <p style={{ fontSize: 12, color: C.text2 }}>{selected.email}</p>
               </div>
               <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: C.text2, fontSize: 20, cursor: 'pointer' }}>✕</button>
@@ -410,7 +410,7 @@ export default function CandidaturesPage() {
                 ['LinkedIn', selected.linkedin_url ? 'Oui' : '—'],
               ].map(([k, v]) => (
                 <div key={k}>
-                  <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>{k}</p>
+                  <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>{k}</p>
                   <p style={{ fontSize: 13, color: C.text }}>{v}</p>
                 </div>
               ))}
@@ -426,13 +426,13 @@ export default function CandidaturesPage() {
 
             {selected.motivation && (
               <div style={{ marginBottom: 20 }}>
-                <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Motivation</p>
+                <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Motivation</p>
                 <p style={{ fontSize: 13, color: C.text, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{selected.motivation}</p>
               </div>
             )}
 
             <div style={{ marginBottom: 20 }}>
-              <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Note admin</p>
+              <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Note admin</p>
               <textarea
                 style={{ width: '100%', boxSizing: 'border-box', background: C.input, border: `1px solid rgba(255,255,255,0.1)`, borderRadius: 8, padding: '10px 12px', fontSize: 13, color: C.text, fontFamily: 'Inter, sans-serif', outline: 'none', resize: 'vertical', minHeight: 80 }}
                 placeholder="Note interne…"
@@ -443,7 +443,7 @@ export default function CandidaturesPage() {
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Changer le statut</p>
+              <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Changer le statut</p>
               <select
                 value={selected.status}
                 onChange={e => updateStatus(selected, e.target.value as Status)}
@@ -509,7 +509,7 @@ export default function CandidaturesPage() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
                 <div>
-                  <p style={{ fontSize: 12, fontWeight: 700, color: selected.is_founder ? '#F59E0B' : C.text2, letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 2 }}>
+                  <p style={{ fontSize: 12, fontWeight: 600, color: selected.is_founder ? '#F59E0B' : C.text2, letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 2 }}>
                     {selected.is_founder ? '🌟 Mode Founder — ACTIF' : 'Mode Founder'}
                   </p>
                   <p style={{ fontSize: 11, color: C.text2, lineHeight: 1.4 }}>
@@ -525,7 +525,7 @@ export default function CandidaturesPage() {
                   onClick={() => toggleFounder(selected, !selected.is_founder)}
                   disabled={working}
                   style={{
-                    padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+                    padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600,
                     border: 'none', cursor: working ? 'wait' : 'pointer',
                     background: selected.is_founder ? 'rgba(224,82,82,0.15)' : 'rgba(245,158,11,0.15)',
                     color: selected.is_founder ? C.error : '#F59E0B',

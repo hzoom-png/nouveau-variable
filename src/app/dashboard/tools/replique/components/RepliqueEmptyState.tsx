@@ -13,7 +13,7 @@ export default function RepliqueEmptyState({ onStart }: Props) {
             <path d="M5 3V2M9 3V2"/>
           </svg>
         </div>
-        <div style={{ fontFamily: 'var(--font-jost)', fontSize: '20px', fontWeight: 800, color: 'var(--text)', marginBottom: '8px' }}>
+        <div style={{ fontFamily: 'var(--font-inter)', fontSize: '20px', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>
           Génère ton script en 30 secondes.
         </div>
         <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.7, marginBottom: '20px' }}>
@@ -27,14 +27,14 @@ export default function RepliqueEmptyState({ onStart }: Props) {
             ['3', 'Tu décroches, tu t\'appuies dessus'],
           ].map(([n, label]) => (
             <div key={n} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green)', display: 'grid', placeItems: 'center', fontSize: '11px', fontWeight: 800, color: '#fff', flexShrink: 0 }}>{n}</div>
+              <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'var(--green)', display: 'grid', placeItems: 'center', fontSize: '11px', fontWeight: 600, color: '#fff', flexShrink: 0 }}>{n}</div>
               <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>{label}</span>
             </div>
           ))}
         </div>
         <button
           onClick={onStart}
-          style={{ background: 'var(--green)', color: '#fff', padding: '12px 24px', borderRadius: 'var(--r-sm)', fontFamily: 'var(--font-jost)', fontSize: '14px', fontWeight: 700, border: 'none', cursor: 'pointer', width: '100%', transition: '.15s' }}
+          style={{ background: 'var(--green)', color: '#fff', padding: '12px 24px', borderRadius: 'var(--r-sm)', fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, border: 'none', cursor: 'pointer', width: '100%', transition: '.15s' }}
         >
           Créer mon premier script →
         </button>

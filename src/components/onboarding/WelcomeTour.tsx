@@ -148,7 +148,7 @@ export function WelcomeTour({ firstName, onDone, forceOpen = false }: Props) {
           ) : null}
 
           <h2 style={{
-            fontFamily: 'Jost, sans-serif', fontWeight: 900,
+            fontFamily: 'Inter, sans-serif', fontWeight: 600,
             fontSize: 'clamp(1.3rem, 4vw, 1.6rem)',
             color: 'var(--text)', lineHeight: 1.2, marginBottom: '14px',
           }}>
@@ -191,7 +191,7 @@ export function WelcomeTour({ firstName, onDone, forceOpen = false }: Props) {
             style={{
               flex: 1, padding: '12px', borderRadius: '99px',
               background: 'var(--green)', color: '#fff',
-              fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px',
+              fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px',
               border: 'none', cursor: 'pointer', transition: '.15s',
             }}
             onMouseEnter={e => e.currentTarget.style.background = 'var(--green-2)'}

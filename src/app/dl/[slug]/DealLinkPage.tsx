@@ -90,7 +90,7 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
             // eslint-disable-next-line @next/next/no-img-element
             <img src={brandAssets.logoUrl} alt="" style={{ height: 26, maxWidth: 120, objectFit: 'contain' }} />
           ) : (
-            <span style={{ fontWeight: 800, fontSize: 14, color: primary, letterSpacing: '-.01em' }}>
+            <span style={{ fontWeight: 600, fontSize: 14, color: primary, letterSpacing: '-.01em' }}>
               {brandAssets.siteName ?? productName}
             </span>
           )}
@@ -98,7 +98,7 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
         <div style={{
           background: pBg, border: `1px solid ${pBorder}`,
           padding: '4px 13px', borderRadius: 999,
-          fontSize: 11, fontWeight: 700, color: primary,
+          fontSize: 11, fontWeight: 600, color: primary,
         }}>
           Score {result.score}/100
         </div>
@@ -106,10 +106,10 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
 
       {/* Hero */}
       <section style={{ maxWidth: 660, margin: '0 auto', padding: '52px 24px 40px' }}>
-        <div className="dl-fade dl-d1" style={{ fontSize: 11, fontWeight: 700, color: primary, letterSpacing: '.14em', textTransform: 'uppercase', marginBottom: 14 }}>
+        <div className="dl-fade dl-d1" style={{ fontSize: 11, fontWeight: 600, color: primary, letterSpacing: '.14em', textTransform: 'uppercase', marginBottom: 14 }}>
           Bonjour {prospectName},
         </div>
-        <h1 className="dl-fade dl-d2" style={{ fontSize: 'clamp(22px, 4.5vw, 30px)', fontWeight: 800, lineHeight: 1.25, color: '#0F1C17', letterSpacing: '-.02em', marginBottom: 14 }}>
+        <h1 className="dl-fade dl-d2" style={{ fontSize: 'clamp(22px, 4.5vw, 30px)', fontWeight: 600, lineHeight: 1.25, color: '#0F1C17', letterSpacing: '-.02em', marginBottom: 14 }}>
           {result.hook}
         </h1>
         {result.subhook && (
@@ -131,7 +131,7 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
 
       {/* Arguments */}
       <section style={{ maxWidth: 660, margin: '0 auto', padding: '0 24px 44px' }}>
-        <div className="dl-fade dl-d3" style={{ fontSize: 11, fontWeight: 700, color: '#9BAAA4', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: 14 }}>
+        <div className="dl-fade dl-d3" style={{ fontSize: 11, fontWeight: 600, color: '#9BAAA4', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: 14 }}>
           Pourquoi ça vous correspond
         </div>
         <div className="dl-args-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 10 }}>
@@ -153,7 +153,7 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
                 {arg.icon}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#0F1C17', marginBottom: 5 }}>{arg.title}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#0F1C17', marginBottom: 5 }}>{arg.title}</div>
                 <div style={{ fontSize: 13, color: '#556B63', lineHeight: 1.7 }}>{arg.body}</div>
               </div>
             </div>
@@ -165,7 +165,7 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
       {result.testimonial?.quote && (
         <section style={{ background: primary, padding: '44px 24px', marginBottom: 44 }}>
           <div style={{ maxWidth: 580, margin: '0 auto' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,.45)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: 16 }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: 'rgba(255,255,255,.45)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: 16 }}>
               Témoignage
             </div>
             <blockquote style={{ fontSize: 'clamp(15px, 2.5vw, 18px)', fontWeight: 500, color: '#fff', lineHeight: 1.7, fontStyle: 'italic', marginBottom: 20 }}>
@@ -174,12 +174,12 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
                 width: 38, height: 38, borderRadius: '50%', background: 'rgba(255,255,255,.18)',
-                display: 'grid', placeItems: 'center', fontSize: 15, fontWeight: 700, color: '#fff', flexShrink: 0,
+                display: 'grid', placeItems: 'center', fontSize: 15, fontWeight: 600, color: '#fff', flexShrink: 0,
               }}>
                 {result.testimonial.author.charAt(0)}
               </div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{result.testimonial.author}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>{result.testimonial.author}</div>
                 {result.testimonial.role && (
                   <div style={{ fontSize: 11, color: 'rgba(255,255,255,.6)', marginTop: 2 }}>{result.testimonial.role}</div>
                 )}
@@ -227,7 +227,7 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
       {/* FAQ / Objections */}
       {result.objections?.length > 0 && (
         <section style={{ maxWidth: 660, margin: '0 auto', padding: '0 24px 52px' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#9BAAA4', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: '#9BAAA4', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: 14 }}>
             Questions fréquentes
           </div>
           <div style={{ border: `1px solid ${pBorder}`, borderRadius: 12, overflow: 'hidden' }}>
@@ -251,7 +251,7 @@ export default function DealLinkPage({ slug, prospectName, productName, result, 
       {/* Footer */}
       <footer style={{ borderTop: `1px solid ${pBorder}`, padding: '22px 24px', textAlign: 'center', fontSize: 11, color: '#9BAAA4' }}>
         Propulsé par{' '}
-        <a href="https://nouveauvariable.fr" target="_blank" rel="noopener noreferrer" style={{ color: primary, textDecoration: 'none', fontWeight: 700 }}>
+        <a href="https://nouveauvariable.fr" target="_blank" rel="noopener noreferrer" style={{ color: primary, textDecoration: 'none', fontWeight: 600 }}>
           Nouveau Variable
         </a>
         {' · '}Club des commerciaux ambitieux

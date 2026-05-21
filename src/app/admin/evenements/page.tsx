@@ -144,7 +144,7 @@ export default function EvenementsPage() {
   }
   const btnPrimary: React.CSSProperties = {
     padding: '10px 20px', borderRadius: 8, background: C.green,
-    border: 'none', color: C.text, fontSize: 13, fontWeight: 700,
+    border: 'none', color: C.text, fontSize: 13, fontWeight: 600,
     fontFamily: 'Inter, sans-serif', cursor: 'pointer',
   }
   const btnGhost: React.CSSProperties = {
@@ -154,7 +154,7 @@ export default function EvenementsPage() {
 
   const field = (label: string, el: React.ReactNode) => (
     <div>
-      <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>{label}</p>
+      <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>{label}</p>
       {el}
     </div>
   )
@@ -187,9 +187,9 @@ export default function EvenementsPage() {
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-                  <p style={{ fontSize: 15, fontWeight: 700, color: C.text }}>{e.title}</p>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: C.text }}>{e.title}</p>
                   <span style={{
-                    fontSize: 9, fontWeight: 700, padding: '2px 7px', borderRadius: 10,
+                    fontSize: 9, fontWeight: 600, padding: '2px 7px', borderRadius: 10,
                     background: e.is_published ? 'rgba(47,84,70,0.3)' : 'rgba(75,99,88,0.2)',
                     color: e.is_published ? C.greenL : C.text2,
                     textTransform: 'uppercase', letterSpacing: '0.08em',
@@ -237,7 +237,7 @@ export default function EvenementsPage() {
             maxHeight: '85vh', overflowY: 'auto',
           }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: C.text }}>{editing ? 'Modifier' : 'Créer'} un événement</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 600, color: C.text }}>{editing ? 'Modifier' : 'Créer'} un événement</h2>
               <button onClick={() => setModalOpen(false)} style={{ background: 'none', border: 'none', color: C.text2, fontSize: 18, cursor: 'pointer' }}>✕</button>
             </div>
 
@@ -272,7 +272,7 @@ export default function EvenementsPage() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 20 }}
           onClick={() => setDelId(null)}>
           <div style={{ background: C.card, border: `1px solid ${C.error}`, borderRadius: 14, padding: 28, maxWidth: 380 }} onClick={e => e.stopPropagation()}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: C.error, marginBottom: 12 }}>Supprimer l&apos;événement</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: C.error, marginBottom: 12 }}>Supprimer l&apos;événement</h2>
             <p style={{ fontSize: 13, color: C.text2, marginBottom: 20 }}>Cette action est irréversible.</p>
             <div style={{ display: 'flex', gap: 8 }}>
               <button style={{ ...btnPrimary, background: C.error }} onClick={() => deleteEvent(delId)} disabled={working}>

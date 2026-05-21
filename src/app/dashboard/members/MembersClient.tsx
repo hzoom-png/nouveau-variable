@@ -52,7 +52,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
   }
 
   const mainTabBtn = (active: boolean): React.CSSProperties => ({
-    padding: '9px 20px', borderRadius: '99px', fontSize: '13px', fontWeight: 700,
+    padding: '9px 20px', borderRadius: '99px', fontSize: '13px', fontWeight: 600,
     border: `1.5px solid ${active ? 'var(--green)' : 'var(--border)'}`,
     background: active ? 'var(--green)' : 'transparent',
     color: active ? '#fff' : 'var(--text-2)',
@@ -107,7 +107,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
           border: 3px solid var(--white);
           overflow: hidden;
           display: grid; place-items: center;
-          font-family: Jost, sans-serif; font-size: 22px; font-weight: 800; color: #fff;
+          font-family: Inter, sans-serif; font-size: 22px; font-weight: 800; color: #fff;
           transform: translateY(36px);
           flex-shrink: 0;
         }
@@ -121,7 +121,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
         <button style={mainTabBtn(mainTab === 'rdv')} onClick={() => setMainTab('rdv')}>
           Mes RDV
           {pendingCount > 0 && (
-            <span style={{ background: '#fff', color: 'var(--green)', borderRadius: '99px', padding: '1px 6px', fontSize: 11, fontWeight: 800, lineHeight: 1.4 }}>
+            <span style={{ background: '#fff', color: 'var(--green)', borderRadius: '99px', padding: '1px 6px', fontSize: 11, fontWeight: 600, lineHeight: 1.4 }}>
               {pendingCount}
             </span>
           )}
@@ -196,11 +196,11 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
                   }}>
                     {m.avatar_url
                       ? <img src={m.avatar_url} alt={initials} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      : <span style={{ fontFamily: 'Jost, sans-serif', fontSize: 20, fontWeight: 800, color: avColor }}>{initials}</span>
+                      : <span style={{ fontFamily: 'Inter, sans-serif', fontSize: 20, fontWeight: 600, color: avColor }}>{initials}</span>
                     }
                   </div>
                   <div>
-                    <p style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: 17, color: 'var(--text)', marginBottom: 2 }}>
+                    <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 17, color: 'var(--text)', marginBottom: 2 }}>
                       {m.first_name} {m.last_name}
                     </p>
                     {m.role_title && (
@@ -226,7 +226,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
                   style={{
                     width: '100%', padding: '12px', borderRadius: 99,
                     background: 'var(--green)', color: '#fff', border: 'none',
-                    fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+                    fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 14, cursor: 'pointer',
                   }}
                 >
                   Voir le profil
@@ -250,7 +250,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
             <div key={m.id} className="mc-card" onClick={() => setDrawerMember(m)} style={{ position: 'relative' }}>
               {/* Member number */}
               {m.member_number != null && (
-                <div style={{ position: 'absolute', top: '10px', right: '12px', fontFamily: 'Jost, sans-serif', fontSize: '11px', fontWeight: 700, color: 'var(--text-3)' }}>
+                <div style={{ position: 'absolute', top: '10px', right: '12px', fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 600, color: 'var(--text-3)' }}>
                   #{String(m.member_number).padStart(3, '0')}
                 </div>
               )}
@@ -265,11 +265,11 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
                 }}>
                   {m.avatar_url
                     ? <img src={m.avatar_url} alt={initials} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <span style={{ fontFamily: 'Jost, sans-serif', fontSize: '22px', fontWeight: 800, color: avColor }}>{initials}</span>
+                    : <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '22px', fontWeight: 600, color: avColor }}>{initials}</span>
                   }
                 </div>
 
-                <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '15px', color: 'var(--text)', marginBottom: '4px', textAlign: 'center' }}>
+                <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '15px', color: 'var(--text)', marginBottom: '4px', textAlign: 'center' }}>
                   {m.first_name} {m.last_name}
                 </div>
 
@@ -303,7 +303,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
                     style={{
                       display: 'block', width: '100%', textAlign: 'center',
                       padding: '9px', borderRadius: '99px',
-                      fontFamily: 'Jost, sans-serif', fontSize: '12px', fontWeight: 600,
+                      fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600,
                       color: 'var(--text-3)', border: '1.5px solid var(--border)',
                       textDecoration: 'none', boxSizing: 'border-box',
                     }}
@@ -316,7 +316,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
                     style={{
                       width: '100%', background: 'var(--green)', color: '#fff',
                       padding: '9px', borderRadius: '99px',
-                      fontFamily: 'Jost, sans-serif', fontSize: '12px', fontWeight: 700,
+                      fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600,
                       border: 'none', cursor: 'pointer', transition: '.14s',
                     }}
                     onMouseEnter={e => e.currentTarget.style.background = 'var(--green-2)'}
@@ -358,7 +358,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
               </div>
 
               <div style={{ padding: '44px 20px 20px', flex: 1, overflowY: 'auto' }}>
-                <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '18px', color: 'var(--text)', marginBottom: '3px' }}>
+                <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '18px', color: 'var(--text)', marginBottom: '3px' }}>
                   {m.first_name} {m.last_name}
                 </div>
                 {m.tagline && <div style={{ fontSize: '13px', color: 'var(--text-2)', fontStyle: 'italic', marginBottom: '4px' }}>{m.tagline}</div>}
@@ -379,12 +379,12 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
 
                 <div style={{ display: 'flex', gap: '24px', padding: '14px 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', marginBottom: '16px' }}>
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontFamily: 'Jost, sans-serif', fontSize: '20px', fontWeight: 800, color: 'var(--text)' }}>{m.missions_count}</div>
+                    <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '20px', fontWeight: 600, color: 'var(--text)' }}>{m.missions_count}</div>
                     <div style={{ fontSize: '10px', color: 'var(--text-3)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '.07em' }}>Missions</div>
                   </div>
                   {m.rating > 0 && (
                     <div style={{ textAlign: 'center' }}>
-                      <div style={{ fontFamily: 'Jost, sans-serif', fontSize: '20px', fontWeight: 800, color: 'var(--text)' }}>{m.rating.toFixed(1)}</div>
+                      <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '20px', fontWeight: 600, color: 'var(--text)' }}>{m.rating.toFixed(1)}</div>
                       <div style={{ fontSize: '10px', color: 'var(--text-3)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '.07em' }}>Note</div>
                     </div>
                   )}
@@ -401,7 +401,7 @@ export default function MembersClient({ members, currentUserId, currentUserPoint
                   ) : (
                     <button
                       onClick={() => { setMeetingTarget(m); setDrawerMember(null) }}
-                      style={{ flex: 1, background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', transition: '.15s' }}
+                      style={{ flex: 1, background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13px', border: 'none', cursor: 'pointer', transition: '.15s' }}
                       onMouseEnter={e => e.currentTarget.style.background = 'var(--green-2)'}
                       onMouseLeave={e => e.currentTarget.style.background = 'var(--green)'}
                     >

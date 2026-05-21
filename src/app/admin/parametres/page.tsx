@@ -90,7 +90,7 @@ export default function ParametresPage() {
     color: C.text, fontFamily: 'Inter, sans-serif', outline: 'none',
   }
   const labelSt: React.CSSProperties = {
-    fontSize: 10, fontWeight: 700, color: C.text2,
+    fontSize: 10, fontWeight: 600, color: C.text2,
     letterSpacing: '0.08em', textTransform: 'uppercase',
     display: 'block', marginBottom: 6,
   }
@@ -214,7 +214,7 @@ export default function ParametresPage() {
                   disabled={saving}
                   style={{
                     padding: '12px 28px', borderRadius: 8, background: C.green,
-                    border: 'none', color: C.text, fontSize: 14, fontWeight: 700,
+                    border: 'none', color: C.text, fontSize: 14, fontWeight: 600,
                     fontFamily: 'Inter, sans-serif', cursor: saving ? 'wait' : 'pointer',
                     opacity: saving ? 0.7 : 1,
                   }}

@@ -130,7 +130,7 @@ export default function SideHustleAIPanel({ projectId, onClose }: Props) {
 
         {/* Header */}
         <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-          <h2 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: 16, color: 'var(--text)' }}>Hypothèses & Prévisionnel</h2>
+          <h2 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 16, color: 'var(--text)' }}>Hypothèses & Prévisionnel</h2>
           <button onClick={onClose} style={{ width: 30, height: 30, borderRadius: 'var(--r-sm)', background: 'var(--surface)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: 16, color: 'var(--text-2)' }}>×</button>
         </div>
 
@@ -165,7 +165,7 @@ export default function SideHustleAIPanel({ projectId, onClose }: Props) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, gap: 12 }}>
                 <p style={{ fontSize: 12, color: 'var(--text-3)', lineHeight: 1.5 }}>Clique sur une valeur pour la modifier. ★ = hypothèse clé.</p>
                 <button onClick={generateAssumptions} disabled={generating}
-                  style={{ padding: '8px 16px', borderRadius: 'var(--r-full)', background: 'var(--green)', color: '#fff', border: 'none', fontSize: 12, fontWeight: 700, cursor: generating ? 'not-allowed' : 'pointer', opacity: generating ? 0.7 : 1, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                  style={{ padding: '8px 16px', borderRadius: 'var(--r-full)', background: 'var(--green)', color: '#fff', border: 'none', fontSize: 12, fontWeight: 600, cursor: generating ? 'not-allowed' : 'pointer', opacity: generating ? 0.7 : 1, whiteSpace: 'nowrap', flexShrink: 0 }}>
                   {generating ? 'Génération…' : assumptions.length ? '↺ Régénérer' : 'Générer les hypothèses'}
                 </button>
               </div>
@@ -179,7 +179,7 @@ export default function SideHustleAIPanel({ projectId, onClose }: Props) {
               ) : (
                 Object.entries(byCategory).map(([cat, rows]) => (
                   <div key={cat} style={{ marginBottom: 20 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--green)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--green)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
                       {cat}
                       <span style={{ fontSize: 10, fontWeight: 400, color: 'var(--text-3)', textTransform: 'none' }}>{rows.length} hypothèse{rows.length > 1 ? 's' : ''}</span>
                     </div>
@@ -203,7 +203,7 @@ export default function SideHustleAIPanel({ projectId, onClose }: Props) {
                                 <span style={{ fontSize: 11, color: 'var(--text-3)', textDecoration: 'line-through' }}>{a.initial_value}</span>
                               )}
                               <button onClick={() => setEditingId(a.id)}
-                                style={{ fontSize: 13, fontWeight: 700, color: 'var(--green)', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 8px', borderRadius: 'var(--r-sm)', transition: '.1s' }}
+                                style={{ fontSize: 13, fontWeight: 600, color: 'var(--green)', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 8px', borderRadius: 'var(--r-sm)', transition: '.1s' }}
                                 onMouseEnter={e => (e.currentTarget.style.background = 'var(--green-3,#EAF2EE)')}
                                 onMouseLeave={e => (e.currentTarget.style.background = 'none')}>
                                 {a.value}{a.unit ? ` ${a.unit}` : ''}
@@ -240,7 +240,7 @@ export default function SideHustleAIPanel({ projectId, onClose }: Props) {
                   ))}
                 </div>
                 <button onClick={generateForecast} disabled={generating || assumptions.length === 0}
-                  style={{ padding: '8px 16px', borderRadius: 'var(--r-full)', background: 'var(--green)', color: '#fff', border: 'none', fontSize: 12, fontWeight: 700, cursor: (generating || assumptions.length === 0) ? 'not-allowed' : 'pointer', opacity: (generating || assumptions.length === 0) ? 0.6 : 1 }}>
+                  style={{ padding: '8px 16px', borderRadius: 'var(--r-full)', background: 'var(--green)', color: '#fff', border: 'none', fontSize: 12, fontWeight: 600, cursor: (generating || assumptions.length === 0) ? 'not-allowed' : 'pointer', opacity: (generating || assumptions.length === 0) ? 0.6 : 1 }}>
                   {generating ? 'Génération…' : activeForecast ? '↺ Régénérer' : 'Générer le prévisionnel'}
                 </button>
               </div>
@@ -268,7 +268,7 @@ export default function SideHustleAIPanel({ projectId, onClose }: Props) {
                     ].map(kpi => (
                       <div key={kpi.label} style={{ background: 'var(--surface)', borderRadius: 'var(--r-md)', padding: '14px', textAlign: 'center' }}>
                         <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>{kpi.label}</div>
-                        <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--green)' }}>{kpi.value}</div>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--green)' }}>{kpi.value}</div>
                       </div>
                     ))}
                   </div>
@@ -279,20 +279,20 @@ export default function SideHustleAIPanel({ projectId, onClose }: Props) {
                       <thead>
                         <tr style={{ background: 'var(--surface)' }}>
                           {['Période', 'MRR', 'Cashflow', 'Status'].map(h => (
-                            <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 700, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>{h}</th>
+                            <th key={h} style={{ padding: '8px 12px', textAlign: 'left', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
                         {activeForecast.forecast_data.map((row, i) => (
                           <tr key={i} style={{ borderBottom: '1px solid var(--border)' }}>
-                            <td style={{ padding: '7px 12px', fontFamily: 'var(--font-jost)', fontWeight: 600 }}>{row.period}</td>
+                            <td style={{ padding: '7px 12px', fontFamily: 'var(--font-inter)', fontWeight: 600 }}>{row.period}</td>
                             <td style={{ padding: '7px 12px', color: 'var(--text-2)' }}>{row.mrr != null ? `${row.mrr.toLocaleString('fr-FR')} €` : '—'}</td>
                             <td style={{ padding: '7px 12px', fontWeight: 600, color: STATUS_COLOR[row.status] ?? 'var(--text)' }}>
                               {row.cashflow.toLocaleString('fr-FR')} €
                             </td>
                             <td style={{ padding: '7px 12px' }}>
-                              <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 99, background: `${STATUS_COLOR[row.status] ?? '#888'}18`, color: STATUS_COLOR[row.status] ?? '#888' }}>
+                              <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 99, background: `${STATUS_COLOR[row.status] ?? '#888'}18`, color: STATUS_COLOR[row.status] ?? '#888' }}>
                                 {row.status}
                               </span>
                             </td>
@@ -321,9 +321,9 @@ function InlineInput({ defaultValue, unit, onSave, onCancel }: { defaultValue: s
       <input autoFocus value={val}
         onChange={e => setVal(e.target.value)}
         onKeyDown={e => { if (e.key === 'Enter') onSave(val); if (e.key === 'Escape') onCancel() }}
-        style={{ width: 72, fontSize: 13, fontWeight: 700, padding: '3px 8px', border: '1.5px solid var(--green)', borderRadius: 'var(--r-sm)', outline: 'none', fontFamily: 'inherit', color: 'var(--green)' }} />
+        style={{ width: 72, fontSize: 13, fontWeight: 600, padding: '3px 8px', border: '1.5px solid var(--green)', borderRadius: 'var(--r-sm)', outline: 'none', fontFamily: 'inherit', color: 'var(--green)' }} />
       {unit && <span style={{ fontSize: 11, color: 'var(--text-3)' }}>{unit}</span>}
-      <button onClick={() => onSave(val)} style={{ fontSize: 11, padding: '3px 8px', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--r-sm)', cursor: 'pointer', fontWeight: 700 }}>✓</button>
+      <button onClick={() => onSave(val)} style={{ fontSize: 11, padding: '3px 8px', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 'var(--r-sm)', cursor: 'pointer', fontWeight: 600 }}>✓</button>
       <button onClick={onCancel} style={{ fontSize: 11, padding: '3px 8px', background: 'var(--surface)', color: 'var(--text-3)', border: '1px solid var(--border)', borderRadius: 'var(--r-sm)', cursor: 'pointer' }}>✕</button>
     </div>
   )

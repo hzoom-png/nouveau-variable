@@ -40,11 +40,11 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
             }}>
               {project.logo_url
                 ? <img src={project.logo_url} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <span style={{ fontFamily: 'Jost, sans-serif', fontSize: '20px', fontWeight: 800, color: '#fff' }}>{project.title[0]?.toUpperCase()}</span>
+                : <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '20px', fontWeight: 600, color: '#fff' }}>{project.title[0]?.toUpperCase()}</span>
               }
             </div>
             <div>
-              <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '18px', color: '#fff', lineHeight: 1.2 }}>
+              <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '18px', color: '#fff', lineHeight: 1.2 }}>
                 {project.title}
               </div>
               <div style={{ fontSize: '12px', color: 'rgba(255,255,255,.75)', marginTop: '2px' }}>{project.sector}</div>
@@ -68,11 +68,11 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
               }}>
                 {project.author?.avatar_url
                   ? <img src={project.author.avatar_url} alt={initials} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : <span style={{ fontFamily: 'Jost, sans-serif', fontSize: '11px', fontWeight: 800, color: '#fff' }}>{initials}</span>
+                  : <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 600, color: '#fff' }}>{initials}</span>
                 }
               </div>
               <div>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)' }}>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>
                   {project.author?.first_name} {project.author?.last_name}
                 </div>
                 {project.author?.role_title && (
@@ -81,7 +81,7 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
               </div>
             </div>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <span style={{ padding: '3px 10px', borderRadius: 'var(--r-full)', fontSize: '11px', fontWeight: 700, background: stage.bg, color: stage.color }}>
+              <span style={{ padding: '3px 10px', borderRadius: 'var(--r-full)', fontSize: '11px', fontWeight: 600, background: stage.bg, color: stage.color }}>
                 {stage.label}
               </span>
               {!isMine && (
@@ -99,7 +99,7 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
           {/* Needs */}
           {!!project.needs?.length && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>Recherche</div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>Recherche</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {project.needs.map(n => (
                   <span key={n} style={{ padding: '4px 11px', borderRadius: 'var(--r-full)', fontSize: '12px', fontWeight: 600, background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)' }}>
@@ -121,21 +121,21 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
           {/* Sections */}
           {project.what && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>Le projet</div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>Le projet</div>
               <p style={{ fontSize: '14px', color: 'var(--text)', lineHeight: 1.7 }}>{project.what}</p>
             </div>
           )}
 
           {project.how && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>Business model</div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>Business model</div>
               <p style={{ fontSize: '14px', color: 'var(--text)', lineHeight: 1.7 }}>{project.how}</p>
             </div>
           )}
 
           {project.why && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>Pourquoi ça va marcher</div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>Pourquoi ça va marcher</div>
               <p style={{ fontSize: '14px', color: 'var(--text)', lineHeight: 1.7 }}>{project.why}</p>
             </div>
           )}
@@ -154,7 +154,7 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
           {/* Collaborators */}
           {!!project.collaborators?.length && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '10px' }}>Équipe</div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '10px' }}>Équipe</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {project.collaborators.map(c => {
                   const name = c.profile.display_name || `${c.profile.first_name ?? ''} ${c.profile.last_name ?? ''}`.trim()
@@ -164,7 +164,7 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
                       <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: project.cover_color, display: 'grid', placeItems: 'center', overflow: 'hidden', flexShrink: 0 }}>
                         {c.profile.avatar_url
                           ? <img src={c.profile.avatar_url} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                          : <span style={{ fontSize: '10px', fontWeight: 800, color: '#fff' }}>{colInitials || '?'}</span>
+                          : <span style={{ fontSize: '10px', fontWeight: 600, color: '#fff' }}>{colInitials || '?'}</span>
                         }
                       </div>
                       <div>
@@ -181,7 +181,7 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
           {/* Links */}
           {(project.website_url || (project.social_links && Object.values(project.social_links).some(Boolean))) && (
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '10px' }}>Liens</div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '10px' }}>Liens</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {project.website_url && (
                   <a href={project.website_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '12px', color: 'var(--green)', fontWeight: 600, textDecoration: 'none', padding: '4px 10px', borderRadius: 'var(--r-full)', border: '1px solid var(--border)', background: 'var(--surface)' }}>
@@ -220,7 +220,7 @@ export function ProjectModal({ project, currentUserId, isMine, onClose, onSave, 
           {/* Contact form */}
           {!isMine && !!project.needs?.length && (
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: '20px', marginTop: '4px' }}>
-              <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '15px', color: 'var(--text)', marginBottom: '14px' }}>
+              <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '15px', color: 'var(--text)', marginBottom: '14px' }}>
                 Proposer mon aide
               </div>
               <ProjectContactForm project={project} currentUserId={currentUserId} onSuccess={onContactSent} />

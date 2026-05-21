@@ -92,7 +92,7 @@ export default async function DashboardHome({
 
       <div style={{ marginBottom: '28px' }}>
         <h1 style={{
-          fontFamily: 'var(--font-jost)', fontSize: '22px', fontWeight: 800,
+          fontFamily: 'var(--font-inter)', fontSize: '22px', fontWeight: 600,
           color: 'var(--text)', marginBottom: '6px', lineHeight: 1.2,
         }}>
           Bienvenue, {firstName}
@@ -117,7 +117,7 @@ export default async function DashboardHome({
             Accès fondateur activé
           </p>
           <h2 style={{
-            fontFamily: 'var(--font-jost)', fontWeight: 800, fontSize: 26,
+            fontFamily: 'var(--font-inter)', fontWeight: 600, fontSize: 26,
             marginBottom: 14, lineHeight: 1.2, margin: '0 0 14px',
           }}>
             Bienvenue {firstName}, ton espace est prêt. 🎉
@@ -135,7 +135,7 @@ export default async function DashboardHome({
               style={{
                 background: '#ffffff', color: '#024f41',
                 padding: '10px 22px', borderRadius: '99px',
-                fontWeight: 700, fontSize: 14, textDecoration: 'none',
+                fontWeight: 600, fontSize: 14, textDecoration: 'none',
               }}
             >
               Explorer l&apos;annuaire →
@@ -169,7 +169,7 @@ export default async function DashboardHome({
             Bienvenue dans le club
           </p>
           <h1 style={{
-            fontFamily: 'var(--font-jost)', fontWeight: 800, fontSize: 26,
+            fontFamily: 'var(--font-inter)', fontWeight: 600, fontSize: 26,
             marginBottom: 14, lineHeight: 1.2,
           }}>
             Content de t&apos;avoir ici, {firstName}. 👋
@@ -187,7 +187,7 @@ export default async function DashboardHome({
               style={{
                 background: '#ffffff', color: '#024f41',
                 padding: '10px 22px', borderRadius: '99px',
-                fontWeight: 700, fontSize: 14, textDecoration: 'none',
+                fontWeight: 600, fontSize: 14, textDecoration: 'none',
               }}
             >
               Compléter mon profil →
@@ -222,7 +222,7 @@ export default async function DashboardHome({
               {card.icon}
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>
                 {card.label}
               </div>
               <div style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5 }}>

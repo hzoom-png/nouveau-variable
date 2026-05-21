@@ -87,7 +87,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div>
-            <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '17px', color: 'var(--text)' }}>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '17px', color: 'var(--text)' }}>
               Inviter {recipient.first_name} à un RDV
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '2px' }}>
@@ -107,12 +107,12 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
         {/* ÉTAPE 1 */}
         {step === 1 && (
           <div>
-            <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '16px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px' }}>
               Quand es-tu disponible ?
             </div>
 
             <div style={{ marginBottom: '18px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: '10px' }}>Jour</div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: '10px' }}>Jour</div>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {DAY_OPTIONS.map(o => (
                   <button key={o.value} onClick={() => setDays(toggle(days, o.value))} style={pillBtn(days.includes(o.value))}>
@@ -123,7 +123,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
             </div>
 
             <div style={{ marginBottom: '28px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: '10px' }}>Moment</div>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: '10px' }}>Moment</div>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {MOMENT_OPTIONS.map(o => (
                   <button key={o.value} onClick={() => setMoments(toggle(moments, o.value))} style={pillBtn(moments.includes(o.value))}>
@@ -139,7 +139,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
 
             <button
               onClick={() => setStep(2)}
-              style={{ width: '100%', background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer', transition: '.15s' }}
+              style={{ width: '100%', background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', border: 'none', cursor: 'pointer', transition: '.15s' }}
             >
               Suivant →
             </button>
@@ -149,7 +149,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
         {/* ÉTAPE 2 */}
         {step === 2 && (
           <div>
-            <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', marginBottom: '14px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '14px' }}>
               Ajouter un message <span style={{ fontWeight: 400, color: 'var(--text-3)', fontSize: '12px' }}>(optionnel)</span>
             </div>
             <textarea
@@ -177,7 +177,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
               <button
                 onClick={handleSend}
                 disabled={!hasEnough || sending}
-                style={{ flex: 2, padding: '12px', borderRadius: '99px', background: (!hasEnough || sending) ? 'var(--border)' : 'var(--green)', color: '#fff', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', border: 'none', cursor: (!hasEnough || sending) ? 'not-allowed' : 'pointer', transition: '.15s' }}
+                style={{ flex: 2, padding: '12px', borderRadius: '99px', background: (!hasEnough || sending) ? 'var(--border)' : 'var(--green)', color: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', border: 'none', cursor: (!hasEnough || sending) ? 'not-allowed' : 'pointer', transition: '.15s' }}
               >
                 {sending ? 'Envoi…' : `Envoyer l'invitation — ${FIXED_COST} pts`}
               </button>
@@ -193,7 +193,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
             </div>
-            <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '18px', color: 'var(--text)', marginBottom: '8px' }}>Invitation envoyée !</div>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '18px', color: 'var(--text)', marginBottom: '8px' }}>Invitation envoyée !</div>
             <div style={{ fontSize: '13px', color: 'var(--text-3)' }}>{recipient.first_name} recevra ta demande et pourra proposer un créneau.</div>
           </div>
         )}

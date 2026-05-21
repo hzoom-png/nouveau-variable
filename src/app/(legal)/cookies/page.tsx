@@ -3,7 +3,7 @@ export const metadata = { title: 'Politique des cookies — Nouveau Variable' }
 export default function CookiesPage() {
   return (
     <div className="legal-content">
-      <h1 style={{ fontFamily: 'Inter, sans-serif', fontSize: 28, fontWeight: 700, color: '#0F1C17', marginBottom: 8 }}>
+      <h1 style={{ fontFamily: 'Inter, sans-serif', fontSize: 28, fontWeight: 600, color: '#0F1C17', marginBottom: 8 }}>
         Politique des cookies
       </h1>
       <p style={{ fontSize: 13, color: '#9BB5AA', marginBottom: 40 }}>Dernière mise à jour : 6 mai 2026</p>
@@ -27,7 +27,7 @@ export default function CookiesPage() {
               {['Nom', 'Type', 'Durée', 'Finalité'].map(h => (
                 <th key={h} style={{
                   padding: '10px 12px', textAlign: 'left',
-                  fontSize: 11, fontWeight: 700, color: '#9BB5AA',
+                  fontSize: 11, fontWeight: 600, color: '#9BB5AA',
                   letterSpacing: '.08em', textTransform: 'uppercase',
                 }}>{h}</th>
               ))}
@@ -45,7 +45,7 @@ export default function CookiesPage() {
                 <td style={{ padding: '10px 12px', fontFamily: 'monospace', fontSize: 12, color: '#0F1C17', fontWeight: 600 }}>{row.name}</td>
                 <td style={{ padding: '10px 12px' }}>
                   <span style={{
-                    display: 'inline-block', fontSize: 11, fontWeight: 700,
+                    display: 'inline-block', fontSize: 11, fontWeight: 600,
                     padding: '2px 8px', borderRadius: 99,
                     background: row.type === 'Nécessaire' ? '#EAF2EE' : '#F0F4FF',
                     color: row.type === 'Nécessaire' ? '#2F5446' : '#3B5BDB',

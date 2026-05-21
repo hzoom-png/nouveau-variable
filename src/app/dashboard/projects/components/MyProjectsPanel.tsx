@@ -73,12 +73,12 @@ export function MyProjectsPanel({
       <aside className="my-projects-panel">
         {/* Header */}
         <div style={{ padding: '20px 20px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-          <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '16px', color: 'var(--text)' }}>Mes projets</div>
+          <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '16px', color: 'var(--text)' }}>Mes projets</div>
           <div style={{ display: 'flex', gap: '8px' }}>
             {!showNewForm && !editing && (
               <button
                 onClick={() => setShowNewForm(true)}
-                style={{ background: 'var(--green)', color: '#fff', padding: '7px 14px', borderRadius: 'var(--r-sm)', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '12px', border: 'none', cursor: 'pointer' }}
+                style={{ background: 'var(--green)', color: '#fff', padding: '7px 14px', borderRadius: 'var(--r-sm)', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '12px', border: 'none', cursor: 'pointer' }}
               >
                 + Nouveau
               </button>
@@ -91,7 +91,7 @@ export function MyProjectsPanel({
           {/* New / edit form */}
           {(showNewForm || editing) && (
             <div style={{ marginBottom: '24px', padding: '20px', background: 'var(--surface)', borderRadius: 'var(--r-md)', border: '1px solid var(--border)' }}>
-              <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', color: 'var(--text)', marginBottom: '16px' }}>
+              <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', color: 'var(--text)', marginBottom: '16px' }}>
                 {editing ? 'Modifier le projet' : 'Nouveau projet'}
               </div>
               <ProjectForm
@@ -109,7 +109,7 @@ export function MyProjectsPanel({
           {invitations.length > 0 && (
             <div style={{ marginBottom: '24px' }}>
               <div style={{
-                fontSize: '11px', fontWeight: 700, color: 'var(--text-3)',
+                fontSize: '11px', fontWeight: 600, color: 'var(--text-3)',
                 textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: '10px',
               }}>
                 Invitations ({invitations.length})
@@ -124,7 +124,7 @@ export function MyProjectsPanel({
                     }}>
                       <div style={{ height: '3px', background: inv.project.cover_color }} />
                       <div style={{ padding: '12px 14px' }}>
-                        <div style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>
+                        <div style={{ fontWeight: 600, fontSize: '13px', color: 'var(--text)', marginBottom: '2px' }}>
                           {inv.project.title}
                         </div>
                         <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '4px' }}>
@@ -132,7 +132,7 @@ export function MyProjectsPanel({
                         </div>
                         <span style={{
                           display: 'inline-block', padding: '2px 8px',
-                          borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 700,
+                          borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 600,
                           background: stage.bg, color: stage.color, marginBottom: '10px',
                         }}>
                           {stage.label}
@@ -142,7 +142,7 @@ export function MyProjectsPanel({
                             onClick={() => onAcceptInvitation(inv.project_id)}
                             style={{
                               padding: '5px 12px', borderRadius: 'var(--r-sm)', fontSize: '11px',
-                              fontWeight: 700, border: 'none', cursor: 'pointer',
+                              fontWeight: 600, border: 'none', cursor: 'pointer',
                               background: 'var(--green)', color: '#fff',
                             }}
                           >
@@ -172,9 +172,9 @@ export function MyProjectsPanel({
           {!loading && !myProjects.length && !showNewForm && (
             <div style={{ textAlign: 'center', padding: '40px 20px' }}>
               <div style={{ fontSize: '32px', marginBottom: '12px' }}>🚀</div>
-              <div style={{ fontWeight: 700, color: 'var(--text)', marginBottom: '6px' }}>Pas encore de projet</div>
+              <div style={{ fontWeight: 600, color: 'var(--text)', marginBottom: '6px' }}>Pas encore de projet</div>
               <div style={{ fontSize: '13px', color: 'var(--text-3)', marginBottom: '16px' }}>Partagez vos projets avec la communauté</div>
-              <button onClick={() => setShowNewForm(true)} style={{ background: 'var(--green)', color: '#fff', padding: '10px 22px', borderRadius: 'var(--r-sm)', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer' }}>
+              <button onClick={() => setShowNewForm(true)} style={{ background: 'var(--green)', color: '#fff', padding: '10px 22px', borderRadius: 'var(--r-sm)', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13px', border: 'none', cursor: 'pointer' }}>
                 Créer mon premier projet →
               </button>
             </div>
@@ -191,14 +191,14 @@ export function MyProjectsPanel({
                   <div style={{ padding: '14px' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text)', marginBottom: '2px' }}>{project.title}</div>
+                        <div style={{ fontWeight: 600, fontSize: '14px', color: 'var(--text)', marginBottom: '2px' }}>{project.title}</div>
                         <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '6px' }}>{project.sector}</div>
                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                          <span style={{ padding: '2px 8px', borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 700, background: stage.bg, color: stage.color }}>
+                          <span style={{ padding: '2px 8px', borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 600, background: stage.bg, color: stage.color }}>
                             {stage.label}
                           </span>
                           {!project.is_active && (
-                            <span style={{ padding: '2px 8px', borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 700, background: 'var(--surface)', color: 'var(--text-3)', border: '1px solid var(--border)' }}>
+                            <span style={{ padding: '2px 8px', borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 600, background: 'var(--surface)', color: 'var(--text-3)', border: '1px solid var(--border)' }}>
                               En pause
                             </span>
                           )}
@@ -230,7 +230,7 @@ export function MyProjectsPanel({
                       </button>
                       {confirmDelete === project.id ? (
                         <>
-                          <button onClick={() => { onDeleteProject(project.id); setConfirmDelete(null) }} style={{ fontSize: '11px', padding: '5px 10px', borderRadius: 'var(--r-sm)', border: '1px solid var(--red)', background: 'var(--red-2)', color: 'var(--red)', cursor: 'pointer', fontWeight: 700 }}>
+                          <button onClick={() => { onDeleteProject(project.id); setConfirmDelete(null) }} style={{ fontSize: '11px', padding: '5px 10px', borderRadius: 'var(--r-sm)', border: '1px solid var(--red)', background: 'var(--red-2)', color: 'var(--red)', cursor: 'pointer', fontWeight: 600 }}>
                             Confirmer
                           </button>
                           <button onClick={() => setConfirmDelete(null)} style={{ fontSize: '11px', padding: '5px 10px', borderRadius: 'var(--r-sm)', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', cursor: 'pointer' }}>
@@ -247,14 +247,14 @@ export function MyProjectsPanel({
                     {/* Contacts list */}
                     {expandedContacts === project.id && contacts[project.id] && (
                       <div style={{ marginTop: '12px', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: '8px' }}>Contacts reçus</div>
+                        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.07em', marginBottom: '8px' }}>Contacts reçus</div>
                         {!contacts[project.id].length && (
                           <div style={{ fontSize: '13px', color: 'var(--text-3)', fontStyle: 'italic' }}>Aucun contact pour l'instant</div>
                         )}
                         {contacts[project.id].map(c => (
                           <div key={c.id} style={{ marginBottom: '10px', padding: '10px', background: 'var(--surface)', borderRadius: 'var(--r-sm)' }}>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '4px' }}>
-                              <span style={{ fontWeight: 700, fontSize: '13px', color: 'var(--text)' }}>
+                              <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--text)' }}>
                                 {c.sender?.first_name} {c.sender?.last_name}
                               </span>
                               <span style={{ fontSize: '10px', padding: '2px 7px', borderRadius: 'var(--r-full)', background: 'var(--green-3)', color: 'var(--green)', fontWeight: 600 }}>

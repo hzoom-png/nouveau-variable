@@ -99,7 +99,7 @@ export default function WaitlistPage() {
 
       {/* Header */}
       <div style={{ maxWidth: 600, margin: '0 auto', padding: '32px 0 24px', display: 'flex', alignItems: 'center', gap: 12 }}>
-        <div style={{ width: 36, height: 36, background: C.greenL, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 14 }}>NV</div>
+        <div style={{ width: 36, height: 36, background: C.greenL, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 14 }}>NV</div>
         <span style={{ fontWeight: 600, fontSize: 15 }}>Nouveau Variable</span>
       </div>
 
@@ -107,14 +107,14 @@ export default function WaitlistPage() {
 
         {/* Titre */}
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>Bienvenue, {prenom} 👋</h1>
+          <h1 style={{ fontSize: 24, fontWeight: 600, margin: 0 }}>Bienvenue, {prenom} 👋</h1>
           <p style={{ color: C.text2, marginTop: 6, fontSize: 14 }}>Ta candidature est bien enregistrée.</p>
         </div>
 
         {/* Modale waitlist */}
         <div style={{ background: C.card, border: `1px solid ${C.greenL}`, borderRadius: 16, padding: '24px 20px' }}>
           <p style={{ fontSize: 13, color: C.greenL, fontWeight: 600, margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 1 }}>Ouverture du club</p>
-          <p style={{ fontSize: 20, fontWeight: 700, margin: '0 0 16px' }}>Le club ouvre à 100 candidats</p>
+          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 16px' }}>Le club ouvre à 100 candidats</p>
 
           {/* Barre de progression */}
           <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 99, height: 10, overflow: 'hidden', marginBottom: 8 }}>
@@ -141,11 +141,11 @@ export default function WaitlistPage() {
 
           <div style={{ display: 'flex', gap: 12 }}>
             <div style={{ flex: 1, background: 'rgba(255,255,255,0.04)', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-              <div style={{ fontSize: 28, fontWeight: 700 }}>{filleuls}</div>
+              <div style={{ fontSize: 28, fontWeight: 600 }}>{filleuls}</div>
               <div style={{ fontSize: 12, color: C.text2, marginTop: 4 }}>filleul{filleuls > 1 ? 's' : ''} en attente</div>
             </div>
             <div style={{ flex: 1, background: 'rgba(255,255,255,0.04)', borderRadius: 10, padding: '14px', textAlign: 'center' }}>
-              <div style={{ fontSize: 28, fontWeight: 700 }}>{filleuls > 0 ? `~${filleuls * 9}€` : '—'}</div>
+              <div style={{ fontSize: 28, fontWeight: 600 }}>{filleuls > 0 ? `~${filleuls * 9}€` : '—'}</div>
               <div style={{ fontSize: 12, color: C.text2, marginTop: 4 }}>commission potentielle/mois</div>
             </div>
           </div>

@@ -50,10 +50,10 @@ function BlockCard({ block, index }: { block: ScriptBlock; index: number }) {
     <div style={{ border: `1.5px solid ${styles.border}`, background: styles.bg, borderRadius: 'var(--r-lg)', padding: '16px 18px', position: 'relative' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: styles.number === '#fff' ? 'rgba(255,255,255,.2)' : styles.number, display: 'grid', placeItems: 'center', fontSize: '10px', fontWeight: 800, color: isCta ? '#fff' : '#fff', flexShrink: 0 }}>
+          <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: styles.number === '#fff' ? 'rgba(255,255,255,.2)' : styles.number, display: 'grid', placeItems: 'center', fontSize: '10px', fontWeight: 600, color: isCta ? '#fff' : '#fff', flexShrink: 0 }}>
             {index + 1}
           </div>
-          <span style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: styles.labelColor }}>
+          <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: styles.labelColor }}>
             {block.label}
           </span>
         </div>
@@ -108,7 +108,7 @@ function ModeAppel({ script, onClose }: { script: RepliqueScript; onClose: () =>
     >
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', borderBottom: '1px solid rgba(255,255,255,.1)' }}>
-        <span style={{ fontFamily: "'Jost', sans-serif", fontSize: '12px', fontWeight: 700, color: 'rgba(255,255,255,.5)', letterSpacing: '.12em', textTransform: 'uppercase' }}>Mode appel</span>
+        <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,.5)', letterSpacing: '.12em', textTransform: 'uppercase' }}>Mode appel</span>
         <button onClick={onClose} style={{ color: 'rgba(255,255,255,.5)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
       </div>
 
@@ -122,7 +122,7 @@ function ModeAppel({ script, onClose }: { script: RepliqueScript; onClose: () =>
       {/* Block */}
       <div style={{ flex: 1, padding: '0 24px 16px', overflow: 'auto' }}>
         <div style={{ background: isLast ? 'var(--green)' : 'rgba(255,255,255,.06)', border: '1px solid rgba(255,255,255,.12)', borderRadius: 'var(--r-xl)', padding: '28px', maxWidth: '600px', margin: '0 auto' }}>
-          <div style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: '8px' }}>{block?.label}</div>
+          <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)', marginBottom: '8px' }}>{block?.label}</div>
           <p style={{ fontSize: '17px', color: '#fff', lineHeight: 1.75, margin: 0, whiteSpace: 'pre-line' }}>{block?.content}</p>
           {block?.tip && (
             <p style={{ fontSize: '12px', color: 'rgba(255,255,255,.55)', fontStyle: 'italic', marginTop: '16px', marginBottom: 0 }}>💡 {block.tip}</p>
@@ -133,7 +133,7 @@ function ModeAppel({ script, onClose }: { script: RepliqueScript; onClose: () =>
       {/* Objections rapides */}
       {script.objections.length > 0 && (
         <div style={{ padding: '12px 24px', borderTop: '1px solid rgba(255,255,255,.1)', maxHeight: '200px', overflow: 'auto' }}>
-          <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', marginBottom: '8px' }}>Objections rapides</div>
+          <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.4)', marginBottom: '8px' }}>Objections rapides</div>
           {script.objections.map((o, i) => (
             <div key={i} style={{ marginBottom: '6px' }}>
               <button onClick={() => setShowObj(showObj === i ? null : i)} style={{ width: '100%', textAlign: 'left', background: 'rgba(255,255,255,.06)', border: 'none', borderRadius: 'var(--r-sm)', padding: '8px 12px', cursor: 'pointer', fontSize: '12px', color: 'rgba(255,255,255,.8)', fontWeight: 600 }}>
@@ -165,7 +165,7 @@ export default function RepliqueScriptView({ script, onNew }: Props) {
       <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '18px 20px', marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
           <div>
-            <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '16px', fontWeight: 800, color: 'var(--text)', marginBottom: '4px' }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '16px', fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>
               Script {OBJECTIVE_LABELS[script.config.objective]} · {CONTACT_LABELS[script.config.contact_type]}
               {script.config.company_sector ? ` · ${script.config.company_sector}` : ''}
             </div>
@@ -184,7 +184,7 @@ export default function RepliqueScriptView({ script, onNew }: Props) {
             <button onClick={onNew} style={{ padding: '7px 14px', borderRadius: 'var(--r-sm)', fontSize: '12px', fontWeight: 600, cursor: 'pointer', background: 'var(--surface)', border: '1.5px solid var(--border)', color: 'var(--text-2)' }}>
               Nouveau script
             </button>
-            <button onClick={() => setModeAppel(true)} style={{ padding: '7px 14px', borderRadius: 'var(--r-sm)', fontSize: '12px', fontWeight: 700, cursor: 'pointer', background: '#0F1C17', border: 'none', color: '#fff' }}>
+            <button onClick={() => setModeAppel(true)} style={{ padding: '7px 14px', borderRadius: 'var(--r-sm)', fontSize: '12px', fontWeight: 600, cursor: 'pointer', background: '#0F1C17', border: 'none', color: '#fff' }}>
               Mode appel →
             </button>
           </div>
@@ -201,7 +201,7 @@ export default function RepliqueScriptView({ script, onNew }: Props) {
       {/* Objections */}
       {script.objections.length > 0 && (
         <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', padding: '18px 20px', marginBottom: '16px' }}>
-          <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
             Objections probables
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -225,21 +225,21 @@ export default function RepliqueScriptView({ script, onNew }: Props) {
       {(script.dos.length > 0 || script.donts.length > 0) && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           <div style={{ background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-lg)', padding: '16px 18px' }}>
-            <div style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '10px' }}>À faire</div>
+            <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '10px' }}>À faire</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
               {script.dos.map((d, i) => (
                 <div key={i} style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.5 }}>
-                  <span style={{ color: 'var(--green)', fontWeight: 700 }}>✓ </span>{d}
+                  <span style={{ color: 'var(--green)', fontWeight: 600 }}>✓ </span>{d}
                 </div>
               ))}
             </div>
           </div>
           <div style={{ background: 'var(--red-2)', border: '1px solid #FECACA', borderRadius: 'var(--r-lg)', padding: '16px 18px' }}>
-            <div style={{ fontSize: '10px', fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--red)', marginBottom: '10px' }}>À éviter</div>
+            <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--red)', marginBottom: '10px' }}>À éviter</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
               {script.donts.map((d, i) => (
                 <div key={i} style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.5 }}>
-                  <span style={{ color: 'var(--red)', fontWeight: 700 }}>✗ </span>{d}
+                  <span style={{ color: 'var(--red)', fontWeight: 600 }}>✗ </span>{d}
                 </div>
               ))}
             </div>

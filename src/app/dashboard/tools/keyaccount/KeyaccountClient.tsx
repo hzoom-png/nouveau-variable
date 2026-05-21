@@ -145,7 +145,7 @@ export default function KeyaccountClient() {
                 <path d="M6 7V4M18 11V8M6 15v3M18 19v1"/>
               </svg>
             </div>
-            <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '20px', fontWeight: 800, color: 'var(--text)', marginBottom: '8px', letterSpacing: '-.01em' }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '20px', fontWeight: 600, color: 'var(--text)', marginBottom: '8px', letterSpacing: '-.01em' }}>
               Ta war room est vide.
             </div>
             <div style={{ fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '24px' }}>
@@ -379,7 +379,7 @@ function MapPanelTabs({
         <span style={{
           minWidth: '18px', height: '18px', borderRadius: 'var(--r-full)',
           background: count > 0 ? 'var(--green)' : 'var(--amber)',
-          color: '#fff', fontSize: '10px', fontWeight: 700,
+          color: '#fff', fontSize: '10px', fontWeight: 600,
           display: 'grid', placeItems: 'center', padding: '0 4px',
         }}>
           {count}
@@ -405,17 +405,17 @@ function KaPipelineHeader({ accounts }: { accounts: import('./types').KaAccount[
       {/* Stats */}
       <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '22px', fontWeight: 800, color: 'var(--text)', lineHeight: 1 }}>{accounts.length}</div>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '22px', fontWeight: 600, color: 'var(--text)', lineHeight: 1 }}>{accounts.length}</div>
           <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.06em', marginTop: '3px' }}>Comptes</div>
         </div>
         <div style={{ width: '1px', height: '32px', background: 'var(--border)' }} />
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '22px', fontWeight: 800, color: 'var(--green)', lineHeight: 1 }}>{avgScore}%</div>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '22px', fontWeight: 600, color: 'var(--green)', lineHeight: 1 }}>{avgScore}%</div>
           <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.06em', marginTop: '3px' }}>Score moy.</div>
         </div>
         <div style={{ width: '1px', height: '32px', background: 'var(--border)' }} />
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '22px', fontWeight: 800, color: 'var(--text)', lineHeight: 1 }}>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '22px', fontWeight: 600, color: 'var(--text)', lineHeight: 1 }}>
             {(byStage['Négociation'] || 0) + (byStage['Closing'] || 0)}
           </div>
           <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.06em', marginTop: '3px' }}>Closing</div>
@@ -451,7 +451,7 @@ function KaPipelineHeader({ accounts }: { accounts: import('./types').KaAccount[
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-md)', padding: '8px 12px', maxWidth: '260px' }}>
           <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--green)', flexShrink: 0 }} />
           <div>
-            <div style={{ fontSize: '9px', fontWeight: 700, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{accounts[topAccount]?.name}</div>
+            <div style={{ fontSize: '9px', fontWeight: 600, color: 'var(--green)', textTransform: 'uppercase', letterSpacing: '.08em' }}>{accounts[topAccount]?.name}</div>
             <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.3, marginTop: '2px' }}>{nextAction}</div>
           </div>
         </div>

@@ -50,7 +50,7 @@ export default async function AffiliationPage() {
         {kpis.map(k => (
           <div key={k.label} style={{ background: 'var(--white)', borderRadius: '14px', padding: '20px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
             <div style={{ fontSize: '12px', color: 'var(--muted)', fontWeight: 600, marginBottom: '8px' }}>{k.label}</div>
-            <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: '28px', color: k.color }}>{k.value}</div>
+            <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '28px', color: k.color }}>{k.value}</div>
           </div>
         ))}
       </div>
@@ -61,7 +61,7 @@ export default async function AffiliationPage() {
 
       {/* Affiliate link */}
       <div style={{ background: 'var(--white)', borderRadius: '14px', padding: '24px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
-        <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '16px', color: 'var(--text)', marginBottom: '12px' }}>
+        <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '16px', color: 'var(--text)', marginBottom: '12px' }}>
           Ton lien d&apos;affiliation
         </div>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>

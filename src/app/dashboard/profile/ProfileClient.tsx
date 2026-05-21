@@ -202,11 +202,11 @@ export default function ProfileClient({ profile }: Props) {
     border: '1px solid var(--border)', padding: '20px 22px',
   }
   const sectionTitle: React.CSSProperties = {
-    fontFamily: 'Jost, sans-serif', fontSize: '14px', fontWeight: 700,
+    fontFamily: 'Inter, sans-serif', fontSize: '14px', fontWeight: 600,
     color: 'var(--text)', marginBottom: '14px',
   }
   const label: React.CSSProperties = {
-    display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-2)',
+    display: 'block', fontSize: '11px', fontWeight: 600, color: 'var(--text-2)',
     letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '5px',
   }
   const input: React.CSSProperties = {
@@ -247,7 +247,7 @@ export default function ProfileClient({ profile }: Props) {
                 width: '52px', height: '52px', borderRadius: 'var(--r-sm)',
                 border: '3px solid var(--white)', background: 'var(--green-2)',
                 display: 'grid', placeItems: 'center',
-                fontFamily: 'Jost, sans-serif', fontSize: '18px', fontWeight: 800, color: '#fff',
+                fontFamily: 'Inter, sans-serif', fontSize: '18px', fontWeight: 600, color: '#fff',
                 overflow: 'hidden',
               }}>
                 {avatarUrl
@@ -366,7 +366,7 @@ export default function ProfileClient({ profile }: Props) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
             <span style={sectionTitle}>Services proposés</span>
             {form.services.length < 5 && (
-              <button onClick={addService} style={{ fontSize: '12px', fontWeight: 700, color: 'var(--green)', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '4px 10px' }}>+ Ajouter</button>
+              <button onClick={addService} style={{ fontSize: '12px', fontWeight: 600, color: 'var(--green)', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '4px 10px' }}>+ Ajouter</button>
             )}
           </div>
           {form.services.length === 0 && (
@@ -392,7 +392,7 @@ export default function ProfileClient({ profile }: Props) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
             <span style={sectionTitle}>Track record</span>
             {form.track_record.length < 5 && (
-              <button onClick={addTrack} style={{ fontSize: '12px', fontWeight: 700, color: 'var(--green)', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '4px 10px' }}>+ Ajouter</button>
+              <button onClick={addTrack} style={{ fontSize: '12px', fontWeight: 600, color: 'var(--green)', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '4px 10px' }}>+ Ajouter</button>
             )}
           </div>
           {form.track_record.length === 0 && (
@@ -424,7 +424,7 @@ export default function ProfileClient({ profile }: Props) {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
             <span style={sectionTitle}>Liens professionnels</span>
             {form.links.length < 5 && (
-              <button onClick={addLink} style={{ fontSize: '12px', fontWeight: 700, color: 'var(--green)', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '4px 10px' }}>+ Ajouter</button>
+              <button onClick={addLink} style={{ fontSize: '12px', fontWeight: 600, color: 'var(--green)', background: 'var(--green-3)', border: '1px solid var(--green-4)', borderRadius: 'var(--r-sm)', padding: '4px 10px' }}>+ Ajouter</button>
             )}
           </div>
           {form.links.length === 0 && (
@@ -489,7 +489,7 @@ export default function ProfileClient({ profile }: Props) {
           style={{
             padding: '13px', borderRadius: 'var(--r-sm)',
             background: saving ? 'var(--green-4)' : 'var(--green)',
-            color: '#fff', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px',
+            color: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px',
             border: 'none', cursor: saving ? 'not-allowed' : 'pointer', transition: '.15s',
           }}
         >
@@ -518,7 +518,7 @@ export default function ProfileClient({ profile }: Props) {
 
       {/* ── RIGHT: sticky preview ── */}
       <div style={{ position: 'sticky', top: '80px', height: 'fit-content', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-3)', letterSpacing: '.12em', textTransform: 'uppercase' }}>Aperçu public</div>
+        <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', letterSpacing: '.12em', textTransform: 'uppercase' }}>Aperçu public</div>
         <div style={{ background: 'var(--white)', borderRadius: 'var(--r-lg)', border: '1px solid var(--border)', overflow: 'hidden' }}>
           <div style={{ height: '60px', background: 'var(--green)', position: 'relative' }}>
             <div style={{
@@ -526,7 +526,7 @@ export default function ProfileClient({ profile }: Props) {
               width: '44px', height: '44px', borderRadius: 'var(--r-sm)',
               border: '3px solid var(--white)', background: 'var(--green-2)',
               display: 'grid', placeItems: 'center',
-              fontFamily: 'Jost, sans-serif', fontSize: '15px', fontWeight: 800, color: '#fff',
+              fontFamily: 'Inter, sans-serif', fontSize: '15px', fontWeight: 600, color: '#fff',
               overflow: 'hidden',
             }}>
               {avatarUrl
@@ -536,7 +536,7 @@ export default function ProfileClient({ profile }: Props) {
             </div>
           </div>
           <div style={{ padding: '26px 16px 16px' }}>
-            <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', color: 'var(--text)', marginBottom: '2px' }}>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', color: 'var(--text)', marginBottom: '2px' }}>
               {form.display_name || `${form.first_name || 'Prénom'} ${form.last_name || 'Nom'}`}
             </div>
             {form.tagline && <div style={{ fontSize: '12px', color: 'var(--text-2)', marginBottom: '8px' }}>{form.tagline}</div>}
@@ -575,7 +575,7 @@ export default function ProfileClient({ profile }: Props) {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.45)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
           <div style={{ background: 'var(--white)', borderRadius: 'var(--r-xl)', width: '100%', maxWidth: '440px', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' }}>
             <div style={{ padding: '24px 24px 0' }}>
-              <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '18px', color: 'var(--red)', marginBottom: '14px' }}>
+              <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '18px', color: 'var(--red)', marginBottom: '14px' }}>
                 {deleteStep === 'warning' ? 'Supprimer mon compte' : 'Confirme la suppression'}
               </div>
               {deleteStep === 'warning' && (
@@ -607,13 +607,13 @@ export default function ProfileClient({ profile }: Props) {
             <div style={{ padding: '16px 24px 24px', display: 'flex', gap: '10px', flexDirection: 'column' }}>
               {deleteStep === 'warning' ? (
                 <>
-                  <button onClick={() => setDeleteStep('confirm')} style={{ padding: '11px', borderRadius: 'var(--r-sm)', background: 'var(--red)', color: '#fff', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer' }}>Je comprends, continuer</button>
+                  <button onClick={() => setDeleteStep('confirm')} style={{ padding: '11px', borderRadius: 'var(--r-sm)', background: 'var(--red)', color: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', border: 'none', cursor: 'pointer' }}>Je comprends, continuer</button>
                   <button onClick={() => setDeleteStep(null)} style={{ padding: '11px', borderRadius: 'var(--r-sm)', background: 'var(--surface)', border: '1.5px solid var(--border)', color: 'var(--text-2)', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>Annuler</button>
                 </>
               ) : (
                 <>
                   <button onClick={handleDeleteAccount} disabled={deleteInput !== 'SUPPRIMER' || deleting}
-                    style={{ padding: '11px', borderRadius: 'var(--r-sm)', background: deleteInput === 'SUPPRIMER' ? 'var(--red)' : '#FECACA', color: '#fff', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', border: 'none', cursor: deleteInput === 'SUPPRIMER' ? 'pointer' : 'not-allowed' }}>
+                    style={{ padding: '11px', borderRadius: 'var(--r-sm)', background: deleteInput === 'SUPPRIMER' ? 'var(--red)' : '#FECACA', color: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', border: 'none', cursor: deleteInput === 'SUPPRIMER' ? 'pointer' : 'not-allowed' }}>
                     {deleting ? 'Suppression…' : 'Supprimer définitivement'}
                   </button>
                   <button onClick={() => { setDeleteStep(null); setDeleteInput(''); setDeleteError('') }} style={{ padding: '11px', borderRadius: 'var(--r-sm)', background: 'var(--surface)', border: '1.5px solid var(--border)', color: 'var(--text-2)', fontWeight: 600, fontSize: '14px', cursor: 'pointer' }}>Annuler</button>

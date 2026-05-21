@@ -53,7 +53,7 @@ const inputStyle: React.CSSProperties = {
 }
 
 const labelStyle: React.CSSProperties = {
-  fontSize: '12px', fontWeight: 700, color: 'var(--text-2)',
+  fontSize: '12px', fontWeight: 600, color: 'var(--text-2)',
   textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '6px', display: 'block',
 }
 
@@ -162,7 +162,7 @@ export function ProjectForm({ initial, currentUserId, authorName, onSubmit, onCa
               key={s.n}
               onClick={() => setStep(s.n)}
               style={{
-                padding: '7px 16px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 700,
+                padding: '7px 16px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 600,
                 border: '1.5px solid', cursor: 'pointer', transition: '.14s',
                 borderColor: step === s.n ? 'var(--green)' : 'var(--border)',
                 background: step === s.n ? 'var(--green-3)' : 'var(--white)',
@@ -198,7 +198,7 @@ export function ProjectForm({ initial, currentUserId, authorName, onSubmit, onCa
                   const active = form.stage === s
                   return (
                     <button key={s} type="button" onClick={() => set('stage', s)} style={{
-                      padding: '6px 13px', borderRadius: 'var(--r-full)', fontSize: '12px', fontWeight: 700,
+                      padding: '6px 13px', borderRadius: 'var(--r-full)', fontSize: '12px', fontWeight: 600,
                       border: '1.5px solid', cursor: 'pointer', transition: '.14s',
                       borderColor: active ? cfg.color : 'var(--border)',
                       background: active ? cfg.bg : 'var(--white)',
@@ -230,7 +230,7 @@ export function ProjectForm({ initial, currentUserId, authorName, onSubmit, onCa
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button onClick={() => setStep(2)} style={{ background: 'var(--green)', color: '#fff', padding: '10px 22px', borderRadius: 'var(--r-sm)', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer' }}>
+              <button onClick={() => setStep(2)} style={{ background: 'var(--green)', color: '#fff', padding: '10px 22px', borderRadius: 'var(--r-sm)', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13px', border: 'none', cursor: 'pointer' }}>
                 Suivant →
               </button>
             </div>
@@ -279,7 +279,7 @@ export function ProjectForm({ initial, currentUserId, authorName, onSubmit, onCa
               <button onClick={() => setStep(1)} style={{ background: 'var(--surface)', color: 'var(--text-2)', padding: '10px 18px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 600, border: '1px solid var(--border)', cursor: 'pointer' }}>
                 ← Retour
               </button>
-              <button onClick={() => setStep(3)} style={{ background: 'var(--green)', color: '#fff', padding: '10px 22px', borderRadius: 'var(--r-sm)', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer' }}>
+              <button onClick={() => setStep(3)} style={{ background: 'var(--green)', color: '#fff', padding: '10px 22px', borderRadius: 'var(--r-sm)', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13px', border: 'none', cursor: 'pointer' }}>
                 Suivant →
               </button>
             </div>
@@ -328,7 +328,7 @@ export function ProjectForm({ initial, currentUserId, authorName, onSubmit, onCa
                 <button onClick={onCancel} style={{ background: 'var(--surface)', color: 'var(--text-2)', padding: '10px 18px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 600, border: '1px solid var(--border)', cursor: 'pointer' }}>
                   Annuler
                 </button>
-                <button onClick={handleSubmit} disabled={loading} style={{ background: 'var(--green)', color: '#fff', padding: '10px 22px', borderRadius: 'var(--r-sm)', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
+                <button onClick={handleSubmit} disabled={loading} style={{ background: 'var(--green)', color: '#fff', padding: '10px 22px', borderRadius: 'var(--r-sm)', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13px', border: 'none', cursor: 'pointer', opacity: loading ? 0.6 : 1 }}>
                   {loading ? 'Publication…' : submitLabel}
                 </button>
               </div>
@@ -339,7 +339,7 @@ export function ProjectForm({ initial, currentUserId, authorName, onSubmit, onCa
 
       {/* Live preview */}
       <div style={{ width: '220px', flexShrink: 0 }}>
-        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '10px' }}>Aperçu</div>
+        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '10px' }}>Aperçu</div>
         <ProjectCard project={preview} onClick={() => {}} onSave={() => {}} />
       </div>
     </div>

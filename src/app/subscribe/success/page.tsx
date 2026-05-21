@@ -66,7 +66,7 @@ export default function SubscribeSuccessPage() {
           {/* Titre */}
           <h1 style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",
-            fontWeight: 700, fontSize: 32,
+            fontWeight: 600, fontSize: 32,
             color: '#012722', marginBottom: 16, lineHeight: 1.2,
           }}>
             Bienvenue dans le club.

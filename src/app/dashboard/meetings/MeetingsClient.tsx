@@ -82,7 +82,7 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
 
       {/* Pending requests */}
       <section style={{ marginBottom: '40px' }}>
-        <h2 style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '18px', color: 'var(--text)', marginBottom: '16px' }}>
+        <h2 style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '18px', color: 'var(--text)', marginBottom: '16px' }}>
           Demandes reçues <span style={{ fontSize: '14px', color: 'var(--muted)', fontWeight: 500 }}>({pendingRequests.length})</span>
         </h2>
 
@@ -105,10 +105,10 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
                   <div style={{
                     width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,
                     background: '#43695A', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'white', fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '16px',
+                    color: 'white', fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '16px',
                   }}>{initials}</div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text)' }}>
+                    <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text)' }}>
                       {requester?.first_name} {requester?.last_name}
                     </div>
                     <div style={{ fontSize: '13px', color: 'var(--muted)', marginBottom: '8px' }}>
@@ -173,7 +173,7 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
 
       {/* Confirmed meetings */}
       <section>
-        <h2 style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '18px', color: 'var(--text)', marginBottom: '16px' }}>
+        <h2 style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '18px', color: 'var(--text)', marginBottom: '16px' }}>
           Rencontres confirmées <span style={{ fontSize: '14px', color: 'var(--muted)', fontWeight: 500 }}>({confirmedMeetings.length})</span>
         </h2>
 
@@ -196,10 +196,10 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
                   <div style={{
                     width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,
                     background: '#43695A', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: 'white', fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '16px',
+                    color: 'white', fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '16px',
                   }}>{initials}</div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text)' }}>
+                    <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text)' }}>
                       {other?.first_name} {other?.last_name}
                     </div>
                     <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
@@ -210,7 +210,7 @@ export default function MeetingsClient({ pendingRequests, confirmedMeetings, cur
                     </div>
                   </div>
                   <div style={{
-                    padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 700,
+                    padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600,
                     background: req.status === 'confirmed' ? 'var(--green-pale)' : 'var(--border)',
                     color: req.status === 'confirmed' ? '#43695A' : 'var(--muted)',
                   }}>

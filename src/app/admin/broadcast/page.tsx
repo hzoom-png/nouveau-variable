@@ -83,7 +83,7 @@ export default function BroadcastPage() {
   }
 
   const btnTab = (active: boolean): React.CSSProperties => ({
-    flex: 1, padding: '10px', borderRadius: 8, fontSize: 13, fontWeight: 700,
+    flex: 1, padding: '10px', borderRadius: 8, fontSize: 13, fontWeight: 600,
     background: active ? 'rgba(47,84,70,0.3)' : 'transparent',
     border: `1px solid ${active ? C.green : 'transparent'}`,
     color: active ? C.text : C.text2, cursor: 'pointer', fontFamily: 'Inter, sans-serif',
@@ -97,7 +97,7 @@ export default function BroadcastPage() {
 
       {/* Compose */}
       <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 28, marginBottom: 28 }}>
-        <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 16 }}>
+        <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 16 }}>
           Nouveau message
         </p>
 
@@ -145,7 +145,7 @@ export default function BroadcastPage() {
               disabled={sending || !message.trim()}
               style={{
                 padding: '12px 24px', borderRadius: 8, background: C.green,
-                border: 'none', color: C.text, fontSize: 14, fontWeight: 700,
+                border: 'none', color: C.text, fontSize: 14, fontWeight: 600,
                 fontFamily: 'Inter, sans-serif', cursor: sending ? 'wait' : 'pointer',
                 opacity: sending || !message.trim() ? 0.6 : 1,
               }}
@@ -162,11 +162,11 @@ export default function BroadcastPage() {
       {/* Preview */}
       {message && (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: 24, marginBottom: 28 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>
+          <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>
             Aperçu
           </p>
           {type === 'email' && subject && (
-            <p style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 8 }}>Objet : {subject}</p>
+            <p style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 8 }}>Objet : {subject}</p>
           )}
           <p style={{ fontSize: 13, color: C.text2, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{message}</p>
         </div>
@@ -176,7 +176,7 @@ export default function BroadcastPage() {
       {history.length > 0 && (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, overflow: 'hidden' }}>
           <div style={{ padding: '20px 24px 0' }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>
+            <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>
               Historique
             </p>
           </div>
@@ -184,7 +184,7 @@ export default function BroadcastPage() {
             <thead>
               <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                 {['Type', 'Message', 'Destinataires', 'Date'].map(h => (
-                  <th key={h} style={{ padding: '10px 24px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  <th key={h} style={{ padding: '10px 24px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                     {h}
                   </th>
                 ))}
@@ -194,7 +194,7 @@ export default function BroadcastPage() {
               {history.map(b => (
                 <tr key={b.id} style={{ borderBottom: `1px solid ${C.border}` }}>
                   <td style={{ padding: '12px 24px' }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 6, background: 'rgba(47,84,70,0.2)', color: C.greenL, textTransform: 'uppercase' }}>
+                    <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 6, background: 'rgba(47,84,70,0.2)', color: C.greenL, textTransform: 'uppercase' }}>
                       {b.type}
                     </span>
                   </td>

@@ -16,7 +16,7 @@ export function TokenBalance({ balance }: Props) {
       <div style={{ width: 48, height: 3, background: 'var(--border)', borderRadius: 2, overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', background: color, transition: 'width 0.4s ease' }} />
       </div>
-      <span style={{ fontWeight: 700, color, fontFamily: 'var(--font-jost)' }}>{balance} tkn</span>
+      <span style={{ fontWeight: 600, color, fontFamily: 'var(--font-inter)' }}>{balance} tkn</span>
     </div>
   )
 }

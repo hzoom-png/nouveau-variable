@@ -214,7 +214,7 @@ export default function MissionsPage() {
     fontFamily: 'inherit', outline: 'none',
   }
   const lbl: React.CSSProperties = {
-    display: 'block', fontSize: 11, fontWeight: 700,
+    display: 'block', fontSize: 11, fontWeight: 600,
     color: C.text3, letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: 4,
   }
 
@@ -272,7 +272,7 @@ export default function MissionsPage() {
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                       {['Titre', 'Catégorie', 'Rémunération', 'Source', 'Statut', ''].map(h => (
-                        <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: C.text3, letterSpacing: '.06em', textTransform: 'uppercase' }}>{h}</th>
+                        <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 11, fontWeight: 600, color: C.text3, letterSpacing: '.06em', textTransform: 'uppercase' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -290,12 +290,12 @@ export default function MissionsPage() {
                         </td>
                         <td style={{ padding: '12px 14px', fontSize: 12, color: C.text3 }}>{m.remuneration ?? '—'}</td>
                         <td style={{ padding: '12px 14px' }}>
-                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 99, background: m.source === 'rss_sourced' ? 'rgba(86,183,145,0.12)' : 'rgba(255,255,255,0.05)', color: m.source === 'rss_sourced' ? C.green : C.text3 }}>
+                          <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 99, background: m.source === 'rss_sourced' ? 'rgba(86,183,145,0.12)' : 'rgba(255,255,255,0.05)', color: m.source === 'rss_sourced' ? C.green : C.text3 }}>
                             {m.source === 'rss_sourced' ? 'RSS' : 'Manuel'}
                           </span>
                         </td>
                         <td style={{ padding: '12px 14px' }}>
-                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 99, background: m.status === 'published' ? 'rgba(86,183,145,0.15)' : m.status === 'archived' ? 'rgba(255,255,255,0.04)' : 'rgba(255,200,50,0.1)', color: m.status === 'published' ? C.green : m.status === 'archived' ? C.text3 : '#e6b800' }}>
+                          <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 99, background: m.status === 'published' ? 'rgba(86,183,145,0.15)' : m.status === 'archived' ? 'rgba(255,255,255,0.04)' : 'rgba(255,200,50,0.1)', color: m.status === 'published' ? C.green : m.status === 'archived' ? C.text3 : '#e6b800' }}>
                             {m.status === 'published' ? 'Publiée' : m.status === 'archived' ? 'Archivée' : 'Brouillon'}
                           </span>
                         </td>
@@ -333,7 +333,7 @@ export default function MissionsPage() {
           {/* RSS panel */}
           {showRss && (
             <div style={{ width: 380, flexShrink: 0, background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
-              <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: 14, color: C.text, marginBottom: 14 }}>
+              <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 14, color: C.text, marginBottom: 14 }}>
                 Sourcer via RSS
               </div>
 
@@ -365,7 +365,7 @@ export default function MissionsPage() {
 
               {rssMissions.length > 0 && (
                 <>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: C.text3, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 10 }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: C.text3, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 10 }}>
                     Résultats — {rssSourceName}
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxHeight: '60vh', overflowY: 'auto' }}>
@@ -381,7 +381,7 @@ export default function MissionsPage() {
                         </div>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
                           {m.category && (
-                            <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 99, background: 'rgba(86,183,145,0.12)', color: C.green }}>
+                            <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 99, background: 'rgba(86,183,145,0.12)', color: C.green }}>
                               {CAT_LABEL[m.category] ?? m.category}
                             </span>
                           )}
@@ -405,13 +405,13 @@ export default function MissionsPage() {
                           <div style={{ display: 'flex', gap: 6 }}>
                             <button
                               onClick={() => handleRssAdd(i)}
-                              style={{ flex: 1, padding: '6px', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer', background: C.green, border: 'none', color: '#fff' }}
+                              style={{ flex: 1, padding: '6px', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', background: C.green, border: 'none', color: '#fff' }}
                             >
                               ✓ Ajouter en brouillon
                             </button>
                             <button
                               onClick={() => setRssMissions(prev => prev.filter((_, idx) => idx !== i))}
-                              style={{ padding: '6px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer', background: 'transparent', border: `1px solid ${C.border}`, color: C.text3 }}
+                              style={{ padding: '6px 10px', borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: 'pointer', background: 'transparent', border: `1px solid ${C.border}`, color: C.text3 }}
                             >
                               ✗
                             </button>
@@ -431,7 +431,7 @@ export default function MissionsPage() {
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, width: '100%', maxWidth: 520, maxHeight: '90vh', overflowY: 'auto', padding: 28 }}>
-            <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: 18, color: C.text, marginBottom: 20 }}>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 18, color: C.text, marginBottom: 20 }}>
               {editTarget ? 'Modifier la mission' : 'Ajouter une mission'}
             </div>
 
@@ -492,7 +492,7 @@ export default function MissionsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !form.title.trim()}
-                style={{ flex: 1, padding: '11px', borderRadius: 8, background: C.green, border: 'none', color: '#fff', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}
+                style={{ flex: 1, padding: '11px', borderRadius: 8, background: C.green, border: 'none', color: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 14, cursor: saving ? 'not-allowed' : 'pointer' }}
               >
                 {saving ? 'Enregistrement…' : 'Enregistrer'}
               </button>
@@ -511,12 +511,12 @@ export default function MissionsPage() {
       {deleteId && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, width: '100%', maxWidth: 380, padding: 28, textAlign: 'center' }}>
-            <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: 16, color: C.text, marginBottom: 10 }}>
+            <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 16, color: C.text, marginBottom: 10 }}>
               Supprimer cette mission ?
             </div>
             <p style={{ fontSize: 13, color: C.text3, marginBottom: 20 }}>Cette action est irréversible.</p>
             <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => handleDelete(deleteId)} style={{ flex: 1, padding: '10px', borderRadius: 8, background: '#e05252', border: 'none', color: '#fff', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}>
+              <button onClick={() => handleDelete(deleteId)} style={{ flex: 1, padding: '10px', borderRadius: 8, background: '#e05252', border: 'none', color: '#fff', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
                 Supprimer
               </button>
               <button onClick={() => setDeleteId(null)} style={{ flex: 1, padding: '10px', borderRadius: 8, background: 'transparent', border: `1px solid ${C.border}`, color: C.text3, fontSize: 13, cursor: 'pointer' }}>

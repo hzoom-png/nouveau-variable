@@ -3,7 +3,7 @@ export const metadata = { title: 'CGV — Nouveau Variable' }
 export default function CgvPage() {
   return (
     <div className="legal-content">
-      <h1 style={{ fontFamily: 'Inter, sans-serif', fontSize: 28, fontWeight: 700, color: '#0F1C17', marginBottom: 8 }}>
+      <h1 style={{ fontFamily: 'Inter, sans-serif', fontSize: 28, fontWeight: 600, color: '#0F1C17', marginBottom: 8 }}>
         Conditions Générales de Vente
       </h1>
       <p style={{ fontSize: 13, color: '#9BB5AA', marginBottom: 40 }}>Dernière mise à jour : 6 mai 2026</p>

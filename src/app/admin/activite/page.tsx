@@ -98,8 +98,8 @@ export default function ActivitePage() {
             ['Membre le plus actif', data.topMember ?? '—'],
           ].map(([label, value]) => (
             <div key={label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '18px 20px' }}>
-              <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>{label}</p>
-              <p style={{ fontSize: 20, fontWeight: 800, color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</p>
+              <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>{label}</p>
+              <p style={{ fontSize: 20, fontWeight: 600, color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</p>
             </div>
           ))}
         </div>
@@ -116,7 +116,7 @@ export default function ActivitePage() {
             <thead>
               <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                 {['Membre', 'Outil', 'Tokens', 'Date'].map(h => (
-                  <th key={h} style={{ padding: '12px 20px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  <th key={h} style={{ padding: '12px 20px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                     {h}
                   </th>
                 ))}

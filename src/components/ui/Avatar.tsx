@@ -14,8 +14,8 @@ export function Avatar({ initials, size = 'md', color = '#43695A' }: Props) {
     <div style={{
       width: s, height: s, borderRadius: Math.round(s * 0.25),
       background: color, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      color: 'white', fontFamily: 'var(--font-jost, Jost, sans-serif)',
-      fontWeight: 700, fontSize: fs, flexShrink: 0,
+      color: 'white', fontFamily: 'var(--font-inter, Inter, sans-serif)',
+      fontWeight: 600, fontSize: fs, flexShrink: 0,
     }}>
       {initials}
     </div>

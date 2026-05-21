@@ -93,7 +93,7 @@ export function MeetingModal({ recipient, currentUserPoints, isOpen, onClose, on
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div>
-            <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '18px', color: 'var(--text)' }}>
+            <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '18px', color: 'var(--text)' }}>
               Inviter {recipient.first_name} {recipient.last_name}
             </div>
             {recipient.role_title && (
@@ -118,7 +118,7 @@ export function MeetingModal({ recipient, currentUserPoints, isOpen, onClose, on
         </div>
 
         {/* Meeting type grid */}
-        <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '14px', color: 'var(--text)', marginBottom: '10px' }}>
+        <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '14px', color: 'var(--text)', marginBottom: '10px' }}>
           Type de rencontre
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '20px' }}>
@@ -136,7 +136,7 @@ export function MeetingModal({ recipient, currentUserPoints, isOpen, onClose, on
                 }}
               >
                 <div style={{ fontSize: '20px', marginBottom: '4px' }}>{val.emoji}</div>
-                <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '12px', color: active ? '#43695A' : 'var(--text)' }}>{val.label}</div>
+                <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '12px', color: active ? '#43695A' : 'var(--text)' }}>{val.label}</div>
                 <div style={{ fontSize: '10px', color: 'var(--muted)', marginTop: '2px' }}>{val.points} pts</div>
               </button>
             )
@@ -144,7 +144,7 @@ export function MeetingModal({ recipient, currentUserPoints, isOpen, onClose, on
         </div>
 
         {/* Slots */}
-        <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '14px', color: 'var(--text)', marginBottom: '10px' }}>
+        <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '14px', color: 'var(--text)', marginBottom: '10px' }}>
           Créneaux proposés <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--muted)' }}>(sélectionne 1 à 4)</span>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '20px' }}>
@@ -170,7 +170,7 @@ export function MeetingModal({ recipient, currentUserPoints, isOpen, onClose, on
         </div>
 
         {/* Message */}
-        <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '14px', color: 'var(--text)', marginBottom: '8px' }}>
+        <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '14px', color: 'var(--text)', marginBottom: '8px' }}>
           Message <span style={{ fontWeight: 400, color: 'var(--muted)', fontSize: '12px' }}>(optionnel)</span>
         </div>
         <textarea
@@ -203,7 +203,7 @@ export function MeetingModal({ recipient, currentUserPoints, isOpen, onClose, on
             style={{
               flex: 2, padding: '11px', borderRadius: '10px',
               background: (!hasEnoughPoints || sending) ? 'var(--green-light)' : '#43695A',
-              color: 'white', fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '14px',
+              color: 'white', fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '14px',
               border: 'none', cursor: (!hasEnoughPoints || sending) ? 'not-allowed' : 'pointer',
             }}
           >

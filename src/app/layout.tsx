@@ -1,20 +1,14 @@
 import type { Metadata } from 'next'
-import { Jost, Inter } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { headers } from 'next/headers'
 import './globals.css'
 import { ThemeProvider } from '@/lib/theme'
 import { LenisInit } from '@/components/LenisInit'
 
-const jost = Jost({
-  subsets: ['latin'],
-  variable: '--font-jost',
-  weight: ['400', '500', '600', '700', '800', '900'],
-  display: 'swap',
-})
-
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  weight: ['400', '500', '600'],
   display: 'swap',
 })
 
@@ -31,7 +25,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const nonce = (await headers()).get('x-nonce') ?? ''
   return (
-    <html lang="fr" className={`${jost.variable} ${inter.variable}`}>
+    <html lang="fr" className={inter.variable}>
       <head>
         <script nonce={nonce} dangerouslySetInnerHTML={{ __html: `
           (function() {

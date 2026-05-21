@@ -78,7 +78,7 @@ export default function KaNode({ contact, px, py, isNew, onDragStart, onClick }:
             gap: '2px', transition: 'box-shadow .16s',
           }}
         >
-          <div style={{ fontSize: '13px', fontWeight: 700, color: s.text }}>{getInitials(contact.name)}</div>
+          <div style={{ fontSize: '13px', fontWeight: 600, color: s.text }}>{getInitials(contact.name)}</div>
           <div style={{ fontSize: '9px', color: s.text, opacity: .8, textAlign: 'center', lineHeight: 1.2, padding: '0 4px' }}>
             {contact.name.split(' ')[0]}
           </div>

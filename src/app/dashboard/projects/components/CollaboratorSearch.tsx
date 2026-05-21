@@ -47,7 +47,7 @@ export function CollaboratorSearch({ currentUserId, selected, onChange }: Props)
         <div style={{
           width: size, height: size, borderRadius: '50%', background: 'var(--green)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: size * 0.35, fontWeight: 700, color: '#fff', flexShrink: 0,
+          fontSize: size * 0.35, fontWeight: 600, color: '#fff', flexShrink: 0,
         }}>
           {initials || '?'}
         </div>

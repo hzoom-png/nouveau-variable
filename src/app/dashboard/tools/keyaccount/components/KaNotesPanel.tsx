@@ -36,7 +36,7 @@ export default function KaNotesPanel({ accountId, accountName }: Props) {
     <div style={{ background: 'var(--white)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)', overflow: 'hidden', marginTop: '12px' }}>
       {/* Input */}
       <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>
+        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '8px' }}>
           Journal — {accountName}
         </div>
 
@@ -117,7 +117,7 @@ export default function KaNotesPanel({ accountId, accountName }: Props) {
               {/* Type badge */}
               <div style={{
                 flexShrink: 0, padding: '2px 7px', borderRadius: 'var(--r-full)',
-                background: cfg.bg, color: cfg.color, fontSize: '10px', fontWeight: 700,
+                background: cfg.bg, color: cfg.color, fontSize: '10px', fontWeight: 600,
                 marginTop: '1px',
               }}>
                 {cfg.label}

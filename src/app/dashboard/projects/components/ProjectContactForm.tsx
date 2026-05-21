@@ -43,7 +43,7 @@ export function ProjectContactForm({ project, currentUserId, onSuccess }: Props)
     return (
       <div style={{ textAlign: 'center', padding: '20px 0' }}>
         <div style={{ fontSize: '28px', marginBottom: '8px' }}>✅</div>
-        <div style={{ fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>Message envoyé !</div>
+        <div style={{ fontWeight: 600, color: 'var(--text)', marginBottom: '4px' }}>Message envoyé !</div>
         <div style={{ fontSize: '13px', color: 'var(--text-3)' }}>Le porteur du projet vous répondra directement.</div>
       </div>
     )
@@ -97,7 +97,7 @@ export function ProjectContactForm({ project, currentUserId, onSuccess }: Props)
         disabled={!selectedNeed || !message.trim() || loading}
         style={{
           background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: 'var(--r-sm)',
-          fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer',
+          fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', border: 'none', cursor: 'pointer',
           opacity: (!selectedNeed || !message.trim() || loading) ? 0.5 : 1, transition: '.15s',
         }}
       >

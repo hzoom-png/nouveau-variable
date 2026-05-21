@@ -212,7 +212,7 @@ export default function ProjetsPage() {
               <thead>
                 <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                   {['Titre', 'Membre', 'Secteur', 'Stade', 'Statut', 'Date', ''].map(h => (
-                    <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                    <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                       {h}
                     </th>
                   ))}
@@ -232,7 +232,7 @@ export default function ProjetsPage() {
                     <td style={{ padding: '12px 16px', color: C.text2 }}>{p.stage}</td>
                     <td style={{ padding: '12px 16px' }}>
                       <span style={{
-                        fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10,
+                        fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 10,
                         background: p.is_active ? 'rgba(47,84,70,0.3)' : 'rgba(224,82,82,0.15)',
                         color: p.is_active ? C.greenL : C.error,
                         letterSpacing: '0.06em', textTransform: 'uppercase',
@@ -270,14 +270,14 @@ export default function ProjetsPage() {
             onClick={e => e.stopPropagation()}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: C.text }}>Nouveau projet</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 600, color: C.text }}>Nouveau projet</h2>
               <button onClick={() => setShowCreate(false)} style={{ background: 'none', border: 'none', color: C.text2, fontSize: 20, cursor: 'pointer' }}>✕</button>
             </div>
 
             <form onSubmit={submitCreate} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
+                <label style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
                   Membre *
                 </label>
                 <select
@@ -296,7 +296,7 @@ export default function ProjetsPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
+                <label style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
                   Titre *
                 </label>
                 <input
@@ -310,7 +310,7 @@ export default function ProjetsPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
+                <label style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
                   Tagline
                 </label>
                 <input
@@ -324,7 +324,7 @@ export default function ProjetsPage() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
+                  <label style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
                     Secteur *
                   </label>
                   <input
@@ -337,7 +337,7 @@ export default function ProjetsPage() {
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
+                  <label style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
                     Stade *
                   </label>
                   <select
@@ -352,7 +352,7 @@ export default function ProjetsPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
+                <label style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: 4 }}>
                   Description (optionnel)
                 </label>
                 <textarea

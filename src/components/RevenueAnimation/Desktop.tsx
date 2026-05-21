@@ -138,7 +138,7 @@ export function Desktop({ isMobile = false }: DesktopProps) {
           <p style={{
             fontFamily: "'Inter', system-ui, sans-serif",
             fontSize: isMobile ? 9 : 11,
-            fontWeight: 700,
+            fontWeight: 600,
             letterSpacing: '.10em',
             textTransform: 'uppercase',
             color: '#9BB5AA',
@@ -193,7 +193,7 @@ export function Desktop({ isMobile = false }: DesktopProps) {
                   opacity: 0,
                   fontFamily: "'Inter', system-ui, sans-serif",
                   fontSize: isMobile ? 12 : 16,
-                  fontWeight: 700,
+                  fontWeight: 600,
                   color: '#36a64f',
                   letterSpacing: '.02em',
                   pointerEvents: 'none',

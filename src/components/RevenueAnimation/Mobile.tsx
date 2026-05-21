@@ -49,7 +49,7 @@ export function Mobile() {
       {/* Label */}
       <p style={{
         fontFamily: "'Inter', system-ui, sans-serif",
-        fontSize: 11, fontWeight: 700,
+        fontSize: 11, fontWeight: 600,
         letterSpacing: '.12em', textTransform: 'uppercase',
         color: COLORS.axis, textAlign: 'center',
         marginBottom: 40,

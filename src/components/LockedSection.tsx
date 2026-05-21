@@ -32,7 +32,7 @@ export function LockedSection({ feature, email }: LockedSectionProps) {
       </div>
       <h2 style={{
         fontFamily: "'Plus Jakarta Sans', sans-serif",
-        fontWeight: 700,
+        fontWeight: 600,
         fontSize: 22,
         color: '#012722',
         marginBottom: 12,
@@ -55,7 +55,7 @@ export function LockedSection({ feature, email }: LockedSectionProps) {
           color: '#ffffff',
           padding: '14px 32px',
           borderRadius: '99px',
-          fontWeight: 700,
+          fontWeight: 600,
           fontSize: 15,
           textDecoration: 'none',
           transition: 'background 0.2s',

@@ -34,7 +34,7 @@ const inp: React.CSSProperties = {
   color: 'var(--text)', background: 'var(--white)', outline: 'none', boxSizing: 'border-box' as const,
 }
 const lbl: React.CSSProperties = {
-  display: 'block', fontSize: '11px', fontWeight: 700, color: 'var(--text-2)',
+  display: 'block', fontSize: '11px', fontWeight: 600, color: 'var(--text-2)',
   letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '5px',
 }
 
@@ -73,7 +73,7 @@ export default function RepliqueForm({ initial = {}, initialStep = 1, onSubmit, 
       <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
         {[1, 2].map(n => (
           <div key={n} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <div style={{ width: '22px', height: '22px', borderRadius: '50%', display: 'grid', placeItems: 'center', fontSize: '11px', fontWeight: 700, background: step >= n ? 'var(--green)' : 'var(--surface)', color: step >= n ? '#fff' : 'var(--text-3)', border: `1.5px solid ${step >= n ? 'var(--green)' : 'var(--border)'}`, transition: '.2s' }}>{n}</div>
+            <div style={{ width: '22px', height: '22px', borderRadius: '50%', display: 'grid', placeItems: 'center', fontSize: '11px', fontWeight: 600, background: step >= n ? 'var(--green)' : 'var(--surface)', color: step >= n ? '#fff' : 'var(--text-3)', border: `1.5px solid ${step >= n ? 'var(--green)' : 'var(--border)'}`, transition: '.2s' }}>{n}</div>
             <span style={{ fontSize: '12px', color: step === n ? 'var(--text)' : 'var(--text-3)', fontWeight: step === n ? 600 : 400 }}>
               {n === 1 ? 'Ce que tu vends' : 'L\'objectif'}
             </span>
@@ -99,7 +99,7 @@ export default function RepliqueForm({ initial = {}, initialStep = 1, onSubmit, 
               {CONTACT_OPTIONS.map(opt => (
                 <button key={opt.value} type="button" onClick={() => setContactType(opt.value)} style={cardBtn(contactType === opt.value)}>
                   <div style={{ fontSize: '20px', marginBottom: '6px' }}>{opt.icon}</div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: contactType === opt.value ? 'var(--green)' : 'var(--text)', marginBottom: '2px' }}>{opt.label}</div>
+                  <div style={{ fontSize: '13px', fontWeight: 600, color: contactType === opt.value ? 'var(--green)' : 'var(--text)', marginBottom: '2px' }}>{opt.label}</div>
                   <div style={{ fontSize: '11px', color: 'var(--text-3)' }}>{opt.sub}</div>
                 </button>
               ))}
@@ -133,7 +133,7 @@ export default function RepliqueForm({ initial = {}, initialStep = 1, onSubmit, 
                 Annuler
               </button>
             )}
-            <button type="button" onClick={() => { if (product.trim()) setStep(2) }} style={{ padding: '10px 24px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', background: product.trim() ? 'var(--green)' : 'var(--green-4)', color: '#fff', border: 'none', transition: '.15s' }}>
+            <button type="button" onClick={() => { if (product.trim()) setStep(2) }} style={{ padding: '10px 24px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', background: product.trim() ? 'var(--green)' : 'var(--green-4)', color: '#fff', border: 'none', transition: '.15s' }}>
               Continuer →
             </button>
           </div>
@@ -148,7 +148,7 @@ export default function RepliqueForm({ initial = {}, initialStep = 1, onSubmit, 
               {OBJECTIVE_OPTIONS.map(opt => (
                 <button key={opt.value} type="button" onClick={() => setObjective(opt.value)} style={cardBtn(objective === opt.value)}>
                   <div style={{ fontSize: '18px', marginBottom: '5px' }}>{opt.icon}</div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: objective === opt.value ? 'var(--green)' : 'var(--text)', marginBottom: '2px' }}>{opt.label}</div>
+                  <div style={{ fontSize: '13px', fontWeight: 600, color: objective === opt.value ? 'var(--green)' : 'var(--text)', marginBottom: '2px' }}>{opt.label}</div>
                   <div style={{ fontSize: '11px', color: 'var(--text-3)' }}>{opt.desc}</div>
                 </button>
               ))}
@@ -183,7 +183,7 @@ export default function RepliqueForm({ initial = {}, initialStep = 1, onSubmit, 
             <button type="button" onClick={() => setStep(1)} style={{ padding: '10px 20px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', background: 'var(--surface)', border: '1.5px solid var(--border)', color: 'var(--text-2)' }}>
               ← Retour
             </button>
-            <button type="submit" style={{ padding: '10px 24px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', background: 'var(--green)', color: '#fff', border: 'none', transition: '.15s' }}>
+            <button type="submit" style={{ padding: '10px 24px', borderRadius: 'var(--r-sm)', fontSize: '13px', fontWeight: 600, cursor: 'pointer', background: 'var(--green)', color: '#fff', border: 'none', transition: '.15s' }}>
               Générer mon script →
             </button>
           </div>

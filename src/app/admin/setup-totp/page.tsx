@@ -74,11 +74,11 @@ export default function SetupTotpPage() {
         borderRadius: 16, padding: '36px 32px',
       }}>
         <div style={{ textAlign: 'center', marginBottom: 28 }}>
-          <span style={{ fontSize: 22, fontWeight: 900, color: C.green }}>NV</span>
-          <span style={{ fontSize: 11, color: C.text2, fontWeight: 700, letterSpacing: '0.14em', marginLeft: 8, textTransform: 'uppercase' }}>Admin</span>
+          <span style={{ fontSize: 22, fontWeight: 600, color: C.green }}>NV</span>
+          <span style={{ fontSize: 11, color: C.text2, fontWeight: 600, letterSpacing: '0.14em', marginLeft: 8, textTransform: 'uppercase' }}>Admin</span>
         </div>
 
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: C.text, marginBottom: 6, textAlign: 'center' }}>
+        <h1 style={{ fontSize: 18, fontWeight: 600, color: C.text, marginBottom: 6, textAlign: 'center' }}>
           Configuration 2FA
         </h1>
         <p style={{ fontSize: 12, color: C.text2, textAlign: 'center', marginBottom: 28, lineHeight: 1.6 }}>
@@ -152,7 +152,7 @@ export default function SetupTotpPage() {
               disabled={verifying || token.length < 6}
               style={{
                 padding: '13px', borderRadius: 8, background: C.green,
-                border: 'none', color: C.text, fontSize: 14, fontWeight: 700,
+                border: 'none', color: C.text, fontSize: 14, fontWeight: 600,
                 fontFamily: 'Inter, sans-serif', cursor: verifying ? 'wait' : 'pointer',
                 opacity: verifying || token.length < 6 ? 0.7 : 1,
               }}

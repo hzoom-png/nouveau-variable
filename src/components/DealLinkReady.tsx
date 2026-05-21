@@ -41,7 +41,7 @@ export function DealLinkReady({ slug, prospectName, prospectCompany, onReset }: 
       </div>
 
       <h2 style={{
-        fontFamily: 'var(--font-jost)', fontSize: '24px', fontWeight: 900,
+        fontFamily: 'var(--font-inter)', fontSize: '24px', fontWeight: 600,
         color: 'var(--text)', marginBottom: '8px',
       }}>
         Ton DealLink est prêt
@@ -69,7 +69,7 @@ export function DealLinkReady({ slug, prospectName, prospectCompany, onReset }: 
             background: copied ? 'var(--green-3)' : 'var(--green)',
             color: copied ? 'var(--green)' : '#fff',
             border: 'none', borderRadius: '99px',
-            padding: '6px 14px', fontSize: '12px', fontWeight: 700,
+            padding: '6px 14px', fontSize: '12px', fontWeight: 600,
             cursor: 'pointer', flexShrink: 0, transition: 'all .2s', fontFamily: 'inherit',
           }}
         >
@@ -85,7 +85,7 @@ export function DealLinkReady({ slug, prospectName, prospectCompany, onReset }: 
             display: 'inline-flex', alignItems: 'center', gap: '6px',
             background: 'var(--green)', color: '#fff',
             padding: '10px 22px', borderRadius: '99px',
-            fontSize: '13px', fontWeight: 700, textDecoration: 'none',
+            fontSize: '13px', fontWeight: 600, textDecoration: 'none',
           }}
         >
           Voir le DealLink
@@ -102,7 +102,7 @@ export function DealLinkReady({ slug, prospectName, prospectCompany, onReset }: 
             background: 'transparent', color: 'var(--green)',
             border: '1.5px solid var(--green)',
             padding: '10px 22px', borderRadius: '99px',
-            fontSize: '13px', fontWeight: 700, textDecoration: 'none',
+            fontSize: '13px', fontWeight: 600, textDecoration: 'none',
           }}
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

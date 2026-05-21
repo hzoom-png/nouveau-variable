@@ -83,7 +83,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '16px clamp(20px, 5vw, 48px)',
         }}>
-          <span style={{ fontWeight: 700, fontSize: 16, color: P }}>{deallink.sellerName}</span>
+          <span style={{ fontWeight: 600, fontSize: 16, color: P }}>{deallink.sellerName}</span>
           {deallink.sellerEmail && (
             <a href={`mailto:${deallink.sellerEmail}`} style={{
               background: P, color: '#fff',
@@ -132,7 +132,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
           </div>
 
           <h1 style={{
-            fontSize: 'clamp(2rem, 5vw, 3.4rem)', fontWeight: 900,
+            fontSize: 'clamp(2rem, 5vw, 3.4rem)', fontWeight: 600,
             lineHeight: 1.1, letterSpacing: '-0.03em',
             marginBottom: 24, color: TEXT,
           }}>
@@ -151,7 +151,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
                 <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" style={{
                   background: P, color: '#fff',
                   padding: '13px 28px', borderRadius: 99,
-                  fontSize: 15, fontWeight: 700, textDecoration: 'none',
+                  fontSize: 15, fontWeight: 600, textDecoration: 'none',
                 }}>
                   {brand.calendlyCtaLabel || `Réserver un créneau avec ${deallink.sellerName.split(' ')[0]}`}
                 </a>
@@ -159,7 +159,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
                 <a href={`mailto:${deallink.sellerEmail}`} style={{
                   background: P, color: '#fff',
                   padding: '13px 28px', borderRadius: 99,
-                  fontSize: 15, fontWeight: 700, textDecoration: 'none',
+                  fontSize: 15, fontWeight: 600, textDecoration: 'none',
                 }}>
                   Échanger avec {deallink.sellerName.split(' ')[0]}
                 </a>
@@ -201,7 +201,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
             }}>
               {(section.type === 'context' || section.type === 'value_prop' || section.type === 'proof') && (
                 <span style={{
-                  display: 'inline-block', fontSize: 11, fontWeight: 700,
+                  display: 'inline-block', fontSize: 11, fontWeight: 600,
                   letterSpacing: '0.1em', textTransform: 'uppercase',
                   color: ACCENT, marginBottom: 14,
                 }}>
@@ -211,7 +211,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
                 </span>
               )}
               <h2 style={{
-                fontSize: 'clamp(1.3rem, 3vw, 1.9rem)', fontWeight: 800,
+                fontSize: 'clamp(1.3rem, 3vw, 1.9rem)', fontWeight: 600,
                 letterSpacing: '-0.025em', lineHeight: 1.2,
                 marginBottom: 18, color: TEXT,
               }}>
@@ -234,7 +234,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
               gap: 20, flexWrap: 'wrap',
             }}>
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: P, marginBottom: 8 }}>
+                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: P, marginBottom: 8 }}>
                   Cas client
                 </p>
                 <p style={{ fontSize: 15, color: TEXT, opacity: 0.8, lineHeight: 1.5 }}>
@@ -265,7 +265,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
               textAlign: 'center',
             }}>
               <h2 style={{
-                fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 900, color: '#fff',
+                fontSize: 'clamp(1.5rem, 3.5vw, 2.2rem)', fontWeight: 600, color: '#fff',
                 letterSpacing: '-0.025em', marginBottom: 14,
               }}>
                 {ctaSection.title}
@@ -278,7 +278,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
                   <a href={calendlyUrl} target="_blank" rel="noopener noreferrer" style={{
                     background: '#fff', color: P,
                     padding: '14px 28px', borderRadius: 99,
-                    fontSize: 15, fontWeight: 700, textDecoration: 'none',
+                    fontSize: 15, fontWeight: 600, textDecoration: 'none',
                   }}>
                     {brand.calendlyCtaLabel || `Réserver un créneau avec ${deallink.sellerName.split(' ')[0]}`}
                   </a>
@@ -286,7 +286,7 @@ export function SalesPage({ deallink, result, brand }: Props) {
                   <a href={`mailto:${deallink.sellerEmail}`} style={{
                     background: '#fff', color: P,
                     padding: '14px 28px', borderRadius: 99,
-                    fontSize: 15, fontWeight: 700, textDecoration: 'none',
+                    fontSize: 15, fontWeight: 600, textDecoration: 'none',
                   }}>
                     Écrire à {deallink.sellerName.split(' ')[0]}
                   </a>

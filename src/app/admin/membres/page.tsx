@@ -42,7 +42,7 @@ function fmtDate(iso: string) {
 function Badge({ active }: { active: boolean }) {
   return (
     <span style={{
-      fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20,
+      fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 20,
       background: active ? 'rgba(47,84,70,0.3)' : 'rgba(224,82,82,0.15)',
       color: active ? '#4A8C6F' : '#E05252',
       letterSpacing: '0.06em', textTransform: 'uppercase',
@@ -284,7 +284,7 @@ export default function MembresPage() {
             <thead>
               <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                 {['Membre', 'Plan', 'Tokens', 'Points', 'Statut', 'Inscrit', 'Actions'].map(h => (
-                  <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                     {h}
                   </th>
                 ))}
@@ -304,12 +304,12 @@ export default function MembresPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                       <Badge active={m.is_active} />
                       {m.is_manually_activated && (
-                        <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: 'rgba(47,84,70,0.15)', color: '#2F5446', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 20, background: 'rgba(47,84,70,0.15)', color: '#2F5446', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                           Accès manuel
                         </span>
                       )}
                       {m.profile_visible === false && (
-                        <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: 'rgba(180,120,0,0.15)', color: '#B47800', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                        <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 20, background: 'rgba(180,120,0,0.15)', color: '#B47800', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                           Profil masqué
                         </span>
                       )}
@@ -365,7 +365,7 @@ export default function MembresPage() {
         <div style={overlay} onClick={() => setDetailOpen(false)}>
           <div style={{ ...modal, maxWidth: 520 }} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: C.text }}>
+              <h2 style={{ fontSize: 16, fontWeight: 600, color: C.text }}>
                 {detail?.profile.first_name} {detail?.profile.last_name}
               </h2>
               <button onClick={() => setDetailOpen(false)} style={{ ...btnGhost, padding: '4px 10px', fontSize: 12 }}>✕</button>
@@ -384,7 +384,7 @@ export default function MembresPage() {
                     ['Inscrit le', fmtDate(detail.profile.created_at)],
                   ].map(([k, v]) => (
                     <div key={k}>
-                      <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>{k}</p>
+                      <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>{k}</p>
                       <p style={{ fontSize: 13, color: C.text }}>{v}</p>
                     </div>
                   ))}
@@ -392,7 +392,7 @@ export default function MembresPage() {
 
                 {detail.referrals.length > 0 && (
                   <div style={{ marginBottom: 20 }}>
-                    <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>Parrainages</p>
+                    <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>Parrainages</p>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {detail.referrals.map(r => (
                         <span key={r.id} style={{ fontSize: 12, background: 'rgba(47,84,70,0.2)', borderRadius: 6, padding: '4px 10px', color: C.text }}>
@@ -405,7 +405,7 @@ export default function MembresPage() {
 
                 {detail.transactions.length > 0 && (
                   <div>
-                    <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>10 dernières utilisations</p>
+                    <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>10 dernières utilisations</p>
                     {detail.transactions.map((t, i) => (
                       <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: `1px solid ${C.border}` }}>
                         <span style={{ fontSize: 12, color: C.text }}>{t.tool_name}</span>
@@ -424,7 +424,7 @@ export default function MembresPage() {
       {adjustOpen && (
         <div style={overlay} onClick={() => setAdjustOpen(null)}>
           <div style={modal} onClick={e => e.stopPropagation()}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 20 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: C.text, marginBottom: 20 }}>
               Ajuster — {adjustOpen.first_name} {adjustOpen.last_name}
             </h2>
             <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
@@ -457,7 +457,7 @@ export default function MembresPage() {
       {delTarget && (
         <div style={overlay} onClick={() => setDelTarget(null)}>
           <div style={modal} onClick={e => e.stopPropagation()}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: C.error, marginBottom: 12 }}>Supprimer le membre</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 600, color: C.error, marginBottom: 12 }}>Supprimer le membre</h2>
             <p style={{ fontSize: 13, color: C.text2, marginBottom: 20 }}>
               Cette action est irréversible. Pour confirmer, tape{' '}
               <strong style={{ color: C.text }}>{delTarget.first_name} {delTarget.last_name}</strong>
@@ -485,12 +485,12 @@ export default function MembresPage() {
         <div style={overlay} onClick={() => setCreateOpen(false)}>
           <div style={modal} onClick={e => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: C.text }}>Ajouter un membre</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 600, color: C.text }}>Ajouter un membre</h2>
               <button onClick={() => setCreateOpen(false)} style={{ background: 'none', border: 'none', color: C.text2, fontSize: 20, cursor: 'pointer' }}>✕</button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
-                <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Téléphone *</p>
+                <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Téléphone *</p>
                 <input
                   style={inputSt}
                   placeholder="+33 6 12 34 56 78"
@@ -500,16 +500,16 @@ export default function MembresPage() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <div>
-                  <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Prénom</p>
+                  <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Prénom</p>
                   <input style={inputSt} placeholder="Prénom" value={createForm.first_name} onChange={e => setCreateForm(p => ({ ...p, first_name: e.target.value }))} />
                 </div>
                 <div>
-                  <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Nom</p>
+                  <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Nom</p>
                   <input style={inputSt} placeholder="Nom" value={createForm.last_name} onChange={e => setCreateForm(p => ({ ...p, last_name: e.target.value }))} />
                 </div>
               </div>
               <div>
-                <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Code parrain (optionnel)</p>
+                <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 5 }}>Code parrain (optionnel)</p>
                 <input style={inputSt} placeholder="Code de parrainage existant" value={createForm.referral_code} onChange={e => setCreateForm(p => ({ ...p, referral_code: e.target.value }))} />
               </div>
               <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>

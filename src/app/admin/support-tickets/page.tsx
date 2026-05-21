@@ -50,7 +50,7 @@ type Ticket = {
 function StatusPill({ status }: { status: string }) {
   const cfg = STATUS_CONFIG[status] ?? { label: status, color: C.text2, bg: 'rgba(75,99,88,0.15)' }
   return (
-    <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, background: cfg.bg, color: cfg.color, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+    <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 10, background: cfg.bg, color: cfg.color, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
       {cfg.label}
     </span>
   )
@@ -184,7 +184,7 @@ export default function SupportTicketsPage() {
   return (
     <div style={{ padding: '32px 40px', maxWidth: 1200 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text }}>
+        <h1 style={{ fontSize: 22, fontWeight: 600, color: C.text }}>
           Support {!loading && <span style={{ fontSize: 14, fontWeight: 500, color: C.text2, marginLeft: 8 }}>{total} ticket{total !== 1 ? 's' : ''}</span>}
         </h1>
       </div>
@@ -232,7 +232,7 @@ export default function SupportTicketsPage() {
               <thead>
                 <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                   {['Nom', 'Email', 'Type', 'Sujet', 'Statut', 'Priorité', 'Date', ''].map(h => (
-                    <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{h}</th>
+                    <th key={h} style={{ padding: '10px 14px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -296,7 +296,7 @@ export default function SupportTicketsPage() {
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <div>
-                <h2 style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>{selected.subject}</h2>
+                <h2 style={{ fontSize: 16, fontWeight: 600, color: C.text, marginBottom: 4 }}>{selected.subject}</h2>
                 <p style={{ fontSize: 12, color: C.text2 }}>{selected.user_name} · {selected.user_email}</p>
               </div>
               <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: C.text2, fontSize: 18, cursor: 'pointer' }}>✕</button>
@@ -305,10 +305,10 @@ export default function SupportTicketsPage() {
             {/* Pills */}
             <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
               <StatusPill status={selected.status} />
-              <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, background: 'rgba(75,99,88,0.15)', color: PRIORITY_CONFIG[selected.priority]?.color ?? C.text2, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 10, background: 'rgba(75,99,88,0.15)', color: PRIORITY_CONFIG[selected.priority]?.color ?? C.text2, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                 {PRIORITY_CONFIG[selected.priority]?.label ?? selected.priority}
               </span>
-              <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, background: 'rgba(75,99,88,0.15)', color: C.text2, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 10, background: 'rgba(75,99,88,0.15)', color: C.text2, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                 {TYPE_LABELS[selected.ticket_type] ?? selected.ticket_type}
               </span>
               <span style={{ fontSize: 10, color: C.text2, padding: '3px 0' }}>{fmtDate(selected.created_at)}</span>
@@ -316,21 +316,21 @@ export default function SupportTicketsPage() {
 
             {/* Message */}
             <div style={{ marginBottom: 16 }}>
-              <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Message</p>
+              <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Message</p>
               <p style={{ fontSize: 13, color: C.text, lineHeight: 1.65, whiteSpace: 'pre-wrap', background: C.input, borderRadius: 8, padding: '10px 12px' }}>{selected.message}</p>
             </div>
 
             {/* Previous response */}
             {selected.admin_response && (
               <div style={{ marginBottom: 16 }}>
-                <p style={{ fontSize: 10, fontWeight: 700, color: C.greenL, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Réponse précédente</p>
+                <p style={{ fontSize: 10, fontWeight: 600, color: C.greenL, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Réponse précédente</p>
                 <p style={{ fontSize: 13, color: C.text, lineHeight: 1.65, whiteSpace: 'pre-wrap', background: 'rgba(74,140,111,0.08)', borderRadius: 8, padding: '10px 12px', border: `1px solid rgba(74,140,111,0.2)` }}>{selected.admin_response}</p>
               </div>
             )}
 
             {/* Response textarea */}
             <div style={{ marginBottom: 14 }}>
-              <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>
+              <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>
                 {selected.admin_response ? 'Nouvelle réponse' : 'Réponse'}
               </p>
               <textarea

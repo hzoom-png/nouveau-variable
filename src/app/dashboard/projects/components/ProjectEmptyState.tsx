@@ -12,7 +12,7 @@ export function ProjectEmptyState({ onCreateProject }: Props) {
       borderRadius: 'var(--r-lg)', border: '1px solid var(--border)',
     }}>
       <div style={{ fontSize: '48px', marginBottom: '16px' }}>🚀</div>
-      <div style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '20px', color: 'var(--text)', marginBottom: '8px' }}>
+      <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '20px', color: 'var(--text)', marginBottom: '8px' }}>
         Aucun projet trouvé
       </div>
       <p style={{ fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.7, maxWidth: '380px', marginBottom: '24px' }}>
@@ -22,7 +22,7 @@ export function ProjectEmptyState({ onCreateProject }: Props) {
         onClick={onCreateProject}
         style={{
           background: 'var(--green)', color: '#fff', padding: '12px 24px',
-          borderRadius: 'var(--r-sm)', fontFamily: 'Jost, sans-serif', fontWeight: 700,
+          borderRadius: 'var(--r-sm)', fontFamily: 'Inter, sans-serif', fontWeight: 600,
           fontSize: '14px', border: 'none', cursor: 'pointer', transition: '.15s',
         }}
       >

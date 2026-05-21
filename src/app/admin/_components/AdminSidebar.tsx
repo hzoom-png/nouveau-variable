@@ -215,7 +215,7 @@ export function AdminSidebar() {
         <div style={{ width: 28, height: 28, background: '#fff', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Image src="/logo-nv.png" alt="NV" width={24} height={24} style={{ objectFit: 'contain' }} />
         </div>
-        <span style={{ fontSize: 11, color: C.text2, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+        <span style={{ fontSize: 11, color: C.text2, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
           Admin
         </span>
       </div>
@@ -225,7 +225,7 @@ export function AdminSidebar() {
         {NAV.map(group => (
           <div key={group.group} style={{ marginBottom: 8 }}>
             <p style={{
-              fontSize: 9, fontWeight: 700, color: C.text2,
+              fontSize: 9, fontWeight: 600, color: C.text2,
               letterSpacing: '0.14em', textTransform: 'uppercase',
               padding: '0 20px', marginBottom: 4,
             }}>
@@ -250,7 +250,7 @@ export function AdminSidebar() {
                   <span style={{ flex: 1 }}>{item.label}</span>
                   {item.badge && pendingCount > 0 && (
                     <span style={{
-                      fontSize: 9, fontWeight: 700, minWidth: 16, height: 16,
+                      fontSize: 9, fontWeight: 600, minWidth: 16, height: 16,
                       background: '#E05252', color: '#fff', borderRadius: 8,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       padding: '0 4px',

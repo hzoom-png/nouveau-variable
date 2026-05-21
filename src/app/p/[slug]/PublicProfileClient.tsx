@@ -197,7 +197,7 @@ const CSS = `
     margin-bottom: 16px;
   }
   .section-label {
-    font-family: 'Jost', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     font-weight: 700;
     color: #9BB5AA;
@@ -238,7 +238,7 @@ const CSS = `
     color: #fff;
     padding: 13px 20px;
     border-radius: 99px;
-    font-family: 'Jost', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 800;
     border: none;
@@ -325,7 +325,7 @@ function ReferralsCarousel({ referrals }: { referrals: ReferralProfile[] }) {
           <div
             key={`${r.id}-${i}`}
             title={`${r.first_name} ${r.last_name ?? ''}`.trim()}
-            style={{ width: 56, height: 56, minWidth: 56, borderRadius: '50%', overflow: 'hidden', border: '2px solid #e8f5ef', background: '#e8f5ef', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: '#024f41', fontWeight: 700, flexShrink: 0 }}
+            style={{ width: 56, height: 56, minWidth: 56, borderRadius: '50%', overflow: 'hidden', border: '2px solid #e8f5ef', background: '#e8f5ef', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, color: '#024f41', fontWeight: 600, flexShrink: 0 }}
           >
             {r.avatar_url ? (
               <img src={r.avatar_url} alt={r.first_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -437,7 +437,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
     fontFamily: 'inherit', boxSizing: 'border-box',
   }
   const labelStyle: React.CSSProperties = {
-    display: 'block', fontSize: '11px', fontWeight: 700, color: '#4B6358',
+    display: 'block', fontSize: '11px', fontWeight: 600, color: '#4B6358',
     letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '5px',
   }
 
@@ -452,13 +452,13 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
         <header style={{ background: 'rgba(247,250,248,0.92)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #E4EEEA', padding: '0 24px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
             <NvLogo size={24} />
-            <span style={{ fontFamily: 'Jost, sans-serif', fontSize: '12px', fontWeight: 700, color: '#2F5446', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</span>
+            <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, color: '#2F5446', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</span>
           </Link>
           <a
             href="https://nouveauvariable.fr/"
             target="_blank"
             rel="noopener"
-            style={{ background: '#2F5446', color: '#fff', padding: '7px 18px', borderRadius: '99px', fontFamily: 'Jost, sans-serif', fontSize: '12px', fontWeight: 700, textDecoration: 'none', letterSpacing: '.01em' }}
+            style={{ background: '#2F5446', color: '#fff', padding: '7px 18px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, textDecoration: 'none', letterSpacing: '.01em' }}
           >
             Accéder au club
           </a>
@@ -476,9 +476,9 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
                 {memberNum && (
                   <div style={{
                     position: 'absolute',
-                    fontFamily: "'Jost', sans-serif",
+                    fontFamily: "'Inter', sans-serif",
                     fontSize: '110px',
-                    fontWeight: 900,
+                    fontWeight: 600,
                     color: 'rgba(47,84,70,0.055)',
                     letterSpacing: '-0.04em',
                     userSelect: 'none',
@@ -498,7 +498,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
                     />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', background: '#EAF2EE', display: 'grid', placeItems: 'center', fontFamily: "'Jost', sans-serif", fontSize: '48px', fontWeight: 800, color: '#2F5446' }}>
+                    <div style={{ width: '100%', height: '100%', background: '#EAF2EE', display: 'grid', placeItems: 'center', fontFamily: "'Inter', sans-serif", fontSize: '48px', fontWeight: 600, color: '#2F5446' }}>
                       {initials}
                     </div>
                   )}
@@ -507,7 +507,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
 
               {/* Identity */}
               <div style={{ textAlign: 'center', width: '100%' }}>
-                <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '22px', fontWeight: 800, color: '#0F1C17', marginBottom: '4px', lineHeight: 1.2 }}>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '22px', fontWeight: 600, color: '#0F1C17', marginBottom: '4px', lineHeight: 1.2 }}>
                   {name}
                 </div>
                 {profile.role_title && (
@@ -526,7 +526,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
               {(profile.is_founder || profile.rank) && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center' }}>
                   {profile.is_founder && (
-                    <span style={{ fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: '99px', background: '#2F5446', color: '#fff', letterSpacing: '.03em' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 10px', borderRadius: '99px', background: '#2F5446', color: '#fff', letterSpacing: '.03em' }}>
                       Fondateur
                     </span>
                   )}
@@ -612,7 +612,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
                     {services.map((svc, i) => (
                       <div key={i} style={{ background: '#F7FAF8', borderRadius: '12px', padding: '16px' }}>
-                        <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '14px', fontWeight: 700, color: '#0F1C17', marginBottom: '5px' }}>{svc.title}</div>
+                        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', fontWeight: 600, color: '#0F1C17', marginBottom: '5px' }}>{svc.title}</div>
                         <div style={{ fontSize: '13px', color: '#4B6358', lineHeight: 1.55 }}>{svc.description}</div>
                       </div>
                     ))}
@@ -633,7 +633,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
                   <div className="section-label">Track Record</div>
                   {trackRecord.map((tr, i) => (
                     <div key={i} className="tr-row">
-                      <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '22px', fontWeight: 900, color: '#2F5446', letterSpacing: '-0.02em', minWidth: '80px' }}>
+                      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '22px', fontWeight: 600, color: '#2F5446', letterSpacing: '-0.02em', minWidth: '80px' }}>
                         {tr.value}
                       </div>
                       <div style={{ flex: 1 }}>
@@ -654,7 +654,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
                 onMouseEnter={hoverReady ? e => { e.currentTarget.style.borderColor = '#56b791'; e.currentTarget.style.boxShadow = '0 8px 48px rgba(2,79,65,0.10), 0 0 0 1.5px #56b791'; e.currentTarget.style.transform = 'translateY(-2px)' } : undefined}
                 onMouseLeave={hoverReady ? e => { e.currentTarget.style.borderColor = '#E4EEEA'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0)' } : undefined}
               >
-                <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9BB5AA', marginBottom: 12 }}>
+                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#9BB5AA', marginBottom: 12 }}>
                   A recommandé Nouveau Variable à
                 </p>
                 <ReferralsCarousel referrals={referrals} />
@@ -680,7 +680,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
                 {rdvStatus === 'success' ? (
                   <div style={{ textAlign: 'center', padding: '32px 0' }}>
                     <div style={{ fontSize: 32, marginBottom: 12 }}>✓</div>
-                    <p style={{ fontWeight: 700, fontSize: 16, color: '#024f41', marginBottom: 8 }}>
+                    <p style={{ fontWeight: 600, fontSize: 16, color: '#024f41', marginBottom: 8 }}>
                       Demande envoyée à {profile.first_name}
                     </p>
                     <p style={{ fontSize: 14, color: '#9BB5AA' }}>
@@ -692,7 +692,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
                     <p style={{ fontSize: 14, color: '#4B6358', marginBottom: 16 }}>
                       Connecte-toi pour proposer un RDV à {profile.first_name}.
                     </p>
-                    <a href="/auth" style={{ display: 'inline-block', background: '#2F5446', color: '#fff', padding: '11px 28px', borderRadius: '99px', fontFamily: 'Jost, sans-serif', fontSize: '13px', fontWeight: 700, textDecoration: 'none' }}>
+                    <a href="/auth" style={{ display: 'inline-block', background: '#2F5446', color: '#fff', padding: '11px 28px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>
                       Se connecter →
                     </a>
                   </div>
@@ -767,7 +767,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
             <footer style={{ marginTop: 8, padding: '24px 0', borderTop: '1px solid #E4EEEA', textAlign: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '6px' }}>
                 <NvLogo size={16} />
-                <span style={{ fontFamily: 'Jost, sans-serif', fontSize: '11px', fontWeight: 700, color: '#2F5446', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</span>
+                <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '11px', fontWeight: 600, color: '#2F5446', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</span>
               </div>
               <div style={{ fontSize: '12px', color: '#9BB5AA' }}>
                 {name} est membre de Nouveau Variable — le club privé des commerciaux ambitieux

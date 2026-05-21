@@ -86,29 +86,29 @@ export default function AffiliationsPage() {
         {/* KPI cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 24px' }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
               Membres parrainés actifs
             </p>
-            <p style={{ fontSize: 28, fontWeight: 800, color: C.text }}>{totalActif}</p>
+            <p style={{ fontSize: 28, fontWeight: 600, color: C.text }}>{totalActif}</p>
           </div>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 24px' }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
               Meilleur parrain
             </p>
             {bestAffiliate && bestAffiliate.active_referrals > 0 ? (
               <>
-                <p style={{ fontSize: 16, fontWeight: 800, color: C.text }}>{bestAffiliate.first_name} {bestAffiliate.last_name}</p>
+                <p style={{ fontSize: 16, fontWeight: 600, color: C.text }}>{bestAffiliate.first_name} {bestAffiliate.last_name}</p>
                 <p style={{ fontSize: 12, color: C.greenL, marginTop: 2 }}>{bestAffiliate.active_referrals} filleul{bestAffiliate.active_referrals > 1 ? 's' : ''}</p>
               </>
             ) : (
-              <p style={{ fontSize: 16, fontWeight: 800, color: C.text2 }}>—</p>
+              <p style={{ fontSize: 16, fontWeight: 600, color: C.text2 }}>—</p>
             )}
           </div>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 24px' }}>
-            <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+            <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
               Affiliés avec code actif
             </p>
-            <p style={{ fontSize: 28, fontWeight: 800, color: C.text }}>
+            <p style={{ fontSize: 28, fontWeight: 600, color: C.text }}>
               {affiliates.filter(a => a.referral_code).length}
             </p>
           </div>
@@ -133,7 +133,7 @@ export default function AffiliationsPage() {
               <thead>
                 <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                   {['Membre', 'Code parrain', 'Lien complet', 'Parrainés N1', 'Actions'].map(h => (
-                    <th key={h} style={{ padding: '12px 20px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                    <th key={h} style={{ padding: '12px 20px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                       {h}
                     </th>
                   ))}
@@ -163,7 +163,7 @@ export default function AffiliationsPage() {
                       ) : '—'}
                     </td>
                     <td style={{ padding: '12px 20px' }}>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: a.active_referrals > 0 ? C.greenL : C.text2 }}>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: a.active_referrals > 0 ? C.greenL : C.text2 }}>
                         {a.active_referrals}
                       </span>
                     </td>

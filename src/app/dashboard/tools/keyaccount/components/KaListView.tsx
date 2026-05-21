@@ -60,12 +60,12 @@ export default function KaListView({ accounts, dispatch, onViewMap, onAddContact
                   <div style={{
                     width: '36px', height: '36px', borderRadius: 'var(--r-sm)',
                     background: 'var(--green-3)', display: 'grid', placeItems: 'center',
-                    fontFamily: "'Jost', sans-serif", fontSize: '12px', fontWeight: 700, color: 'var(--green)',
+                    fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: 'var(--green)',
                   }}>
                     {ini}
                   </div>
                   <div>
-                    <div style={{ fontFamily: "'Jost', sans-serif", fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>{acc.name}</div>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', fontWeight: 600, color: 'var(--text)' }}>{acc.name}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '1px' }}>{acc.sector || '—'}</div>
                   </div>
                 </div>
@@ -91,7 +91,7 @@ export default function KaListView({ accounts, dispatch, onViewMap, onAddContact
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
                   <span style={{ fontSize: '11px', color: 'var(--text-2)' }}>Score MEDDICC</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ background: scoreLabelBg, color: scoreLabelColor, fontSize: '10px', fontWeight: 700, padding: '2px 7px', borderRadius: 'var(--r-full)' }}>{scoreLabel}</span>
+                    <span style={{ background: scoreLabelBg, color: scoreLabelColor, fontSize: '10px', fontWeight: 600, padding: '2px 7px', borderRadius: 'var(--r-full)' }}>{scoreLabel}</span>
                     <span style={{ fontWeight: 600, color: 'var(--green)', fontSize: '11px' }}>{score}%</span>
                   </div>
                 </div>
@@ -103,7 +103,7 @@ export default function KaListView({ accounts, dispatch, onViewMap, onAddContact
               {/* Next action */}
               {nextAct && (
                 <div style={{ fontSize: '11px', color: 'var(--text-2)', background: 'var(--surface)', borderRadius: 'var(--r-sm)', padding: '6px 10px', marginBottom: '8px', lineHeight: 1.4 }}>
-                  <span style={{ fontWeight: 700, color: 'var(--text-3)', marginRight: '4px' }}>→</span>{nextAct}
+                  <span style={{ fontWeight: 600, color: 'var(--text-3)', marginRight: '4px' }}>→</span>{nextAct}
                 </div>
               )}
 

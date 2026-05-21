@@ -32,7 +32,7 @@ export default function SectorCloud({ value, onChange, max = 3 }: SectorCloudPro
     <div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
         <span style={{
-          fontSize: '11px', fontWeight: 700, padding: '3px 10px',
+          fontSize: '11px', fontWeight: 600, padding: '3px 10px',
           borderRadius: '99px',
           background: maxReached ? 'var(--green-3)' : 'var(--surface)',
           border: '1px solid var(--border)',

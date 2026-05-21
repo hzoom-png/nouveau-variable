@@ -64,7 +64,7 @@ export default function ProjectsClient({ profile }: Props) {
       {/* Top bar */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontFamily: 'Jost, sans-serif', fontWeight: 800, fontSize: '22px', color: 'var(--text)', marginBottom: '4px' }}>Projets</h1>
+          <h1 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '22px', color: 'var(--text)', marginBottom: '4px' }}>Projets</h1>
           <p style={{ fontSize: '13px', color: 'var(--text-2)' }}>Découvrez les projets de la communauté et proposez votre aide</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -76,7 +76,7 @@ export default function ProjectsClient({ profile }: Props) {
           </button>
           <button
             onClick={() => setShowCreateFlow(true)}
-            style={{ padding: '9px 18px', borderRadius: 'var(--r-sm)', background: 'var(--green)', color: '#fff', fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', transition: '.15s' }}
+            style={{ padding: '9px 18px', borderRadius: 'var(--r-sm)', background: 'var(--green)', color: '#fff', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '13px', border: 'none', cursor: 'pointer', transition: '.15s' }}
           >
             + Partager un projet
           </button>
@@ -103,7 +103,7 @@ export default function ProjectsClient({ profile }: Props) {
           {/* Matches section */}
           {matches.length > 0 && (
             <div ref={matchRef}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '12px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '12px' }}>
                 Projets pour vous
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '14px', marginBottom: '32px' }}>
@@ -117,7 +117,7 @@ export default function ProjectsClient({ profile }: Props) {
                   />
                 ))}
               </div>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '12px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '12px' }}>
                 Tous les projets
               </div>
             </div>

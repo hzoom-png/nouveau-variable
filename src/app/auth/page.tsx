@@ -269,11 +269,11 @@ function AuthPageInner() {
     padding: '13px',
     borderRadius: '8px',
     fontSize: '15px',
-    fontWeight: 700,
+    fontWeight: 600,
     cursor: loading ? 'not-allowed' : 'pointer',
     border: 'none',
     width: '100%',
-    fontFamily: 'Jost, sans-serif',
+    fontFamily: 'Inter, sans-serif',
     transition: '.15s',
   }
 
@@ -293,11 +293,11 @@ function AuthPageInner() {
         <div style={{ padding: '24px 28px 20px', borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
             <NvLogo size={30} />
-            <span style={{ fontFamily: 'Jost, sans-serif', fontWeight: 700, fontSize: '12px', color: GREEN, letterSpacing: '.05em', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '12px', color: GREEN, letterSpacing: '.05em', textTransform: 'uppercase' }}>
               Nouveau Variable
             </span>
           </div>
-          <div style={{ fontFamily: 'Jost, sans-serif', fontSize: '20px', fontWeight: 800, color: TEXT, letterSpacing: '-.01em', marginBottom: '4px' }}>
+          <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '20px', fontWeight: 600, color: TEXT, letterSpacing: '-.01em', marginBottom: '4px' }}>
             {step === 'phone' && 'Accède à ton espace'}
             {step === 'otp' && 'Code de vérification'}
             {step === 'referral' && 'Code parrain'}
@@ -365,8 +365,8 @@ function AuthPageInner() {
                       height: '54px',
                       textAlign: 'center',
                       fontSize: '22px',
-                      fontWeight: 700,
-                      fontFamily: 'Jost, sans-serif',
+                      fontWeight: 600,
+                      fontFamily: 'Inter, sans-serif',
                       border: `2px solid ${digit ? GREEN : BORDER}`,
                       borderRadius: '10px',
                       outline: 'none',
@@ -429,7 +429,7 @@ function AuthPageInner() {
                       setReferrerId('')
                     }}
                     placeholder="Ex: GODMODE"
-                    style={{ ...inputStyle, flex: 1, fontFamily: 'Jost, sans-serif', fontWeight: 600, letterSpacing: '.05em' }}
+                    style={{ ...inputStyle, flex: 1, fontFamily: 'Inter, sans-serif', fontWeight: 600, letterSpacing: '.05em' }}
                   />
                   <button
                     onClick={async () => {

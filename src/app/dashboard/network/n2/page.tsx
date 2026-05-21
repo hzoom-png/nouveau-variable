@@ -35,7 +35,7 @@ export default async function N2Page() {
       <div style={{ background: 'var(--white)', borderRadius: '14px', padding: '20px 24px', marginBottom: '24px', boxShadow: '0 1px 6px rgba(67,105,90,0.07)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
           <div>
-            <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '16px', color: 'var(--text)' }}>
+            <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '16px', color: 'var(--text)' }}>
               Taux N2 actuel : <span style={{ color: '#43695A' }}>{n2Rate}%</span>
             </div>
             {nextTier && (
@@ -83,10 +83,10 @@ export default async function N2Page() {
               <div style={{
                 width: '44px', height: '44px', borderRadius: '11px', flexShrink: 0,
                 background: '#4B7BF5', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 700, fontSize: '16px',
+                color: 'white', fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '16px',
               }}>{initials}</div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text)' }}>
+                <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text)' }}>
                   {String(profile.first_name)} {String(profile.last_name)}
                 </div>
                 <div style={{ fontSize: '13px', color: 'var(--muted)' }}>
@@ -95,7 +95,7 @@ export default async function N2Page() {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{
-                  padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 700,
+                  padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600,
                   background: isActive ? 'var(--green-pale)' : 'var(--border)',
                   color: isActive ? '#43695A' : 'var(--muted)',
                 }}>

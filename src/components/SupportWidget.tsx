@@ -114,7 +114,7 @@ export function SupportWidget({ userEmail = '', userName = '' }: Props) {
         {/* Header */}
         <div style={{ background: '#2F5446', padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', margin: 0 }}>Besoin d'aide ?</p>
+            <p style={{ fontSize: 14, fontWeight: 600, color: '#fff', margin: 0 }}>Besoin d'aide ?</p>
             <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', margin: '2px 0 0' }}>On te répond vite</p>
           </div>
           <button

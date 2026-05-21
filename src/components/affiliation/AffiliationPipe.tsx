@@ -147,7 +147,7 @@ export function AffiliationPipe() {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18, flexWrap: 'wrap', gap: 10 }}>
           <div>
-            <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: 17, color: 'var(--text)' }}>
+            <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: 17, color: 'var(--text)' }}>
               Pipeline d&apos;affiliation
             </div>
             <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>
@@ -158,7 +158,7 @@ export function AffiliationPipe() {
             onClick={openAdd}
             style={{
               background: '#024f41', color: '#fff', border: 'none', borderRadius: 8,
-              padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+              padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 6,
             }}
           >
@@ -175,8 +175,8 @@ export function AffiliationPipe() {
               <div key={st.id} className="pipe-col" style={{ flex: '1 0 200px', minWidth: 200, display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {/* Column header */}
                 <div style={{ padding: '7px 10px', borderRadius: 8, background: st.bg, border: `1px solid ${st.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: st.color, textTransform: 'uppercase', letterSpacing: '.05em' }}>{st.label}</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: st.color, background: 'rgba(0,0,0,.06)', borderRadius: 99, padding: '1px 7px' }}>{cols.length}</span>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: st.color, textTransform: 'uppercase', letterSpacing: '.05em' }}>{st.label}</span>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: st.color, background: 'rgba(0,0,0,.06)', borderRadius: 99, padding: '1px 7px' }}>{cols.length}</span>
                 </div>
 
                 {/* Cards */}
@@ -191,7 +191,7 @@ export function AffiliationPipe() {
                         padding: '10px 12px', boxShadow: '0 1px 3px rgba(0,0,0,.04)',
                       }}
                     >
-                      <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {c.first_name} {c.last_name}
                       </div>
                       {c.role && (
@@ -239,7 +239,7 @@ export function AffiliationPipe() {
           onClick={e => { if (e.target === e.currentTarget) setModal(null) }}
         >
           <div style={{ background: 'var(--white)', borderRadius: 16, padding: '28px 32px', width: '100%', maxWidth: 480, boxShadow: '0 20px 60px rgba(0,0,0,.18)', maxHeight: '90vh', overflowY: 'auto' }}>
-            <div style={{ fontFamily: 'var(--font-jost, Jost, sans-serif)', fontWeight: 800, fontSize: 17, color: 'var(--text)', marginBottom: 20 }}>
+            <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: 17, color: 'var(--text)', marginBottom: 20 }}>
               {modal.contact ? 'Modifier le contact' : 'Ajouter un contact'}
             </div>
 
@@ -325,7 +325,7 @@ export function AffiliationPipe() {
                 <button onClick={() => setModal(null)} style={{ padding: '9px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: 'var(--surface)', color: 'var(--text-2)', border: '1px solid var(--border)', cursor: 'pointer' }}>
                   Annuler
                 </button>
-                <button onClick={save} disabled={saving || !form.first_name.trim()} style={{ padding: '9px 18px', borderRadius: 8, fontSize: 13, fontWeight: 700, background: '#024f41', color: '#fff', border: 'none', cursor: 'pointer', opacity: saving ? .7 : 1 }}>
+                <button onClick={save} disabled={saving || !form.first_name.trim()} style={{ padding: '9px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: '#024f41', color: '#fff', border: 'none', cursor: 'pointer', opacity: saving ? .7 : 1 }}>
                   {saving ? 'Enregistrement…' : modal.contact ? 'Mettre à jour' : 'Ajouter'}
                 </button>
               </div>

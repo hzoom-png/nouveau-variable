@@ -414,7 +414,7 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
                   onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='none' }}
                 >
                   <div style={{ display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:8 }}>
-                    <h3 style={{ fontFamily:'var(--font-jost)',fontWeight:700,fontSize:15,color:'var(--text)',flex:1,marginRight:8 }}>{proj.name}</h3>
+                    <h3 style={{ fontFamily:'var(--font-inter)',fontWeight:700,fontSize:15,color:'var(--text)',flex:1,marginRight:8 }}>{proj.name}</h3>
                     <span style={{ fontSize:10,fontWeight:700,padding:'3px 8px',borderRadius:'var(--r-full)',
                       background:`${STAGE_COLORS[proj.stage]}18`,color:STAGE_COLORS[proj.stage],whiteSpace:'nowrap' }}>
                       {STAGE_LABELS[proj.stage]}
@@ -463,7 +463,7 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
       <div>
         <div style={{ display:'flex',alignItems:'center',gap:12,marginBottom:24 }}>
           <button onClick={() => setView('list')} style={{ fontSize:13,color:'var(--text-3)',background:'none',border:'none',cursor:'pointer' }}>← Retour</button>
-          <h1 style={{ fontFamily:'var(--font-jost)',fontWeight:800,fontSize:22,color:'var(--text)' }}>
+          <h1 style={{ fontFamily:'var(--font-inter)',fontWeight:800,fontSize:22,color:'var(--text)' }}>
             {editing ? 'Modifier le projet' : 'Nouveau projet Side Hustle'}
           </h1>
         </div>
@@ -516,7 +516,7 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
             </button>
             <button onClick={handleFormSubmit} disabled={!form.name?.trim()}
               style={{ flex:1,padding:'12px',borderRadius:'var(--r-full)',background:'var(--green)',color:'#fff',
-                fontFamily:'var(--font-jost)',fontWeight:700,fontSize:14,border:'none',
+                fontFamily:'var(--font-inter)',fontWeight:700,fontSize:14,border:'none',
                 cursor:form.name?.trim()?'pointer':'not-allowed',opacity:form.name?.trim()?1:.5 }}>
               Générer ma roadmap →
             </button>
@@ -866,7 +866,7 @@ function ForecastRow({ month, onSave }: { month: Month; onSave: (field: 'revenue
   }
   return (
     <tr style={{ borderBottom:'1px solid var(--border)' }}>
-      <td style={{ padding:'6px 12px',fontFamily:'var(--font-jost)',fontWeight:600 }}>{month.month}</td>
+      <td style={{ padding:'6px 12px',fontFamily:'var(--font-inter)',fontWeight:600 }}>{month.month}</td>
       <td style={{ padding:'4px 8px' }}>
         <input type="number" value={revenue}
           onChange={e => setRevenue(e.target.value)}

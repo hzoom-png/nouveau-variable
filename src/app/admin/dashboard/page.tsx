@@ -70,7 +70,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
 function StatusPill({ status }: { status: string }) {
   const cfg = STATUS_CONFIG[status] ?? { label: status, color: '#4B6358', bg: 'rgba(75,99,88,0.15)' }
   return (
-    <span style={{ fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 10, background: cfg.bg, color: cfg.color, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+    <span style={{ fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 10, background: cfg.bg, color: cfg.color, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
       {cfg.label}
     </span>
   )
@@ -81,8 +81,8 @@ function StatusPill({ status }: { status: string }) {
 function KPI({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: '20px 24px' }}>
-      <p style={{ fontSize: 11, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>{label}</p>
-      <p style={{ fontSize: 28, fontWeight: 800, color: C.text, lineHeight: 1 }}>{value}</p>
+      <p style={{ fontSize: 11, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>{label}</p>
+      <p style={{ fontSize: 28, fontWeight: 600, color: C.text, lineHeight: 1 }}>{value}</p>
       {sub && <p style={{ fontSize: 12, color: C.text3, marginTop: 6 }}>{sub}</p>}
     </div>
   )
@@ -255,7 +255,7 @@ export default function DashboardPage() {
   }
 
   const section = (title: string) => (
-    <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>
+    <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: 12 }}>
       {title}
     </p>
   )
@@ -284,7 +284,7 @@ export default function DashboardPage() {
 
   return (
     <div style={{ padding: '32px 40px', maxWidth: 1200 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 28 }}>Dashboard</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 600, color: C.text, marginBottom: 28 }}>Dashboard</h1>
 
       {/* KPIs */}
       {!statsLoading && stats && (
@@ -308,7 +308,7 @@ export default function DashboardPage() {
       {/* ── CANDIDATURES ────────────────────────────────────────────── */}
       <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24, marginBottom: 32 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
-          <p style={{ fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+          <p style={{ fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
             Candidatures {!candsLoading && `— ${cands.length}`}
           </p>
           <div style={{ display: 'flex', gap: 6 }}>
@@ -331,7 +331,7 @@ export default function DashboardPage() {
               <thead>
                 <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                   {['Nom', 'Rôle', 'Ville', 'Statut', 'Date', 'Actions'].map(h => (
-                    <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 10, fontWeight: 700, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{h}</th>
+                    <th key={h} style={{ padding: '10px 12px', textAlign: 'left', fontSize: 10, fontWeight: 600, color: C.text2, letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -436,7 +436,7 @@ export default function DashboardPage() {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
               <div>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: C.text }}>{selected.full_name}</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 600, color: C.text }}>{selected.full_name}</h2>
                 <p style={{ fontSize: 12, color: C.text2, marginTop: 2 }}>{selected.email}</p>
               </div>
               <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: C.text2, fontSize: 20, cursor: 'pointer', lineHeight: 1 }}>✕</button>
@@ -455,7 +455,7 @@ export default function DashboardPage() {
                 ['Reçue le',  fmtDate(selected.created_at)],
               ].map(([k, v]) => (
                 <div key={k}>
-                  <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>{k}</p>
+                  <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>{k}</p>
                   <p style={{ fontSize: 13, color: C.text }}>{v}</p>
                 </div>
               ))}
@@ -463,13 +463,13 @@ export default function DashboardPage() {
 
             {selected.motivation && (
               <div style={{ marginBottom: 18 }}>
-                <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Motivation</p>
+                <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Motivation</p>
                 <p style={{ fontSize: 13, color: C.text, lineHeight: 1.6, whiteSpace: 'pre-wrap', background: C.input, borderRadius: 8, padding: '10px 12px' }}>{selected.motivation}</p>
               </div>
             )}
 
             <div style={{ marginBottom: 18 }}>
-              <p style={{ fontSize: 10, color: C.text2, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Note admin</p>
+              <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Note admin</p>
               <textarea
                 style={{ width: '100%', boxSizing: 'border-box', background: C.input, border: `1px solid rgba(255,255,255,0.1)`, borderRadius: 8, padding: '10px 12px', fontSize: 13, color: C.text, fontFamily: 'Inter, sans-serif', outline: 'none', resize: 'vertical', minHeight: 72 }}
                 placeholder="Note interne…"

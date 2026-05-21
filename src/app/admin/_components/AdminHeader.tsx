@@ -23,7 +23,7 @@ export function AdminHeader({ title, subtitle, action }: Props) {
       background: '#0F1C17',
     }}>
       <div>
-        <h1 style={{ fontSize: 18, fontWeight: 800, color: C.text, lineHeight: 1 }}>{title}</h1>
+        <h1 style={{ fontSize: 18, fontWeight: 600, color: C.text, lineHeight: 1 }}>{title}</h1>
         {subtitle && (
           <p style={{ fontSize: 12, color: C.text2, marginTop: 2 }}>{subtitle}</p>
         )}

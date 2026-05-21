@@ -75,11 +75,11 @@ export default function LibraryClient() {
   return (
     <div style={{ maxWidth: '860px' }}>
       <div style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '4px 12px', borderRadius: 'var(--r-full)', background: 'var(--green-3)', border: '1px solid var(--green-4)', fontSize: '11px', fontWeight: 700, color: 'var(--green)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: '12px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '4px 12px', borderRadius: 'var(--r-full)', background: 'var(--green-3)', border: '1px solid var(--green-4)', fontSize: '11px', fontWeight: 600, color: 'var(--green)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: '12px' }}>
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M2 1h8v10L6 8.5 2 11V1z"/></svg>
           Ma bibliothèque
         </div>
-        <div style={{ fontFamily: 'var(--font-jost)', fontSize: '28px', fontWeight: 800, color: 'var(--text)', letterSpacing: '-.02em', marginBottom: '8px' }}>Tes DealLinks sauvegardés</div>
+        <div style={{ fontFamily: 'var(--font-inter)', fontSize: '28px', fontWeight: 600, color: 'var(--text)', letterSpacing: '-.02em', marginBottom: '8px' }}>Tes DealLinks sauvegardés</div>
         <div style={{ fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.7, maxWidth: '560px' }}>
           Chaque DealLink est conservé ici. Retrouve, réutilise, analyse les ouvertures.
         </div>
@@ -107,11 +107,11 @@ export default function LibraryClient() {
             <div style={{ height: '3px', background: dl.score ? (dl.score >= 75 ? 'var(--green)' : dl.score >= 50 ? 'var(--amber)' : 'var(--red)') : 'var(--border)' }} />
             <div style={{ padding: '14px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: 'var(--r-sm)', flexShrink: 0, background: 'var(--green-3)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-jost)', fontSize: '12px', fontWeight: 700, color: 'var(--green)' }}>
+                <div style={{ width: '38px', height: '38px', borderRadius: 'var(--r-sm)', flexShrink: 0, background: 'var(--green-3)', display: 'grid', placeItems: 'center', fontFamily: 'var(--font-inter)', fontSize: '12px', fontWeight: 600, color: 'var(--green)' }}>
                   {getInitials(dl.prospect_name)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', fontFamily: 'var(--font-jost)' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)', fontFamily: 'var(--font-inter)' }}>
                     {dl.prospect_name || '—'}{dl.prospect_company ? ` · ${dl.prospect_company}` : ''}
                   </div>
                   <div style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '1px' }}>
@@ -124,7 +124,7 @@ export default function LibraryClient() {
                       <div style={{ width: '60px', height: '4px', background: 'var(--surface-2)', borderRadius: 'var(--r-full)', overflow: 'hidden' }}>
                         <div style={{ height: '4px', background: dl.score >= 75 ? 'var(--green)' : dl.score >= 50 ? 'var(--amber)' : 'var(--red)', width: dl.score + '%' }} />
                       </div>
-                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-2)' }}>{dl.score}/100</span>
+                      <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-2)' }}>{dl.score}/100</span>
                     </div>
                   )}
                   <span style={{ padding: '2px 9px', borderRadius: 'var(--r-full)', fontSize: '10px', fontWeight: 600, background: dl.opened_at ? 'var(--green-3)' : 'var(--surface)', color: dl.opened_at ? 'var(--green)' : 'var(--text-3)', border: `1px solid ${dl.opened_at ? 'var(--green-4)' : 'var(--border)'}` }}>
@@ -157,12 +157,12 @@ export default function LibraryClient() {
               {isExpanded && res && (
                 <div style={{ marginTop: '14px', borderTop: '1px solid var(--border)', paddingTop: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <div>
-                    <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '8px' }}>Arguments</div>
+                    <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '8px' }}>Arguments</div>
                     {res.arguments?.map((arg, i) => (
                       <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '8px', alignItems: 'flex-start' }}>
-                        <div style={{ width: '20px', height: '20px', borderRadius: '5px', background: 'var(--green)', display: 'grid', placeItems: 'center', fontSize: '10px', fontWeight: 800, color: '#fff', flexShrink: 0 }}>{i + 1}</div>
+                        <div style={{ width: '20px', height: '20px', borderRadius: '5px', background: 'var(--green)', display: 'grid', placeItems: 'center', fontSize: '10px', fontWeight: 600, color: '#fff', flexShrink: 0 }}>{i + 1}</div>
                         <div>
-                          <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text)', marginBottom: '2px' }}>{arg.titre}</div>
+                          <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' }}>{arg.titre}</div>
                           <div style={{ fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.5 }}>{arg.corps}</div>
                         </div>
                       </div>
@@ -175,12 +175,12 @@ export default function LibraryClient() {
                     </div>
                   )}
                   <div style={{ background: 'var(--green-3)', borderRadius: 'var(--r-sm)', padding: '8px 12px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--green)' }}>CTA : </span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--green)' }}>CTA : </span>
                     <span style={{ fontSize: '12px', color: 'var(--text)' }}>{res.cta}</span>
                   </div>
                   {res.objections?.length > 0 && (
                     <div>
-                      <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '6px' }}>Objections</div>
+                      <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '6px' }}>Objections</div>
                       {res.objections.map((o, i) => (
                         <div key={i} style={{ marginBottom: '6px' }}>
                           <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px' }}>— {o.objection}</div>
@@ -208,9 +208,9 @@ function EmptyState({ icon, title, desc, href, cta }: {
         <div style={{ width: '52px', height: '52px', background: 'var(--green-3)', borderRadius: 'var(--r-lg)', display: 'grid', placeItems: 'center', margin: '0 auto 20px' }}>
           {icon}
         </div>
-        <div style={{ fontFamily: 'var(--font-jost)', fontSize: '18px', fontWeight: 800, color: 'var(--text)', marginBottom: '8px' }}>{title}</div>
+        <div style={{ fontFamily: 'var(--font-inter)', fontSize: '18px', fontWeight: 600, color: 'var(--text)', marginBottom: '8px' }}>{title}</div>
         <div style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '20px' }}>{desc}</div>
-        <Link href={href} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--green)', color: '#fff', padding: '9px 20px', borderRadius: 'var(--r-sm)', fontFamily: 'var(--font-jost)', fontSize: '13px', fontWeight: 700, textDecoration: 'none' }}>
+        <Link href={href} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--green)', color: '#fff', padding: '9px 20px', borderRadius: 'var(--r-sm)', fontFamily: 'var(--font-inter)', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>
           {cta}
         </Link>
       </div>

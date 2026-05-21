@@ -49,7 +49,7 @@ function Avatar({ profile, size = 48 }: { profile: MeetingProfile; size?: number
       border: '2px solid #E4EEEA',
       overflow: 'hidden', display: 'grid', placeItems: 'center',
       flexShrink: 0,
-      fontFamily: 'Jost, sans-serif', fontSize: size * 0.35, fontWeight: 700, color: '#024f41',
+      fontFamily: 'Inter, sans-serif', fontSize: size * 0.35, fontWeight: 600, color: '#024f41',
     }}>
       {profile.avatar_url
         ? <img src={profile.avatar_url} alt={initials} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -152,7 +152,7 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
                 <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 14 }}>
                   <Avatar profile={sender} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: '#012722' }}>{sender.first_name} {sender.last_name}</div>
+                    <div style={{ fontWeight: 600, fontSize: 15, color: '#012722' }}>{sender.first_name} {sender.last_name}</div>
                     <div style={{ fontSize: 13, color: '#4B6358' }}>{sender.role_title}</div>
                   </div>
                   <span style={{ fontSize: 12, color: '#9BB5AA', flexShrink: 0 }}>
@@ -170,7 +170,7 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
                   </p>
                 )}
                 <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <button onClick={() => accept(m.id)} style={{ background: '#024f41', color: '#fff', padding: '9px 20px', borderRadius: '99px', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'pointer' }}>
+                  <button onClick={() => accept(m.id)} style={{ background: '#024f41', color: '#fff', padding: '9px 20px', borderRadius: '99px', fontWeight: 600, fontSize: 13, border: 'none', cursor: 'pointer' }}>
                     ✓ Accepter
                   </button>
                   <button onClick={() => decline(m.id)} style={{ background: 'transparent', color: '#4B6358', padding: '9px 20px', borderRadius: '99px', fontWeight: 600, fontSize: 13, border: '1.5px solid #E4EEEA', cursor: 'pointer' }}>
@@ -211,10 +211,10 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
                 <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 14 }}>
                   <Avatar profile={receiver} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: '#012722' }}>{receiver.first_name} {receiver.last_name}</div>
+                    <div style={{ fontWeight: 600, fontSize: 15, color: '#012722' }}>{receiver.first_name} {receiver.last_name}</div>
                     <div style={{ fontSize: 13, color: '#4B6358' }}>{receiver.role_title}</div>
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: '99px', background: statusBadge.bg, color: statusBadge.color, flexShrink: 0 }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: '99px', background: statusBadge.bg, color: statusBadge.color, flexShrink: 0 }}>
                     {statusBadge.label}
                   </span>
                 </div>
@@ -256,10 +256,10 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
                 <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
                   <Avatar profile={other} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: '#012722' }}>{other.first_name} {other.last_name}</div>
+                    <div style={{ fontWeight: 600, fontSize: 15, color: '#012722' }}>{other.first_name} {other.last_name}</div>
                     <div style={{ fontSize: 13, color: '#4B6358' }}>{other.role_title}</div>
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: '99px', background: '#e8f5ef', color: '#024f41', flexShrink: 0 }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: '99px', background: '#e8f5ef', color: '#024f41', flexShrink: 0 }}>
                     RDV confirmé ✓
                   </span>
                 </div>

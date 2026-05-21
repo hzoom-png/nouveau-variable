@@ -179,7 +179,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
     <div className="nv-landing">
       <style>{`
         :root {
-          --fj: var(--font-jost), 'Jost', system-ui, sans-serif;
+          --fj: var(--font-inter), 'Inter', system-ui, sans-serif;
           --fi: var(--font-inter), 'Inter', system-ui, sans-serif;
         }
         .nv-landing {
@@ -338,7 +338,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           </span>
         </div>
         <a href="#candidature" className="nav-cta" style={{
-          fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 13,
+          fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 13,
           color: '#fff', background: 'var(--green)',
           borderRadius: 99, padding: '9px 20px',
           textDecoration: 'none',
@@ -357,7 +357,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         <div className="hero-el hero-el-1">
           <span style={{
             display: 'inline-block',
-            fontFamily: 'var(--fi)', fontSize: 12, fontWeight: 700,
+            fontFamily: 'var(--fi)', fontSize: 12, fontWeight: 600,
             color: 'var(--green)', background: 'var(--green-3)',
             borderRadius: 99, padding: '5px 16px', letterSpacing: '.04em',
           }}>
@@ -388,7 +388,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           gap: 20, marginTop: 40, flexWrap: 'wrap',
         }}>
           <a href="#candidature" className="btn-green" style={{
-            fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 15,
+            fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 15,
             color: '#fff', background: 'var(--green)',
             borderRadius: 99, padding: '16px 36px',
             textDecoration: 'none',
@@ -501,7 +501,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                     {s.n}
                   </div>
                   <h3 style={{
-                    fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 16,
+                    fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 16,
                     color: 'var(--text)', marginBottom: 8, lineHeight: 1.35,
                   }}>
                     {s.t}
@@ -591,7 +591,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                     {card.title}
                   </h3>
                   <span style={{
-                    fontFamily: 'var(--fi)', fontSize: 11, fontWeight: 700,
+                    fontFamily: 'var(--fi)', fontSize: 11, fontWeight: 600,
                     color: 'var(--green)', background: 'var(--green-3)',
                     borderRadius: 99, padding: '3px 10px', letterSpacing: '.04em',
                     whiteSpace: 'nowrap',
@@ -686,7 +686,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                     {m.label}
                   </div>
                   <h3 style={{
-                    fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 15,
+                    fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 15,
                     color: 'var(--text)', marginBottom: 6,
                   }}>
                     {m.title}
@@ -713,7 +713,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             <div style={{ textAlign: 'center' }}>
               <a href="#candidature" className="btn-green" style={{
                 display: 'inline-block',
-                fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 14,
+                fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 14,
                 color: '#fff', background: 'var(--green)',
                 borderRadius: 99, padding: '14px 32px',
                 textDecoration: 'none',
@@ -791,7 +791,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                     padding: '24px 20px', textAlign: 'left',
                   }}>
                     <p style={{
-                      fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 14,
+                      fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 14,
                       color: 'var(--green)', marginBottom: 4,
                     }}>
                       Pendant ce temps, partage ton lien d&apos;affiliation :
@@ -828,7 +828,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                         width: '100%', background: copied ? 'var(--green-4)' : 'var(--green)',
                         color: '#fff', border: 'none', borderRadius: 99,
                         padding: '12px 20px',
-                        fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 14,
+                        fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 14,
                         cursor: 'pointer', transition: 'background 0.2s',
                       }}
                     >
@@ -954,7 +954,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                       style={{
                         width: '100%', background: 'var(--green)', color: '#fff',
                         border: 'none', borderRadius: 99, padding: 16,
-                        fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 16,
+                        fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 16,
                         cursor: 'pointer', marginTop: 4,
                       }}
                     >
@@ -981,7 +981,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                         width: 36, height: 36, borderRadius: '50%',
                         background: 'var(--green)', color: '#fff',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 14, flexShrink: 0,
+                        fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 14, flexShrink: 0,
                       }}>
                         {form.firstname[0]?.toUpperCase() || '?'}
                       </div>
@@ -1270,7 +1270,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                           background: status === 'loading' ? 'var(--text-3)' : 'var(--green)',
                           color: '#fff', border: 'none', borderRadius: 99,
                           padding: '14px 24px',
-                          fontFamily: 'var(--fj)', fontWeight: 700, fontSize: 15,
+                          fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 15,
                           cursor: status === 'loading' ? 'wait' : 'pointer',
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                         }}
@@ -1313,7 +1313,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 onError={e => (e.currentTarget.style.display = 'none')}
               />
               <span style={{
-                fontFamily: 'var(--fj)', fontWeight: 900, fontSize: 16,
+                fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 16,
                 letterSpacing: '.06em', color: '#ffffff', textTransform: 'uppercase',
               }}>
                 NOUVEAU VARIABLE
