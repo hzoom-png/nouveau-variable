@@ -22,6 +22,27 @@ interface HeroPhrase {
   y: number
   side: 'left' | 'right'
 }
+
+function revealPhrase(idx: number) {
+  const el = document.querySelector<HTMLElement>(`[data-phrase-idx="${idx}"]`)
+  if (!el) return
+  el.style.animation = 'none'
+  void el.offsetHeight
+  el.style.animation = 'shFadeIn 0.6s ease-out forwards'
+}
+function hidePhrase(idx: number) {
+  const el = document.querySelector<HTMLElement>(`[data-phrase-idx="${idx}"]`)
+  if (!el) return
+  el.style.animation = 'none'
+  void el.offsetHeight
+  el.style.animation = 'fadeOutGlow 0.6s ease-out forwards'
+}
+function SectionGrid() {
+  return (
+    <div className="section-grid" />
+  )
+}
+
 import { useMotionValueEvent } from 'framer-motion'
 import { useScrollProgress } from '@/components/RevenueAnimation/hooks/useScrollHijack'
 import { RevenueAnimation, USE_REVENUE_ANIMATION } from '@/components/RevenueAnimation'
@@ -67,9 +88,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
   const heroDeltaRef    = useRef(0)
   const heroUnlockedRef = useRef(false)
   const heroPhrasesRef  = useRef<HeroPhrase[]>([])
-  const [heroShownCount, setHeroShownCount] = useState(0)
-  const [heroPhrases, setHeroPhrases]       = useState<HeroPhrase[]>([])
-  const [heroDismissed, setHeroDismissed]   = useState(false)
+  const [heroPhrases, setHeroPhrases] = useState<HeroPhrase[]>([])
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -104,50 +123,59 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
     return () => clearTimeout(t)
   }, [waitlistCount])
 
-  // Hero: init — 3 phrases LEFT zone, 2 RIGHT zone, appearance order shuffled
+  // Hero: init — 3 LEFT (x:5-32%), 2 RIGHT (x:68-95%), 150px collision guard
   useEffect(() => {
     if (window.innerWidth < 768) return
     const shuffled = [...HERO_PHRASES].sort(() => Math.random() - 0.5)
-    const configs: HeroPhrase[] = [
-      ...shuffled.slice(0, 3).map(phrase => ({
-        phrase,
-        x:    5  + Math.random() * 25,
-        y:    15 + Math.random() * 70,
-        side: 'left'  as const,
-      })),
-      ...shuffled.slice(3, 5).map(phrase => ({
-        phrase,
-        x:    70 + Math.random() * 25,
-        y:    15 + Math.random() * 70,
-        side: 'right' as const,
-      })),
-    ].sort(() => Math.random() - 0.5)
+    const W = window.innerWidth, H = window.innerHeight
+    const pick = (count: number, xMin: number, xMax: number, side: HeroPhrase['side'], prev: HeroPhrase[]): HeroPhrase[] => {
+      const result: HeroPhrase[] = []
+      for (let i = 0; i < count; i++) {
+        let x = 0, y = 0, tries = 0
+        do {
+          x = xMin + Math.random() * (xMax - xMin)
+          y = 15   + Math.random() * 70
+          tries++
+        } while (tries < 50 && [...prev, ...result].some(p => {
+          const dx = (x - p.x) / 100 * W, dy = (y - p.y) / 100 * H
+          return Math.sqrt(dx * dx + dy * dy) < 150
+        }))
+        result.push({ phrase: shuffled[prev.length + i], x, y, side })
+      }
+      return result
+    }
+    const left  = pick(3, 5,  32, 'left',  [])
+    const right = pick(2, 68, 95, 'right', left)
+    const configs = [...left, ...right].sort(() => Math.random() - 0.5)
     setHeroPhrases(configs)
     heroPhrasesRef.current = configs
   }, [])
 
-  // Hero: wheel hijacking — reveal one phrase per 20% viewport scroll, then unlock
+  // Hero: wheel with rewind — down reveals, up hides; re-engages when back at top
   useEffect(() => {
     if (window.innerWidth < 768) return
     const PIXELS_PER_PHRASE = window.innerHeight * 0.2
     const handleWheel = (e: WheelEvent) => {
-      if (heroUnlockedRef.current) return
+      if (heroUnlockedRef.current) {
+        if (window.scrollY < 10 && e.deltaY < 0 && heroShownRef.current > 0)
+          heroUnlockedRef.current = false
+        else return
+      }
       e.preventDefault()
-      if (e.deltaY <= 0) return
-      heroDeltaRef.current += e.deltaY
+      heroDeltaRef.current = Math.max(0, heroDeltaRef.current + e.deltaY)
       const nextCount = Math.min(
         Math.floor(heroDeltaRef.current / PIXELS_PER_PHRASE),
         heroPhrasesRef.current.length
       )
-      if (nextCount > heroShownRef.current) {
+      const prev = heroShownRef.current
+      if (nextCount > prev) {
+        for (let i = prev; i < nextCount; i++) revealPhrase(i)
         heroShownRef.current = nextCount
-        setHeroShownCount(nextCount)
-        if (nextCount >= heroPhrasesRef.current.length) {
-          setTimeout(() => {
-            heroUnlockedRef.current = true
-            setTimeout(() => setHeroDismissed(true), 800)
-          }, 600)
-        }
+        if (nextCount >= heroPhrasesRef.current.length)
+          setTimeout(() => { heroUnlockedRef.current = true }, 600)
+      } else if (nextCount < prev) {
+        for (let i = nextCount; i < prev; i++) hidePhrase(i)
+        heroShownRef.current = nextCount
       }
     }
     window.addEventListener('wheel', handleWheel, { passive: false })
@@ -305,11 +333,23 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           from { opacity: 0; filter: blur(6px); text-shadow: 0 0 0px rgba(54,166,79,.4); }
           to   { opacity: 0.65; filter: blur(0px); text-shadow: 0 0 18px rgba(54,166,79,.7), 0 0 36px rgba(54,166,79,.3); }
         }
+        @keyframes fadeOutGlow {
+          from { opacity: 0.65; filter: blur(0px); text-shadow: 0 0 18px rgba(54,166,79,.7), 0 0 36px rgba(54,166,79,.3); }
+          to   { opacity: 0; filter: blur(6px); text-shadow: 0 0 0px rgba(54,166,79,.4); }
+        }
         .hero-fixed {
           position: fixed; top: 0; left: 0;
           width: 100%; height: 100vh;
-          overflow: hidden; background: #fff; z-index: 10;
+          overflow: hidden; background: #fff; z-index: 5;
           display: flex; align-items: center; justify-content: center;
+        }
+        .section-grid {
+          position: absolute; inset: 0; pointer-events: none; z-index: 0;
+          background:
+            linear-gradient(to right, rgba(54,166,79,0.12) 0%, rgba(54,166,79,0.02) 35%, rgba(54,166,79,0.02) 65%, rgba(54,166,79,0.12) 100%),
+            linear-gradient(rgba(54,166,79,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(54,166,79,0.04) 1px, transparent 1px);
+          background-size: 100% 100%, 40px 40px, 40px 40px;
         }
         @keyframes stepIn {
           from { opacity: 0; transform: translateY(8px); }
@@ -475,28 +515,22 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       {/* ──────────────────────────────────────────────────────────────
           [B] HERO — fixed full-screen (desktop), normal (mobile)
       ────────────────────────────────────────────────────────────── */}
-      <section
-        className="hero-fixed"
-        style={{
-          opacity: heroDismissed ? 0 : 1,
-          transition: 'opacity 0.8s ease',
-          pointerEvents: heroDismissed ? 'none' : undefined,
-        }}
-      >
-        {/* Variable-opacity grid: dense on sides, faint in centre */}
+      <section className="hero-fixed">
+        {/* Variable-opacity grid: 0.12 on sides, 0.02 centre */}
         <div className="hero-grid" style={{
           position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
           background: [
-            'linear-gradient(to right, rgba(54,166,79,0.08) 0%, rgba(54,166,79,0.02) 35%, rgba(54,166,79,0.02) 65%, rgba(54,166,79,0.08) 100%)',
-            'linear-gradient(rgba(54,166,79,0.03) 1px, transparent 1px)',
-            'linear-gradient(90deg, rgba(54,166,79,0.03) 1px, transparent 1px)',
+            'linear-gradient(to right, rgba(54,166,79,0.12) 0%, rgba(54,166,79,0.02) 35%, rgba(54,166,79,0.02) 65%, rgba(54,166,79,0.12) 100%)',
+            'linear-gradient(rgba(54,166,79,0.04) 1px, transparent 1px)',
+            'linear-gradient(90deg, rgba(54,166,79,0.04) 1px, transparent 1px)',
           ].join(','),
           backgroundSize: '100% 100%, 40px 40px, 40px 40px',
         }} />
-        {/* 3 LEFT + 2 RIGHT phrases revealed by scroll */}
+        {/* 3 LEFT + 2 RIGHT — animated via DOM (revealPhrase/hidePhrase) */}
         {heroPhrases.map((p, i) => (
           <span
             key={i}
+            data-phrase-idx={i}
             className="hero-phrase"
             style={{
               position: 'absolute',
@@ -505,8 +539,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               transform: p.side === 'right' ? 'translate(-100%, -50%)' : 'translateY(-50%)',
               fontFamily: 'var(--fi)', fontSize: 13, letterSpacing: '0.02em',
               color: '#36a64f', whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 0,
-              opacity: i < heroShownCount ? undefined : 0,
-              animation: i < heroShownCount ? 'shFadeIn 0.6s ease-out forwards' : undefined,
+              opacity: 0,
             }}
           >
             {p.phrase}
@@ -591,6 +624,8 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         </div>
         </div>{/* end content wrapper */}
       </section>
+      {/* Wrapper: all post-hero content sits above the fixed hero (zIndex 5) */}
+      <div style={{ position: 'relative', zIndex: 12 }}>
       {/* Spacer: holds 100vh in normal flow while hero is fixed above */}
       <div className="hero-spacer" style={{ height: '100vh' }} />
 
@@ -706,8 +741,9 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       {/* ──────────────────────────────────────────────────────────────
           [F] AFFILIATION
       ────────────────────────────────────────────────────────────── */}
-      <section ref={affSectionRef} className="sf sec-pad" style={{ padding: '80px 40px', background: 'var(--surface)' }} onMouseMove={handleAffMouseMove} onMouseLeave={handleAffMouseLeave}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+      <section ref={affSectionRef} className="sf sec-pad" style={{ padding: '80px 40px', background: 'var(--surface)', position: 'relative', zIndex: 12 }} onMouseMove={handleAffMouseMove} onMouseLeave={handleAffMouseLeave}>
+        <SectionGrid />
+        <div style={{ maxWidth: 1000, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div className="aff-box" style={{
             background: 'var(--green-3)', borderRadius: 24, padding: '48px',
           }}>
@@ -810,9 +846,11 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         style={{
           padding: '80px 40px', background: '#fff',
           borderTop: '1px solid var(--border)',
+          position: 'relative', zIndex: 12,
         }}
       >
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+        <SectionGrid />
+        <div style={{ maxWidth: 640, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <h2 style={{
               fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 32,
@@ -1455,6 +1493,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           </div>
         </div>
       </footer>
+      </div>{/* end post-hero wrapper */}
 
       {/* ── COOKIE BANNER ── */}
       {cookieBanner === true && (
@@ -1569,7 +1608,7 @@ function TargetAudienceScrollSection() {
     <div
       ref={containerRef}
       style={{
-        height: '360vh', position: 'relative',
+        height: '360vh', position: 'relative', zIndex: 12,
         borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
       }}
     >
@@ -1578,6 +1617,7 @@ function TargetAudienceScrollSection() {
         background: '#fff', display: 'flex', alignItems: 'center',
         justifyContent: 'center', padding: '0 40px',
       }}>
+        <SectionGrid />
         <div style={{ maxWidth: 1100, width: '100%' }}>
 
           {/* Title block */}
