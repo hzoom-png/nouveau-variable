@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useDashboard } from '@/lib/dashboard-context'
 import { LockedSection } from '@/components/LockedSection'
-import SideHustleAIPanel from './SideHustleAIPanel'
+import SideHustleHypothesesModal from './SideHustleHypothesesModal'
 import { SlidersHorizontal, Map, LayoutGrid, TrendingUp, Calendar, CheckCircle2, Download, Share2, type LucideIcon } from 'lucide-react'
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -574,7 +574,7 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
 
           <SHCard
             title="Hypothèses & Prévisionnel"
-            description="Gère tes hypothèses, tes prévisions et tes scénarios"
+            description="Ajuste tes hypothèses avec des sliders — prévisionnel mis à jour en temps réel"
             icon={SlidersHorizontal}
             onClick={() => setDrawer('ai')}
           />
@@ -769,9 +769,9 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
           </Modal>
         )}
 
-        {/* Hypothèses & Prévisionnel IA */}
+        {/* Hypothèses & Prévisionnel */}
         {drawer === 'ai' && (
-          <SideHustleAIPanel projectId={proj.id} onClose={() => setDrawer(null)} />
+          <SideHustleHypothesesModal onClose={() => setDrawer(null)} />
         )}
 
         {/* Prévisionnel simple (accessible via forecast) */}

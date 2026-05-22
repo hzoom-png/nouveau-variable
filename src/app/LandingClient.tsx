@@ -1,6 +1,143 @@
 'use client'
 
 import { useState, useEffect, useRef, type CSSProperties } from 'react'
+
+/* ── Starry hero phrases ─────────────────────────────────────────────────── */
+const HERO_PHRASES = [
+  "Virement reçu de NV : +423€",
+  "Nouvelle mission disponible : Closing Tech",
+  "Un membre NV souhaite te rencontrer",
+  "58 clics sur ton projet Side Hustle",
+  "Candidature acceptée : Bienvenue!",
+  "Commission parrainage validée : +1 234€",
+  "Score MEDDIC: 5/6 sur ce compte clé",
+  "3 prospects en attente de RDV",
+  "Offre de sponsoring reçue : 5k€",
+  "Réplique générée en 8 secondes",
+]
+
+interface PhraseConfig {
+  phrase: string
+  x: number
+  y: number
+  side: 'left' | 'right'
+}
+
+const PHRASE_ZONES = [
+  { xRange: [3,  25], yRange: [8,  35], side: 'left'  as const },
+  { xRange: [70, 92], yRange: [8,  35], side: 'right' as const },
+  { xRange: [3,  25], yRange: [60, 85], side: 'left'  as const },
+  { xRange: [70, 92], yRange: [60, 85], side: 'right' as const },
+]
+
+function StarryHeroBackground() {
+  const bgRef       = useRef<HTMLDivElement>(null)
+  const shownRef    = useRef(0)
+  const deltaRef    = useRef(0)
+  const unlockedRef = useRef(false)
+  const phrasesRef  = useRef<PhraseConfig[]>([])
+
+  const [phrases, setPhrases]       = useState<PhraseConfig[]>([])
+  const [shownCount, setShownCount] = useState(0)
+
+  // Init: pick 4-5 random phrases and assign corner positions
+  useEffect(() => {
+    const shuffled = [...HERO_PHRASES].sort(() => Math.random() - 0.5)
+    const count    = 4 + Math.floor(Math.random() * 2)
+    const configs: PhraseConfig[] = shuffled.slice(0, count).map((phrase, i) => {
+      const z = PHRASE_ZONES[i % PHRASE_ZONES.length]
+      return {
+        phrase,
+        x:    z.xRange[0] + Math.random() * (z.xRange[1] - z.xRange[0]),
+        y:    z.yRange[0] + Math.random() * (z.yRange[1] - z.yRange[0]),
+        side: z.side,
+      }
+    })
+    setPhrases(configs)
+    phrasesRef.current = configs
+
+    // Mobile fallback: timer-based reveal (wheel events don't fire on touch scroll)
+    if (window.innerWidth < 768) {
+      configs.forEach((_, i) => {
+        setTimeout(() => {
+          shownRef.current = i + 1
+          setShownCount(i + 1)
+        }, (i + 1) * 900)
+      })
+    }
+  }, [])
+
+  // Desktop: hijack wheel events to reveal phrases one by one
+  useEffect(() => {
+    if (window.innerWidth < 768) return
+
+    const PIXELS_PER_PHRASE = window.innerHeight * 0.2
+
+    const handleWheel = (e: WheelEvent) => {
+      if (unlockedRef.current) return
+      if (!bgRef.current) return
+
+      const rect   = bgRef.current.getBoundingClientRect()
+      // Only hijack while hero is near the top of the viewport
+      const inHero = rect.top < window.innerHeight && rect.bottom > 0 && rect.top > -20
+      if (!inHero) return
+
+      e.preventDefault()
+      if (e.deltaY <= 0) return  // ignore upward scroll
+
+      deltaRef.current += e.deltaY
+      const nextCount = Math.min(
+        Math.floor(deltaRef.current / PIXELS_PER_PHRASE),
+        phrasesRef.current.length
+      )
+
+      if (nextCount > shownRef.current) {
+        shownRef.current = nextCount
+        setShownCount(nextCount)
+        // Unlock scroll 600ms after the last phrase fades in
+        if (nextCount >= phrasesRef.current.length) {
+          setTimeout(() => { unlockedRef.current = true }, 600)
+        }
+      }
+    }
+
+    window.addEventListener('wheel', handleWheel, { passive: false })
+    return () => window.removeEventListener('wheel', handleWheel)
+  }, [])
+
+  return (
+    <div ref={bgRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+      {/* Grid */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        backgroundImage:
+          'linear-gradient(rgba(54,166,79,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(54,166,79,0.04) 1px, transparent 1px)',
+        backgroundSize: '40px 40px',
+      }} />
+      {/* Phrases — appear one at a time as user scrolls */}
+      {phrases.map((p, i) => (
+        <span
+          key={i}
+          style={{
+            position: 'absolute',
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            transform: p.side === 'right' ? 'translate(-100%, -50%)' : 'translateY(-50%)',
+            fontFamily: 'var(--fi)',
+            fontSize: 12,
+            letterSpacing: '0.02em',
+            color: '#36a64f',
+            whiteSpace: 'nowrap',
+            opacity: i < shownCount ? undefined : 0,
+            animation: i < shownCount ? 'shFadeIn 0.6s ease-out forwards' : undefined,
+          }}
+        >
+          {p.phrase}
+        </span>
+      ))}
+    </div>
+  )
+}
 import { useMotionValueEvent } from 'framer-motion'
 import { useScrollProgress } from '@/components/RevenueAnimation/hooks/useScrollHijack'
 import { RevenueAnimation, USE_REVENUE_ANIMATION } from '@/components/RevenueAnimation'
@@ -221,6 +358,14 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
         }
+        @keyframes shFadeIn {
+          from { opacity: 0; filter: blur(6px); text-shadow: 0 0 0px rgba(54,166,79,.4); }
+          to   { opacity: 0.65; filter: blur(0px); text-shadow: 0 0 18px rgba(54,166,79,.7), 0 0 36px rgba(54,166,79,.3); }
+        }
+        @keyframes shFadeOut {
+          from { opacity: 0.65; filter: blur(0px); text-shadow: 0 0 18px rgba(54,166,79,.7), 0 0 36px rgba(54,166,79,.3); }
+          to   { opacity: 0; filter: blur(6px); text-shadow: 0 0 0px rgba(54,166,79,.4); }
+        }
         @keyframes stepIn {
           from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -382,7 +527,10 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       <section className="hero-sec" style={{
         padding: '120px 40px 80px', maxWidth: 1200,
         margin: '0 auto', textAlign: 'center',
+        position: 'relative', overflow: 'hidden',
       }}>
+        <StarryHeroBackground />
+        <div style={{ position: 'relative', zIndex: 1 }}>
         <div className="hero-el hero-el-1">
           <span style={{
             display: 'inline-block',
@@ -459,6 +607,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             )}
           </div>
         </div>
+        </div>{/* end zIndex:1 wrapper */}
       </section>
 
       {/* ──────────────────────────────────────────────────────────────
