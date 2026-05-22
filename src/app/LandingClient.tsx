@@ -2,45 +2,8 @@
 
 import { useState, useEffect, useRef, type CSSProperties } from 'react'
 
-/* ── Starry hero phrases ─────────────────────────────────────────────────── */
-const HERO_PHRASES = [
-  "Virement reçu de NV : +423€",
-  "Nouvelle mission disponible : Closing Tech",
-  "Un membre NV souhaite te rencontrer",
-  "58 clics sur ton projet Side Hustle",
-  "Candidature acceptée : Bienvenue!",
-  "Commission parrainage validée : +1 234€",
-  "Score MEDDIC: 5/6 sur ce compte clé",
-  "3 prospects en attente de RDV",
-  "Offre de sponsoring reçue : 5k€",
-  "Réplique générée en 8 secondes",
-]
-
-interface HeroPhrase {
-  phrase: string
-  x: number
-  y: number
-  side: 'left' | 'right'
-}
-
-function revealPhrase(idx: number) {
-  const el = document.querySelector<HTMLElement>(`[data-phrase-idx="${idx}"]`)
-  if (!el) return
-  el.style.animation = 'none'
-  void el.offsetHeight
-  el.style.animation = 'shFadeIn 0.6s ease-out forwards'
-}
-function hidePhrase(idx: number) {
-  const el = document.querySelector<HTMLElement>(`[data-phrase-idx="${idx}"]`)
-  if (!el) return
-  el.style.animation = 'none'
-  void el.offsetHeight
-  el.style.animation = 'fadeOutGlow 0.6s ease-out forwards'
-}
 function SectionGrid() {
-  return (
-    <div className="section-grid" />
-  )
+  return <div className="section-grid" />
 }
 
 import { useMotionValueEvent } from 'framer-motion'
@@ -83,13 +46,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
   const [cookieBanner, setCookieBanner] = useState<boolean | null>(null)
   const [progressWidth, setProgressWidth] = useState(0)
 
-  // Hero scroll-driven phrases (desktop only)
-  const heroShownRef    = useRef(0)
-  const heroDeltaRef    = useRef(0)
-  const heroUnlockedRef = useRef(false)
-  const heroPhrasesRef  = useRef<HeroPhrase[]>([])
-  const [heroPhrases, setHeroPhrases] = useState<HeroPhrase[]>([])
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const ref = params.get('ref') || params.get('code')
@@ -122,65 +78,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
     }, 400)
     return () => clearTimeout(t)
   }, [waitlistCount])
-
-  // Hero: init — 3 LEFT (x:5-32%), 2 RIGHT (x:68-95%), 150px collision guard
-  useEffect(() => {
-    if (window.innerWidth < 768) return
-    const shuffled = [...HERO_PHRASES].sort(() => Math.random() - 0.5)
-    const W = window.innerWidth, H = window.innerHeight
-    const pick = (count: number, xMin: number, xMax: number, side: HeroPhrase['side'], prev: HeroPhrase[]): HeroPhrase[] => {
-      const result: HeroPhrase[] = []
-      for (let i = 0; i < count; i++) {
-        let x = 0, y = 0, tries = 0
-        do {
-          x = xMin + Math.random() * (xMax - xMin)
-          y = 15   + Math.random() * 70
-          tries++
-        } while (tries < 50 && [...prev, ...result].some(p => {
-          const dx = (x - p.x) / 100 * W, dy = (y - p.y) / 100 * H
-          return Math.sqrt(dx * dx + dy * dy) < 150
-        }))
-        result.push({ phrase: shuffled[prev.length + i], x, y, side })
-      }
-      return result
-    }
-    const left  = pick(3, 5,  32, 'left',  [])
-    const right = pick(2, 68, 95, 'right', left)
-    const configs = [...left, ...right].sort(() => Math.random() - 0.5)
-    setHeroPhrases(configs)
-    heroPhrasesRef.current = configs
-  }, [])
-
-  // Hero: wheel with rewind — down reveals, up hides; re-engages when back at top
-  useEffect(() => {
-    if (window.innerWidth < 768) return
-    const PIXELS_PER_PHRASE = window.innerHeight * 0.2
-    const handleWheel = (e: WheelEvent) => {
-      if (heroUnlockedRef.current) {
-        if (window.scrollY < 10 && e.deltaY < 0 && heroShownRef.current > 0)
-          heroUnlockedRef.current = false
-        else return
-      }
-      e.preventDefault()
-      heroDeltaRef.current = Math.max(0, heroDeltaRef.current + e.deltaY)
-      const nextCount = Math.min(
-        Math.floor(heroDeltaRef.current / PIXELS_PER_PHRASE),
-        heroPhrasesRef.current.length
-      )
-      const prev = heroShownRef.current
-      if (nextCount > prev) {
-        for (let i = prev; i < nextCount; i++) revealPhrase(i)
-        heroShownRef.current = nextCount
-        if (nextCount >= heroPhrasesRef.current.length)
-          setTimeout(() => { heroUnlockedRef.current = true }, 600)
-      } else if (nextCount < prev) {
-        for (let i = nextCount; i < prev; i++) hidePhrase(i)
-        heroShownRef.current = nextCount
-      }
-    }
-    window.addEventListener('wheel', handleWheel, { passive: false })
-    return () => window.removeEventListener('wheel', handleWheel)
-  }, [])
 
   const affSectionRef = useRef<HTMLElement>(null)
   const affTitleRef   = useRef<HTMLHeadingElement>(null)
@@ -329,20 +226,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes shFadeIn {
-          from { opacity: 0; filter: blur(6px); text-shadow: 0 0 0px rgba(54,166,79,.4); }
-          to   { opacity: 0.65; filter: blur(0px); text-shadow: 0 0 18px rgba(54,166,79,.7), 0 0 36px rgba(54,166,79,.3); }
-        }
-        @keyframes fadeOutGlow {
-          from { opacity: 0.65; filter: blur(0px); text-shadow: 0 0 18px rgba(54,166,79,.7), 0 0 36px rgba(54,166,79,.3); }
-          to   { opacity: 0; filter: blur(6px); text-shadow: 0 0 0px rgba(54,166,79,.4); }
-        }
-        .hero-fixed {
-          position: fixed; top: 0; left: 0;
-          width: 100%; height: 100vh;
-          overflow: hidden; background: #fff; z-index: 5;
-          display: flex; align-items: center; justify-content: center;
-        }
         .section-grid {
           position: absolute; inset: 0; pointer-events: none; z-index: 0;
           background:
@@ -424,12 +307,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         }
         .steps-wrap { display: flex; align-items: flex-start; }
         .step-arrow { display: flex; align-items: center; padding-top: 14px; color: var(--green-4); font-size: 20px; flex-shrink: 0; }
-        @media (max-width: 768px) {
-          .hero-fixed  { position: relative !important; height: auto !important; padding: 80px 20px 60px !important; display: block !important; opacity: 1 !important; pointer-events: auto !important; }
-          .hero-spacer { display: none !important; }
-          .hero-phrase { display: none !important; }
-          .hero-grid   { display: none !important; }
-        }
         @media (max-width: 640px) {
           .mob-col   { flex-direction: column !important; }
           .mob-pad   { padding: 48px 20px !important; }
@@ -445,7 +322,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .foot-row    { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
           .foot-links  { gap: 12px !important; flex-wrap: wrap !important; }
           .nav-inner   { padding: 0 20px !important; }
-          .hero-fixed  { padding: 60px 20px 50px !important; }
+          .hero-sec    { padding: 80px 20px 60px !important; }
           .sec-pad     { padding: 56px 20px !important; }
           .aff-box     { padding: 32px 20px !important; }
           .form-wrap   { padding: 32px 20px !important; }
@@ -513,39 +390,15 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       </nav>
 
       {/* ──────────────────────────────────────────────────────────────
-          [B] HERO — fixed full-screen (desktop), normal (mobile)
+          [B] HERO
       ────────────────────────────────────────────────────────────── */}
-      <section className="hero-fixed">
-        {/* Variable-opacity grid: 0.12 on sides, 0.02 centre */}
-        <div className="hero-grid" style={{
-          position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
-          background: [
-            'linear-gradient(to right, rgba(54,166,79,0.12) 0%, rgba(54,166,79,0.02) 35%, rgba(54,166,79,0.02) 65%, rgba(54,166,79,0.12) 100%)',
-            'linear-gradient(rgba(54,166,79,0.04) 1px, transparent 1px)',
-            'linear-gradient(90deg, rgba(54,166,79,0.04) 1px, transparent 1px)',
-          ].join(','),
-          backgroundSize: '100% 100%, 40px 40px, 40px 40px',
-        }} />
-        {/* 3 LEFT + 2 RIGHT — animated via DOM (revealPhrase/hidePhrase) */}
-        {heroPhrases.map((p, i) => (
-          <span
-            key={i}
-            data-phrase-idx={i}
-            className="hero-phrase"
-            style={{
-              position: 'absolute',
-              left: `${p.x}%`,
-              top: `${p.y}%`,
-              transform: p.side === 'right' ? 'translate(-100%, -50%)' : 'translateY(-50%)',
-              fontFamily: 'var(--fi)', fontSize: 13, letterSpacing: '0.02em',
-              color: '#36a64f', whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 0,
-              opacity: 0,
-            }}
-          >
-            {p.phrase}
-          </span>
-        ))}
-        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 1200, padding: '0 40px', textAlign: 'center' }}>
+      <section style={{ position: 'relative', overflow: 'hidden' }}>
+        <SectionGrid />
+        <div className="hero-sec" style={{
+          padding: '120px 40px 80px', maxWidth: 1200,
+          margin: '0 auto', textAlign: 'center',
+          position: 'relative', zIndex: 1,
+        }}>
         <div className="hero-el hero-el-1">
           <span style={{
             display: 'inline-block',
@@ -622,12 +475,8 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             )}
           </div>
         </div>
-        </div>{/* end content wrapper */}
+        </div>
       </section>
-      {/* Wrapper: all post-hero content sits above the fixed hero (zIndex 5) */}
-      <div style={{ position: 'relative', zIndex: 12 }}>
-      {/* Spacer: holds 100vh in normal flow while hero is fixed above */}
-      <div className="hero-spacer" style={{ height: '100vh' }} />
 
       {/* ──────────────────────────────────────────────────────────────
           [C] A QUI S'ADRESSE NV — scroll-driven sticky
@@ -741,7 +590,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       {/* ──────────────────────────────────────────────────────────────
           [F] AFFILIATION
       ────────────────────────────────────────────────────────────── */}
-      <section ref={affSectionRef} className="sf sec-pad" style={{ padding: '80px 40px', background: 'var(--surface)', position: 'relative', zIndex: 12 }} onMouseMove={handleAffMouseMove} onMouseLeave={handleAffMouseLeave}>
+      <section ref={affSectionRef} className="sf sec-pad" style={{ padding: '80px 40px', background: 'var(--surface)', position: 'relative' }} onMouseMove={handleAffMouseMove} onMouseLeave={handleAffMouseLeave}>
         <SectionGrid />
         <div style={{ maxWidth: 1000, margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div className="aff-box" style={{
@@ -846,7 +695,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         style={{
           padding: '80px 40px', background: '#fff',
           borderTop: '1px solid var(--border)',
-          position: 'relative', zIndex: 12,
+          position: 'relative',
         }}
       >
         <SectionGrid />
@@ -1493,7 +1342,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           </div>
         </div>
       </footer>
-      </div>{/* end post-hero wrapper */}
 
       {/* ── COOKIE BANNER ── */}
       {cookieBanner === true && (
@@ -1608,7 +1456,7 @@ function TargetAudienceScrollSection() {
     <div
       ref={containerRef}
       style={{
-        height: '360vh', position: 'relative', zIndex: 12,
+        height: '360vh', position: 'relative',
         borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
       }}
     >
