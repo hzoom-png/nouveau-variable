@@ -331,6 +331,9 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .step2-btns  { flex-direction: column-reverse !important; }
           .animated-glow-text { color: transparent !important; }
           .hero-subtitle { display: none !important; }
+          .nav-brand-text { display: none !important; }
+          .nav-outils { display: none !important; }
+          .nav-cta { font-size: 12px !important; padding: 8px 16px !important; }
         }
         @media (max-width: 768px) {
           .animated-glow-text .glow-char {
@@ -398,7 +401,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <a href="/outils" style={{
+          <a href="/outils" className="nav-outils" style={{
             fontFamily: 'var(--fi)', fontWeight: 500, fontSize: 14,
             color: 'var(--text-2)', textDecoration: 'none',
             transition: 'color 0.15s',
@@ -409,10 +412,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             Outils
           </a>
           <a href="#candidature" className="nav-cta" style={{
-            fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 13,
+            fontFamily: 'var(--fj)', fontWeight: 600,
             color: '#fff', background: 'var(--green)',
-            borderRadius: 99, padding: '9px 20px',
+            borderRadius: 99,
             textDecoration: 'none',
+            fontSize: '13px',
+            padding: '9px 20px',
           }}>
             Candidater →
           </a>
