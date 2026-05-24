@@ -329,16 +329,46 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .form-sec    { padding: 56px 20px !important; }
           .back-btn    { margin-bottom: 8px; }
           .step2-btns  { flex-direction: column-reverse !important; }
+          .animated-glow-text { color: transparent !important; }
+          .hero-subtitle { display: none !important; }
+        }
+        @media (max-width: 768px) {
+          .animated-glow-text .glow-char {
+            opacity: 1 !important;
+            animation: none !important;
+            color: #36a64f !important;
+            filter: none !important;
+            text-shadow: none !important;
+            font-weight: 600 !important;
+          }
         }
         @media (max-width: 768px) {
           .two-grid  { grid-template-columns: 1fr !important; }
           .three-grid { grid-template-columns: 1fr 1fr !important; }
-        .four-grid  { grid-template-columns: 1fr 1fr !important; }
+          .four-grid  { grid-template-columns: 1fr 1fr !important; }
+          .nav-cta { font-size: 13px !important; padding: 12px 18px !important; font-weight: 700 !important; }
+          .outils-section,
+          [data-page="outils"],
+          .page-outils { display: none !important; }
         }
         @media (max-width: 560px) {
           .three-grid { grid-template-columns: 1fr !important; }
           .four-grid  { grid-template-columns: 1fr !important; }
         }
+        @keyframes chargeChar {
+          0%   { opacity: 0; filter: blur(4px); text-shadow: 0 0 0 #36a64f, 0 0 0 #36a64f; }
+          65%  { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px rgba(54,166,79,0.9), 0 0 40px rgba(54,166,79,0.5); }
+          100% { opacity: 1; filter: blur(0px); text-shadow: 0 0 6px rgba(54,166,79,0.25), 0 0 10px rgba(54,166,79,0.1); }
+        }
+        .glow-char {
+          display: inline-block;
+          opacity: 0;
+          animation: chargeChar 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+          min-width: 0.25em;
+        }
+        .hero-title { margin-bottom: 32px !important; }
+        .hero-subtitle { margin-top: 32px !important; margin-bottom: 40px !important; }
+        .hero-ctas { margin-top: 80px !important; }
       `}</style>
 
       {/* ──────────────────────────────────────────────────────────────
@@ -410,25 +440,34 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           </span>
         </div>
 
-        <h1 className="hero-el hero-el-2 mob-h1" style={{
+        <h1 className="hero-el hero-el-2 mob-h1 hero-title" style={{
           fontFamily: 'var(--fj)', fontWeight: 600,
           fontSize: 'clamp(36px, 5.5vw, 58px)', lineHeight: 1.1,
           color: 'var(--text)', maxWidth: 720, margin: '24px auto 0',
           letterSpacing: '-.025em',
         }}>
-          Le système qui fait travailler<br />
-          ton réseau pour toi.
+          Construis un revenu parallèle<br />
+          <span className="animated-glow-text" style={{ color: '#36a64f', fontWeight: 600 }}>
+            {'sans quitter ton job'.split('').map((char, i) => (
+              <span
+                key={i}
+                className="glow-char"
+                style={{ animationDelay: `${0.5 + i * 0.055}s` }}
+              >
+                {char}
+              </span>
+            ))}
+          </span>.
         </h1>
 
-        <p className="hero-el hero-el-3" style={{
+        <p className="hero-el hero-el-3 hero-subtitle" style={{
           fontFamily: 'var(--fi)', fontSize: 18, lineHeight: 1.7,
-          color: 'var(--text-2)', maxWidth: 520, margin: '20px auto 0',
+          color: 'var(--text-2)', maxWidth: 600, margin: '20px auto 0',
         }}>
-          Outils exclusifs, missions commerciales, affiliation et réseau privé.
-          Un seul club. Une boucle de revenus.
+          Bénéficie d'outils exclusifs pensés spécialement pour booster tes ventes, greffe toi sur des projets, développe les tiens, et profite d'une affiliation récurrente sur ton réseau. Un système où chaque action se convertit en revenu potentiel.
         </p>
 
-        <div className="hero-el hero-el-4 ctas-row" style={{
+        <div className="hero-el hero-el-4 ctas-row hero-ctas" style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           gap: 20, marginTop: 40, flexWrap: 'wrap',
         }}>

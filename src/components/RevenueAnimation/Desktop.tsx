@@ -5,6 +5,7 @@ import { motion, useTransform, MotionValue, useMotionValueEvent } from 'framer-m
 import { useScrollProgress } from './hooks/useScrollHijack'
 import { GraphCurves } from './components/GraphCurves'
 import { ContentPoints } from './components/ContentPoints'
+import { AppIcons } from './components/AppIcons'
 import { T, GREEN_DATA, SVG_W, SVG_H, toX, toY } from './constants'
 
 interface DesktopProps {
@@ -95,11 +96,18 @@ export function Desktop({ isMobile = false }: DesktopProps) {
     el.textContent    = Math.round(gv).toLocaleString('fr-FR') + ' €'
   })
 
-  // ── Content points — 4 × ~9.5% = 38% of scroll, slower dwell ──
-  const p0op = useTransform(progress, [0.620, 0.640, 0.695, 0.715], [0, 1, 1, 0])
-  const p1op = useTransform(progress, [0.715, 0.735, 0.790, 0.810], [0, 1, 1, 0])
-  const p2op = useTransform(progress, [0.810, 0.830, 0.885, 0.905], [0, 1, 1, 0])
-  const p3op = useTransform(progress, [0.905, 0.925, 0.980, 1.000], [0, 1, 1, 0])
+  // ── Content points — 5 steps × 0.076 = 0.38 scroll window ──────
+  // Step: 0.016 fade-in | 0.044 dwell | 0.016 fade-out
+  // p0    0.620 → 0.636 → (persists through icons) → 0.760 → 0.772
+  // icons 0.696 → 0.712 → 0.756 → 0.772  ← overlaps with p0
+  // p1    0.772 → 0.788 → 0.832 → 0.848
+  // p2    0.848 → 0.864 → 0.908 → 0.924
+  // p3    0.924 → 0.940 → 0.984 → 1.000
+  const p0op     = useTransform(progress, [0.620, 0.636, 0.760, 0.772], [0, 1, 1, 0])
+  const iconsOp  = useTransform(progress, [0.696, 0.712, 0.756, 0.772], [0, 1, 1, 0])
+  const p1op     = useTransform(progress, [0.772, 0.788, 0.832, 0.848], [0, 1, 1, 0])
+  const p2op     = useTransform(progress, [0.848, 0.864, 0.908, 0.924], [0, 1, 1, 0])
+  const p3op     = useTransform(progress, [0.924, 0.940, 0.984, 1.000], [0, 1, 1, 0])
   const pointOpacities: MotionValue<number>[] = [p0op, p1op, p2op, p3op]
 
   return (
@@ -213,6 +221,9 @@ export function Desktop({ isMobile = false }: DesktopProps) {
           position="center"
           isMobile={isMobile}
         />
+
+        {/* ── App icons — full viewport overlay, 60px from each edge ─*/}
+        <AppIcons opacity={iconsOp} progress={progress} isMobile={isMobile} />
 
       </div>
     </div>
