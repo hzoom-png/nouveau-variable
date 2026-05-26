@@ -73,6 +73,45 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
   }, [])
 
   useEffect(() => {
+    const statNumbers = document.querySelectorAll('[data-target]')
+    const animatedSet = new Set<Element>()
+
+    const animateCounter = (element: Element) => {
+      if (animatedSet.has(element)) return
+      animatedSet.add(element)
+
+      const target = parseInt(element.getAttribute('data-target') || '0', 10)
+      const duration = 2500
+      const increment = target / (duration / 16)
+      let current = 0
+
+      const timer = setInterval(() => {
+        current += increment
+        if (current >= target) {
+          element.textContent = String(target)
+          clearInterval(timer)
+        } else {
+          element.textContent = String(Math.floor(current))
+        }
+      }, 16)
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target)
+        }
+      })
+    }, { threshold: 0.5 })
+
+    statNumbers.forEach((number) => {
+      observer.observe(number)
+    })
+
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
     const t = setTimeout(() => {
       setProgressWidth(waitlistCount >= GOAL ? 100 : Math.max((waitlistCount / GOAL) * 100, 4))
     }, 400)
@@ -242,6 +281,18 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+          }
+        }
         @keyframes checkPop {
           from { transform: scale(0.5); opacity: 0; }
           to   { transform: scale(1); opacity: 1; }
@@ -286,20 +337,27 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         }
         .btn-spin { animation: spin 0.7s linear infinite; display: inline-block; }
         .btn-green {
-          transition: background 0.2s, transform 0.15s, border 0.3s ease, box-shadow 0.3s ease;
+          transition: all 0.3s ease;
+          background: #D4AF37 !important;
+          color: var(--text) !important;
           border: 2px solid #D4AF37;
+          font-weight: 800 !important;
           position: relative;
         }
         .btn-green:hover {
-          background: var(--green-2) !important;
-          transform: translateY(-2px);
+          background: #E8C547 !important;
           border-color: #D4AF37;
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 4px 16px rgba(212, 175, 55, 0.2);
+          box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 8px 24px rgba(212, 175, 55, 0.3);
+          transform: translateY(-3px);
         }
-        .btn-green:active { transform: translateY(0); }
+        .btn-green:active {
+          background: #C99A1A !important;
+          transform: translateY(-1px);
+        }
         .btn-green:focus {
           outline: none;
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+          background: #D4AF37 !important;
+          box-shadow: 0 0 40px rgba(212, 175, 55, 0.8);
         }
         .tool-card { transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
         .tool-card:hover {
@@ -308,19 +366,27 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           transform: translateY(-2px);
         }
         .nav-cta {
-          transition: background 0.2s, border 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+          transition: all 0.3s ease;
+          background: #D4AF37 !important;
+          color: var(--text) !important;
           border: 2px solid #D4AF37;
+          font-weight: 800 !important;
           position: relative;
         }
         .nav-cta:hover {
-          background: var(--green-2) !important;
+          background: #E8C547 !important;
           border-color: #D4AF37;
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 4px 16px rgba(212, 175, 55, 0.2);
-          transform: translateY(-2px);
+          box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 8px 24px rgba(212, 175, 55, 0.3);
+          transform: translateY(-3px);
         }
         .nav-cta:focus {
           outline: none;
-          box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+          background: #D4AF37 !important;
+          box-shadow: 0 0 40px rgba(212, 175, 55, 0.8);
+        }
+        .nav-cta:active {
+          background: #C99A1A !important;
+          transform: translateY(-1px);
         }
         .ft-link { transition: color 0.15s; }
         .ft-link:hover { color: var(--text) !important; }
@@ -413,6 +479,17 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         .hero-title { margin-bottom: 32px !important; }
         .hero-subtitle { margin-top: 32px !important; margin-bottom: 40px !important; }
         .hero-ctas { margin-top: 80px !important; }
+        .stats-grid .stat-card {
+          opacity: 0;
+          transform: translateY(30px);
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+        .stats-grid .stat-card:nth-child(1) {
+          animation-delay: 0.2s;
+        }
+        .stats-grid .stat-card:nth-child(2) {
+          animation-delay: 0.4s;
+        }
       `}</style>
 
       {/* ──────────────────────────────────────────────────────────────
@@ -574,13 +651,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               fontSize: 'clamp(28px, 4vw, 40px)', color: 'var(--text)',
               letterSpacing: '-.02em', lineHeight: 1.2,
             }}>
-              Il y'a un problème.
+              Il ya un problème.
             </h2>
           </div>
 
-          <div className="two-grid" style={{
+          <div className="stats-grid two-grid" style={{
             display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32,
-            animation: 'fadeIn 0.8s ease-out',
           }}>
             {/* Stat 1: 57% */}
             <div className="stat-card" style={{
@@ -604,7 +680,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 fontFamily: 'var(--fj)', fontWeight: 900,
                 fontSize: 'clamp(48px, 10vw, 72px)',
                 color: 'var(--green)', lineHeight: 1,
-              }}>57%</div>
+                fontVariantNumeric: 'tabular-nums',
+              }} className="stat-number" data-target="57">0</div>
+              <span style={{
+                fontFamily: 'var(--fj)', fontWeight: 900,
+                fontSize: 'clamp(48px, 10vw, 72px)',
+                color: 'var(--green)', lineHeight: 1,
+              }}>%</span>
               <p style={{
                 fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
                 color: 'var(--text)', lineHeight: 1.6, margin: 0,
@@ -641,7 +723,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 fontFamily: 'var(--fj)', fontWeight: 900,
                 fontSize: 'clamp(48px, 10vw, 72px)',
                 color: 'var(--white)', lineHeight: 1,
-              }}>64%</div>
+                fontVariantNumeric: 'tabular-nums',
+              }} className="stat-number" data-target="64">0</div>
+              <span style={{
+                fontFamily: 'var(--fj)', fontWeight: 900,
+                fontSize: 'clamp(48px, 10vw, 72px)',
+                color: 'var(--white)', lineHeight: 1,
+              }}>%</span>
               <p style={{
                 fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
                 color: 'var(--white)', lineHeight: 1.6, margin: 0,
