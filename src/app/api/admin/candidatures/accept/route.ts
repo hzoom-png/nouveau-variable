@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       templateId: TEMPLATE_IDS.FOUNDER_ACCES_VIP,
       params: {
         prenom,
-        lien_connexion: `https://app.nouveauvariable.fr/auth?from=founder`,
+        lien_connexion: `https://app.nouveauvariable.fr/onboarding/profile`,
       },
       tags: ['fondateur', 'acces-vip'],
     })
