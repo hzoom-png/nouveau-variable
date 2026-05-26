@@ -81,7 +81,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       animatedSet.add(element)
 
       const target = parseInt(element.getAttribute('data-target') || '0', 10)
-      const duration = 2500
+      const duration = 1200
       const increment = target / (duration / 16)
       let current = 0
 

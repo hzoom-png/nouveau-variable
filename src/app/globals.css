@@ -310,22 +310,19 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 2px 18px rgba(255, 255, 255, 0.12);
 }
 
-/* ── Section 1 vs 5 — animated variant (no initial transform) ─── */
+/* ── Section 1 vs 5 — animated variant (no hover effects, keep scroll hijacking) ─── */
 .cmp-l-a {
   transition: border-color 200ms ease-in-out, border-width 200ms ease-in-out, box-shadow 200ms ease-in-out;
 }
 .cmp-l-a:hover {
-  border: 2px solid #e74c3c !important;
-  box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.06);
+  /* Hover disabled — no border change, no glow */
 }
 
 .cmp-r-a {
   transition: border-color 200ms ease-in-out, border-width 200ms ease-in-out, box-shadow 200ms ease-in-out, transform 200ms ease-in-out;
 }
 .cmp-r-a:hover {
-  border: 2px solid rgba(255, 255, 255, 0.45) !important;
-  box-shadow: 0 16px 48px rgba(2, 79, 65, 0.45);
-  transform: translateY(-2px);
+  /* Hover disabled — no border change, no glow */
 }
 
 /* ── Affiliation title fill effect ── */
