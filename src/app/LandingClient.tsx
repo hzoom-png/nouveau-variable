@@ -574,7 +574,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               fontSize: 'clamp(28px, 4vw, 40px)', color: 'var(--text)',
               letterSpacing: '-.02em', lineHeight: 1.2,
             }}>
-              Il ya un problème.
+              Il y'a un problème.
             </h2>
           </div>
 
