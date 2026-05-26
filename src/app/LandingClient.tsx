@@ -413,7 +413,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         @media (max-width: 640px) {
           .mob-col   { flex-direction: column !important; }
           .mob-pad   { padding: 48px 20px !important; }
-          .mob-h1    { font-size: 34px !important; }
+          .mob-h1    { font-size: 28px !important; line-height: 1.2 !important; }
           .mob-full  { width: 100% !important; }
           .mob-stack { grid-template-columns: 1fr !important; }
           .mob-fp    { padding: 28px 20px !important; }
@@ -424,8 +424,9 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .ctas-row a  { text-align: center; }
           .foot-row    { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
           .foot-links  { gap: 12px !important; flex-wrap: wrap !important; }
-          .nav-inner   { padding: 0 20px !important; }
-          .hero-sec    { padding: 80px 20px 60px !important; }
+          .nav-inner   { padding: 0 12px !important; height: 56px !important; gap: 6px !important; }
+          .nav-inner > div:last-child { gap: 6px !important; }
+          .hero-sec    { padding: 60px 20px 40px !important; }
           .sec-pad     { padding: 56px 20px !important; }
           .aff-box     { padding: 32px 20px !important; }
           .form-wrap   { padding: 32px 20px !important; }
@@ -434,10 +435,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .step2-btns  { flex-direction: column-reverse !important; }
           .animated-glow-text { color: transparent !important; }
           .hero-subtitle { display: none !important; }
+          .hero-title { margin-bottom: 16px !important; }
           .nav-brand-text { display: none !important; }
           .nav-outils { display: none !important; }
-          .nav-secondary { font-size: 11px !important; padding: 6px 12px !important; }
-          .nav-cta { font-size: 12px !important; padding: 8px 16px !important; }
+          .nav-secondary { font-size: 10px !important; padding: 5px 8px !important; white-space: nowrap; border-width: 1px !important; }
+          .nav-cta { font-size: 10px !important; padding: 5px 8px !important; white-space: nowrap; }
+          .hero-ctas { margin-top: 40px !important; }
         }
         @media (max-width: 768px) {
           .animated-glow-text .glow-char {
@@ -512,21 +515,23 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         WebkitBackdropFilter: scrolled ? 'blur(8px)' : 'none',
         borderBottom: '1px solid var(--border)',
         transition: 'background 0.2s',
+        gap: '12px',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <img
             src="/icon_margin_transparent_customcolor.png" alt="NV"
-            style={{ height: 40, width: 40, objectFit: 'contain' }}
+            style={{ height: 40, width: 40, objectFit: 'contain', minWidth: 40 }}
             onError={e => (e.currentTarget.style.display = 'none')}
           />
           <span style={{
             fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 12,
             letterSpacing: '.09em', color: 'var(--green)', textTransform: 'uppercase',
+            display: 'none',
           }}>
             NOUVEAU VARIABLE
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <a href="/outils" className="nav-outils" style={{
             fontFamily: 'var(--fi)', fontWeight: 500, fontSize: 14,
             color: 'var(--text-2)', textDecoration: 'none',
