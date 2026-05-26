@@ -677,16 +677,22 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               e.currentTarget.style.boxShadow = '0 2px 16px rgba(47, 84, 70, 0.05)';
             }}>
               <div style={{
-                fontFamily: 'var(--fj)', fontWeight: 900,
-                fontSize: 'clamp(48px, 10vw, 72px)',
-                color: 'var(--green)', lineHeight: 1,
-                fontVariantNumeric: 'tabular-nums',
-              }} className="stat-number" data-target="57">0</div>
-              <span style={{
-                fontFamily: 'var(--fj)', fontWeight: 900,
-                fontSize: 'clamp(48px, 10vw, 72px)',
-                color: 'var(--green)', lineHeight: 1,
-              }}>%</span>
+                display: 'flex',
+                alignItems: 'baseline',
+                gap: 4,
+              }}>
+                <div style={{
+                  fontFamily: 'var(--fj)', fontWeight: 900,
+                  fontSize: 'clamp(32px, 8vw, 56px)',
+                  color: 'var(--green)', lineHeight: 1,
+                  fontVariantNumeric: 'tabular-nums',
+                }} className="stat-number" data-target="57">0</div>
+                <span style={{
+                  fontFamily: 'var(--fj)', fontWeight: 900,
+                  fontSize: 'clamp(20px, 5vw, 32px)',
+                  color: 'var(--green)', lineHeight: 1,
+                }}>%</span>
+              </div>
               <p style={{
                 fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
                 color: 'var(--text)', lineHeight: 1.6, margin: 0,
@@ -720,16 +726,22 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(47, 84, 70, 0.2)';
             }}>
               <div style={{
-                fontFamily: 'var(--fj)', fontWeight: 900,
-                fontSize: 'clamp(48px, 10vw, 72px)',
-                color: 'var(--white)', lineHeight: 1,
-                fontVariantNumeric: 'tabular-nums',
-              }} className="stat-number" data-target="64">0</div>
-              <span style={{
-                fontFamily: 'var(--fj)', fontWeight: 900,
-                fontSize: 'clamp(48px, 10vw, 72px)',
-                color: 'var(--white)', lineHeight: 1,
-              }}>%</span>
+                display: 'flex',
+                alignItems: 'baseline',
+                gap: 4,
+              }}>
+                <div style={{
+                  fontFamily: 'var(--fj)', fontWeight: 900,
+                  fontSize: 'clamp(32px, 8vw, 56px)',
+                  color: 'var(--white)', lineHeight: 1,
+                  fontVariantNumeric: 'tabular-nums',
+                }} className="stat-number" data-target="64">0</div>
+                <span style={{
+                  fontFamily: 'var(--fj)', fontWeight: 900,
+                  fontSize: 'clamp(20px, 5vw, 32px)',
+                  color: 'var(--white)', lineHeight: 1,
+                }}>%</span>
+              </div>
               <p style={{
                 fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
                 color: 'var(--white)', lineHeight: 1.6, margin: 0,
