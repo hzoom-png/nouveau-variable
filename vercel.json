@@ -7,6 +7,14 @@
     {
       "path": "/api/cron/check-100-candidates",
       "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/badges-daily",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/tokens-reset",
+      "schedule": "0 0 1 * *"
     }
   ]
 }

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
 import { notifySlack } from '@/lib/slack'
+import { awardPoints } from '@/lib/points-service'
 
 function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-04-22.dahlia' })
@@ -106,6 +107,11 @@ export async function POST(req: NextRequest) {
             },
             tags: ['affiliation', 'nouveau-filleul'],
           }).catch(() => null)
+
+          // Award affiliate bonus points (fire & forget)
+          awardPoints(parrain1Profile.id, 100, 'affiliate_accepted', profile.id).catch(err =>
+            console.error('[stripe webhook] awardPoints error:', err)
+          )
         }
       }
 

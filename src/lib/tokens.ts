@@ -3,10 +3,10 @@ import { createServiceClient } from './supabase/service'
 export type ToolName = 'terrain' | 'deallink' | 'replique' | 'sidehustle'
 
 const COSTS: Record<ToolName, number> = {
-  terrain:    30,
-  deallink:   20,
-  replique:   25,
-  sidehustle: 40,
+  terrain:    5,
+  deallink:   5,
+  replique:   3,
+  sidehustle: 8,
 }
 
 export async function consumeTokens(userId: string, tool: ToolName): Promise<{

@@ -3,6 +3,7 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
 import { escHtml } from '@/lib/html-escape'
 import { sendSMS, SMS_TEMPLATES } from '@/lib/sms'
+import { awardPoints } from '@/lib/points-service'
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -60,6 +61,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   await service.from('profiles')
     .update({ points_balance: newBalance })
     .eq('id', user.id)
+
+  // Award gamification points (fire & forget)
+  awardPoints(user.id, 30, 'meeting_accepted', id).catch(err =>
+    console.error('[meetings/accept] awardPoints error:', err)
+  )
 
   // SMS phone exchange
   try {

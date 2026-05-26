@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { awardPoints } from '@/lib/points-service'
 
 const Schema = z.object({
   id:           z.string().uuid().optional(),
@@ -73,6 +74,11 @@ export async function POST(request: Request) {
       })))
     if (memberError) console.error('[POST /api/projects] project_members error:', memberError.code)
   }
+
+  // Award points for publishing project (fire & forget)
+  awardPoints(user.id, 50, 'project_published', projectId).catch(err =>
+    console.error('[POST /api/projects] awardPoints error:', err)
+  )
 
   return NextResponse.json({ project })
 }

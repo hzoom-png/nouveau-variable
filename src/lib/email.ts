@@ -67,6 +67,10 @@ export const TEMPLATE_IDS = {
   COMMISSION_VALIDEE:       parseInt(process.env.BREVO_TPL_COMMISSION_VALIDEE       ?? '0'),
   COMMISSION_REJETEE:       parseInt(process.env.BREVO_TPL_COMMISSION_REJETEE       ?? '0'),
   COMMISSION_PAYEE:         parseInt(process.env.BREVO_TPL_COMMISSION_PAYEE         ?? '0'),
+  // Gamification
+  BADGE_UNLOCK:       parseInt(process.env.BREVO_TPL_BADGE_UNLOCK        ?? '0'),
+  MILESTONE_ATTEINT:  parseInt(process.env.BREVO_TPL_MILESTONE_ATTEINT   ?? '0'),
+  COLLABORATION_ACCEPTED: parseInt(process.env.BREVO_TPL_COLLABORATION_ACCEPTED ?? '0'),
 }
 
 export async function sendWaitlistBienvenueEmail(params: {

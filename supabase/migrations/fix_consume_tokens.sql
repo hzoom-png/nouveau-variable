@@ -16,10 +16,10 @@ declare
   v_new_balance int;
 begin
   v_cost := case p_tool
-    when 'terrain'    then 30
-    when 'deallink'   then 20
-    when 'replique'   then 25
-    when 'sidehustle' then 40
+    when 'terrain'    then 5
+    when 'deallink'   then 5
+    when 'replique'   then 3
+    when 'sidehustle' then 8
     when 'keyaccount' then 15
     else 10
   end;
