@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
-import { randomBytes } from 'crypto'
 
 const ADMIN_PUBLIC = ['/admin/login', '/admin/setup-totp']
 
@@ -69,7 +68,8 @@ export async function middleware(request: NextRequest) {
 
   // ── Pages HTML (dashboard, onboarding, admin, landing) ───────────
   // Génère un nonce par requête pour la CSP script-src
-  const nonce = randomBytes(16).toString('base64')
+  const nonceBuffer = crypto.getRandomValues(new Uint8Array(16))
+  const nonce = Array.from(nonceBuffer).map(b => b.toString(16).padStart(2, '0')).join('')
   const csp   = buildCsp(nonce)
 
   // Inject nonce dans les headers de la requête pour que le layout puisse le lire

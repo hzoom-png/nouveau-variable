@@ -10,6 +10,8 @@ import { useTheme } from '@/lib/theme'
 import { WelcomeTour } from '@/components/onboarding/WelcomeTour'
 import { DashboardContext } from '@/lib/dashboard-context'
 import { SupportWidget } from '@/components/SupportWidget'
+import { MobileBottomNav } from '@/components/MobileBottomNav'
+import { DrawerSidebar } from '@/components/DrawerSidebar'
 
 type SectionId = 'club' | 'outils' | 'moi'
 
@@ -151,6 +153,9 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
   const pageTitle = PAGE_TITLES[pathname] || (pathname === '/dashboard' ? 'Accueil' : 'Dashboard')
   const [showTour, setShowTour] = useState(!profile.onboarding_completed)
   const [pendingMeetings, setPendingMeetings] = useState(0)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isTablet, setIsTablet] = useState(false)
   const isInactive  = profile.subscription_status !== 'active'
     && !profile.is_manually_activated
     && !profile.is_founder
@@ -160,6 +165,17 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
       .then(r => r.json())
       .then(({ count }) => setPendingMeetings(count ?? 0))
       .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = typeof window !== 'undefined' ? window.innerWidth : 0
+      setIsMobile(width < 641)
+      setIsTablet(width >= 641 && width < 1025)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   async function handleLogout() {
@@ -179,8 +195,15 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
         />
       )}
 
-      {/* Sidebar */}
-      <nav style={{ width: '240px', flexShrink: 0, background: 'var(--white)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', height: '100vh', position: 'sticky', top: 0, overflowY: 'auto' }}>
+      {/* Drawer Sidebar - Mobile & Tablet */}
+      {(isMobile || isTablet) && (
+        <>
+          <DrawerSidebar profile={profile} isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+        </>
+      )}
+
+      {/* Sidebar - Desktop Only */}
+      <nav style={{ width: '240px', flexShrink: 0, background: 'var(--white)', borderRight: '1px solid var(--border)', display: isMobile || isTablet ? 'none' : 'flex', flexDirection: 'column', height: '100vh', position: 'sticky', top: 0, overflowY: 'auto' }}>
         {/* Logo */}
         <div style={{ padding: '20px 16px 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <img
@@ -335,7 +358,14 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
       {/* Main */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {/* Topbar */}
-        <header style={{ background: 'var(--white)', borderBottom: '1px solid var(--border)', padding: '0 28px', height: '52px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30, flexShrink: 0 }}>
+        <header style={{ background: 'var(--white)', borderBottom: '1px solid var(--border)', padding: isTablet ? '0 16px' : '0 28px', height: '52px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30, flexShrink: 0 }}>
+          {isTablet && (
+            <button onClick={() => setDrawerOpen(!drawerOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text)', padding: '8px', marginRight: '8px' }}>
+              <svg width="16" height="16" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M2 3h11M2 7.5h11M2 12h11"/>
+              </svg>
+            </button>
+          )}
           <span style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: 'var(--text)' }}>{pageTitle}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {profile.tokens_balance !== undefined && (
@@ -350,10 +380,15 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
         </header>
 
         {/* Content */}
-        <main style={{ flex: 1, padding: '28px', overflow: 'auto' }}>
+        <main style={{ flex: 1, padding: isMobile ? '20px' : isTablet ? '20px' : '28px', paddingBottom: isMobile ? '80px' : isTablet ? '28px' : '28px', overflow: 'auto' }}>
           {children}
         </main>
       </div>
+
+      {/* Mobile Bottom Nav */}
+      {isMobile && (
+        <MobileBottomNav onMenuClick={() => setDrawerOpen(!drawerOpen)} />
+      )}
 
       <SupportWidget
         userEmail={profile.email ?? ''}

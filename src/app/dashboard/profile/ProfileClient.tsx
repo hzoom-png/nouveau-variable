@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useTheme } from '@/lib/theme'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { WelcomeTour } from '@/components/onboarding/WelcomeTour'
+import { AffiliationQRCard } from '@/components/AffiliationQRCard'
 
 const ROLE_TYPES = [
   { value: 'salarie',              label: 'Salarié'               },
@@ -224,8 +225,8 @@ export default function ProfileClient({ profile }: Props) {
   })
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '24px', maxWidth: '960px' }}>
-      {/* ── LEFT: editor ── */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '960px' }}>
+      {/* ── Profile Editor ── */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
         {/* 1. Identité */}
@@ -496,6 +497,9 @@ export default function ProfileClient({ profile }: Props) {
           {saving ? 'Sauvegarde…' : 'Sauvegarder le profil'}
         </button>
 
+        {/* 9. Affiliation QR Code */}
+        <AffiliationQRCard referralCode={profile.referral_code ?? ''} />
+
         {/* 10. Compte */}
         <div style={card}>
           <div style={sectionTitle}>Compte</div>
@@ -514,46 +518,6 @@ export default function ProfileClient({ profile }: Props) {
             </button>
           </div>
         </div>
-      </div>
-
-      {/* ── RIGHT: sticky preview ── */}
-      <div style={{ position: 'sticky', top: '80px', height: 'fit-content', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', letterSpacing: '.12em', textTransform: 'uppercase' }}>Aperçu public</div>
-        <div style={{ background: 'var(--white)', borderRadius: 'var(--r-lg)', border: '1px solid var(--border)', overflow: 'hidden' }}>
-          <div style={{ height: '60px', background: 'var(--green)', position: 'relative' }}>
-            <div style={{
-              position: 'absolute', bottom: '-18px', left: '16px',
-              width: '44px', height: '44px', borderRadius: 'var(--r-sm)',
-              border: '3px solid var(--white)', background: 'var(--green-2)',
-              display: 'grid', placeItems: 'center',
-              fontFamily: 'Inter, sans-serif', fontSize: '15px', fontWeight: 600, color: '#fff',
-              overflow: 'hidden',
-            }}>
-              {avatarUrl
-                ? <img src={avatarUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : initials || '?'
-              }
-            </div>
-          </div>
-          <div style={{ padding: '26px 16px 16px' }}>
-            <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', color: 'var(--text)', marginBottom: '2px' }}>
-              {form.display_name || `${form.first_name || 'Prénom'} ${form.last_name || 'Nom'}`}
-            </div>
-            {form.tagline && <div style={{ fontSize: '12px', color: 'var(--text-2)', marginBottom: '8px' }}>{form.tagline}</div>}
-            {form.bio && <div style={{ fontSize: '12px', color: 'var(--text)', lineHeight: 1.5, marginBottom: '10px' }}>{form.bio.slice(0, 120)}{form.bio.length > 120 ? '…' : ''}</div>}
-            {form.cities.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
-                {form.cities.map(c => <span key={c} style={{ background: 'var(--green-3)', color: 'var(--green)', borderRadius: 'var(--r-sm)', padding: '2px 7px', fontSize: '10px', fontWeight: 600 }}>{c}</span>)}
-              </div>
-            )}
-            {form.sectors.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                {form.sectors.map(s => <span key={s} style={{ background: 'var(--surface)', color: 'var(--text-2)', borderRadius: 'var(--r-sm)', padding: '2px 7px', fontSize: '10px' }}>{s}</span>)}
-              </div>
-            )}
-          </div>
-        </div>
-
       </div>
 
       {toast && (
