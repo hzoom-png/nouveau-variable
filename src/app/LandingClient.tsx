@@ -238,6 +238,10 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           from { opacity: 0; transform: translateY(8px); }
           to   { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         @keyframes checkPop {
           from { transform: scale(0.5); opacity: 0; }
           to   { transform: scale(1); opacity: 1; }
@@ -359,9 +363,20 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .four-grid  { grid-template-columns: 1fr !important; }
         }
         @keyframes chargeChar {
-          0%   { opacity: 0; filter: blur(4px); text-shadow: 0 0 0 #36a64f, 0 0 0 #36a64f; }
-          65%  { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px rgba(54,166,79,0.9), 0 0 40px rgba(54,166,79,0.5); }
-          100% { opacity: 1; filter: blur(0px); text-shadow: 0 0 6px rgba(54,166,79,0.25), 0 0 10px rgba(54,166,79,0.1); }
+          0% {
+            opacity: 0;
+            filter: blur(4px);
+            text-shadow: 0 0 0px rgba(54, 166, 79, 0.3);
+          }
+          50% {
+            filter: blur(2px);
+            text-shadow: 0 0 10px rgba(54, 166, 79, 0.6);
+          }
+          100% {
+            opacity: 1;
+            filter: blur(0px);
+            text-shadow: 0 0 20px rgba(54, 166, 79, 0.8), 0 0 40px rgba(54, 166, 79, 0.4);
+          }
         }
         .glow-char {
           display: inline-block;
@@ -427,7 +442,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       {/* ──────────────────────────────────────────────────────────────
           [B] HERO
       ────────────────────────────────────────────────────────────── */}
-      <section style={{ position: 'relative', overflow: 'hidden' }}>
+      <section style={{ position: 'relative', overflow: 'hidden', marginBottom: 80 }}>
         <SectionGrid />
         <div className="hero-sec" style={{
           padding: '120px 40px 80px', maxWidth: 1200,
@@ -523,12 +538,108 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       </section>
 
       {/* ──────────────────────────────────────────────────────────────
-          [C] A QUI S'ADRESSE NV — scroll-driven sticky
+          [C] STATS SECTION
+      ────────────────────────────────────────────────────────────── */}
+      <section className="sf stats-section" style={{ padding: '80px 40px', background: 'var(--surface)' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{
+              fontFamily: 'var(--fi)', fontWeight: 600,
+              fontSize: 'clamp(28px, 4vw, 40px)', color: 'var(--text)',
+              letterSpacing: '-.02em', lineHeight: 1.2,
+            }}>
+              Le problème que NV résout
+            </h2>
+          </div>
+
+          <div className="two-grid" style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32,
+            animation: 'fadeIn 0.8s ease-out',
+          }}>
+            {/* Stat 1: 57% */}
+            <div className="stat-card" style={{
+              borderRadius: 20, padding: '40px 32px',
+              display: 'flex', flexDirection: 'column', gap: 16,
+              background: 'var(--white)',
+              border: '1.5px solid var(--border)',
+              boxShadow: '0 2px 16px rgba(47, 84, 70, 0.05)',
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+              cursor: 'default',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(47, 84, 70, 0.12)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 16px rgba(47, 84, 70, 0.05)';
+            }}>
+              <div style={{
+                fontFamily: 'var(--fj)', fontWeight: 900,
+                fontSize: 'clamp(48px, 10vw, 72px)',
+                color: 'var(--green)', lineHeight: 1,
+              }}>57%</div>
+              <p style={{
+                fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
+                color: 'var(--text)', lineHeight: 1.6, margin: 0,
+                flexGrow: 1,
+              }}>
+                57% des commerciaux citent l'instabilité des revenus comme frein majeur à une carrière commerciale
+              </p>
+              <p style={{
+                fontFamily: 'var(--fi)', fontSize: 11,
+                color: '#9BB5AA', fontWeight: 400, letterSpacing: '0.02em',
+                margin: 0,
+              }}>Source: Pipedrive / Salesodyssey</p>
+            </div>
+
+            {/* Stat 2: 64% */}
+            <div className="stat-card" style={{
+              borderRadius: 20, padding: '40px 32px',
+              display: 'flex', flexDirection: 'column', gap: 16,
+              background: 'var(--green)',
+              border: '1.5px solid var(--green-2)',
+              boxShadow: '0 4px 20px rgba(47, 84, 70, 0.2)',
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+              cursor: 'default',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(47, 84, 70, 0.3)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(47, 84, 70, 0.2)';
+            }}>
+              <div style={{
+                fontFamily: 'var(--fj)', fontWeight: 900,
+                fontSize: 'clamp(48px, 10vw, 72px)',
+                color: 'var(--white)', lineHeight: 1,
+              }}>64%</div>
+              <p style={{
+                fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
+                color: 'var(--white)', lineHeight: 1.6, margin: 0,
+                flexGrow: 1,
+              }}>
+                64% des commerciaux sont prêts à quitter leur job pour un meilleur salaire
+              </p>
+              <p style={{
+                fontFamily: 'var(--fi)', fontSize: 11,
+                color: 'rgba(255, 255, 255, 0.7)', fontWeight: 400, letterSpacing: '0.02em',
+                margin: 0,
+              }}>Source: Pipedrive / Salesodyssey</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ──────────────────────────────────────────────────────────────
+          [D] A QUI S'ADRESSE NV — scroll-driven sticky
       ────────────────────────────────────────────────────────────── */}
       <TargetAudienceScrollSection />
 
       {/* ──────────────────────────────────────────────────────────────
-          [D] REVENUE ANIMATION (ou fallback outils classique)
+          [E] REVENUE ANIMATION (ou fallback outils classique)
           → Pour reverter : changer USE_REVENUE_ANIMATION = false dans
             src/components/RevenueAnimation/index.tsx
       ────────────────────────────────────────────────────────────── */}
@@ -627,12 +738,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       )}
 
       {/* ──────────────────────────────────────────────────────────────
-          [E] COMPARAISON
+          [F] COMPARAISON
       ────────────────────────────────────────────────────────────── */}
       <OneVsFive />
 
       {/* ──────────────────────────────────────────────────────────────
-          [F] AFFILIATION
+          [G] AFFILIATION
       ────────────────────────────────────────────────────────────── */}
       <section ref={affSectionRef} className="sf sec-pad" style={{ padding: '80px 40px', background: 'var(--surface)', position: 'relative' }} onMouseMove={handleAffMouseMove} onMouseLeave={handleAffMouseLeave}>
         <SectionGrid />
@@ -731,7 +842,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       </section>
 
       {/* ──────────────────────────────────────────────────────────────
-          [G] FORMULAIRE — 2 ÉTAPES
+          [H] FORMULAIRE — 2 ÉTAPES
       ────────────────────────────────────────────────────────────── */}
       <section
         id="candidature"
@@ -1326,7 +1437,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       </section>
 
       {/* ──────────────────────────────────────────────────────────────
-          [H] FOOTER
+          [I] FOOTER
       ────────────────────────────────────────────────────────────── */}
       <footer style={{
         background: '#0F1C17', padding: '48px 40px',
