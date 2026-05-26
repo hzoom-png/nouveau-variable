@@ -187,16 +187,17 @@ export function SupportWidget({ userEmail = '', userName = '' }: Props) {
         )}
       </div>
 
-      {/* Trigger button */}
+      {/* Trigger button - repositioned for mobile to not cover bottom nav */}
       <button
         onClick={() => { setOpen(o => !o); setSent(false); setError('') }}
+        className="support-trigger"
         style={{
           position: 'fixed', bottom: 20, right: 20, zIndex: 1000,
           display: 'flex', alignItems: 'center', gap: 8,
           background: '#2F5446', border: 'none', borderRadius: 99,
           padding: '10px 16px 10px 13px',
           boxShadow: '0 4px 16px rgba(47,84,70,0.35)',
-          cursor: 'pointer', transition: 'transform .15s, box-shadow .15s',
+          cursor: 'pointer', transition: 'transform .15s, box-shadow .15s, bottom .3s ease',
           color: '#fff',
         }}
         onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(47,84,70,0.45)' }}

@@ -331,3 +331,10 @@ img { display: block; max-width: 100%; }
   background-clip: text !important;
   -webkit-background-clip: text !important;
 }
+
+/* ── Support Widget: Reposition on mobile to not cover bottom nav ── */
+@media (max-width: 640px) {
+  .support-trigger {
+    bottom: 80px !important;
+  }
+}

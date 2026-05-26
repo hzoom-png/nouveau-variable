@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { ToolsDropdown } from './ToolsDropdown'
 
 const HomeIcon = () => (
   <svg width="16" height="16" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -39,7 +40,6 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { label: 'Accueil', href: '/dashboard', icon: <HomeIcon /> },
   { label: 'Annuaire', href: '/dashboard/members', icon: <MembersIcon /> },
-  { label: 'Outils', href: '/dashboard/tools/keyaccount', icon: <ToolsIcon /> },
   { label: 'Profil', href: '/dashboard/profile', icon: <ProfileIcon /> },
 ]
 
@@ -73,6 +73,9 @@ export function MobileBottomNav({ onMenuClick }: Props) {
           </Link>
         )
       })}
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <ToolsDropdown />
+      </div>
       <button onClick={onMenuClick} style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px',
         color: 'var(--text-3)', background: 'none', border: 'none',

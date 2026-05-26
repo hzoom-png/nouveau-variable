@@ -80,7 +80,22 @@ function AuthPageInner() {
       setError('Numéro invalide. Format attendu : 06 12 34 56 78')
       return
     }
+
+    // ✅ NEW: Verify candidature status before sending OTP
     setLoading(true)
+    const { data: candidature, error: candError } = await supabase
+      .from('candidatures')
+      .select('status')
+      .eq('phone', formatted)
+      .single()
+
+    if (candError || !candidature || candidature.status !== 'active') {
+      setLoading(false)
+      setError('Accès non autorisé. Merci de candidater d\'abord.')
+      return
+    }
+
+    // ✅ Continue with OTP only if candidature is active
     const res = await fetch('/api/auth/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

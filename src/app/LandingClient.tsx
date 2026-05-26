@@ -388,6 +388,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           background: #C99A1A !important;
           transform: translateY(-1px);
         }
+        .nav-secondary {
+          transition: all 0.15s ease !important;
+        }
+        .nav-secondary:hover {
+          background: var(--green-3) !important;
+          border-color: var(--green) !important;
+        }
         .ft-link { transition: color 0.15s; }
         .ft-link:hover { color: var(--text) !important; }
         .btn-ghost { transition: color 0.15s; }
@@ -429,6 +436,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .hero-subtitle { display: none !important; }
           .nav-brand-text { display: none !important; }
           .nav-outils { display: none !important; }
+          .nav-secondary { font-size: 11px !important; padding: 6px 12px !important; }
           .nav-cta { font-size: 12px !important; padding: 8px 16px !important; }
         }
         @media (max-width: 768px) {
@@ -528,6 +536,27 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-2)')}
           >
             Outils
+          </a>
+          <a href="https://app.nouveauvariable.fr/auth" className="nav-secondary" style={{
+            fontFamily: 'var(--fj)', fontWeight: 600,
+            color: 'var(--green)', background: 'transparent',
+            border: '1.5px solid var(--green)',
+            borderRadius: 99,
+            textDecoration: 'none',
+            fontSize: '13px',
+            padding: '8px 18px',
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = 'var(--green-3)'
+            e.currentTarget.style.borderColor = 'var(--green)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'transparent'
+            e.currentTarget.style.borderColor = 'var(--green)'
+          }}
+          >
+            Se connecter →
           </a>
           <a href="#candidature" className="nav-cta" style={{
             fontFamily: 'var(--fj)', fontWeight: 600,
