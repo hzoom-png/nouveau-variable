@@ -81,21 +81,69 @@ function AuthPageInner() {
       return
     }
 
-    // ✅ NEW: Verify candidature status before sending OTP
     setLoading(true)
-    const { data: candidature, error: candError } = await supabase
+
+    // 1️⃣ Check if user is a founder first (founder mode bypasses candidature check)
+    const last9 = formatted.replace(/\D/g, '').slice(-9)
+    const { data: founderCand } = await supabase
+      .from('candidatures')
+      .select('status, is_founder')
+      .eq('is_founder', true)
+      .ilike('phone', `%${last9}`)
+      .single()
+
+    // 2️⃣ If founder, allow OTP send
+    if (founderCand?.is_founder === true) {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: formatted }),
+      })
+      setLoading(false)
+      if (!res.ok) {
+        const d = await res.json()
+        setError(d.error ?? 'Impossible d\'envoyer le SMS.')
+        return
+      }
+      setStep('otp')
+      setCountdown(60)
+      setTimeout(() => otpRefs.current[0]?.focus(), 100)
+      return
+    }
+
+    // 3️⃣ Not a founder: check candidature status
+    const { data: candidature } = await supabase
       .from('candidatures')
       .select('status')
       .eq('phone', formatted)
       .single()
 
-    if (candError || !candidature || candidature.status !== 'active') {
+    // 4️⃣ Provide specific error messages based on candidature status
+    if (!candidature) {
       setLoading(false)
-      setError('Accès non autorisé. Merci de candidater d\'abord.')
+      setError('Aucune candidature trouvée. Merci de candidater d\'abord.')
       return
     }
 
-    // ✅ Continue with OTP only if candidature is active
+    if (candidature.status === 'pending' || candidature.status === 'pending_payment') {
+      setLoading(false)
+      setError('Candidature en cours de traitement. Vous recevrez un email dès validation.')
+      return
+    }
+
+    if (candidature.status === 'rejected') {
+      setLoading(false)
+      setError('Votre candidature n\'a pas pu être approuvée. Contactez support.')
+      return
+    }
+
+    if (candidature.status !== 'active') {
+      setLoading(false)
+      setError('Accès non autorisé. Veuillez vérifier le statut de votre candidature.')
+      return
+    }
+
+    // 5️⃣ Only send OTP if candidature is active
     const res = await fetch('/api/auth/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
