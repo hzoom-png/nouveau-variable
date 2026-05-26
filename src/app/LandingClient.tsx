@@ -285,17 +285,43 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           animation: checkDraw 0.5s ease 0.35s forwards;
         }
         .btn-spin { animation: spin 0.7s linear infinite; display: inline-block; }
-        .btn-green { transition: background 0.2s, transform 0.15s; }
-        .btn-green:hover { background: var(--green-2) !important; transform: translateY(-1px); }
+        .btn-green {
+          transition: background 0.2s, transform 0.15s, border 0.3s ease, box-shadow 0.3s ease;
+          border: 2px solid #D4AF37;
+          position: relative;
+        }
+        .btn-green:hover {
+          background: var(--green-2) !important;
+          transform: translateY(-2px);
+          border-color: #D4AF37;
+          box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 4px 16px rgba(212, 175, 55, 0.2);
+        }
         .btn-green:active { transform: translateY(0); }
+        .btn-green:focus {
+          outline: none;
+          box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
         .tool-card { transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
         .tool-card:hover {
           border-color: var(--green) !important;
           box-shadow: 0 8px 32px rgba(2,79,65,0.10) !important;
           transform: translateY(-2px);
         }
-        .nav-cta { transition: background 0.2s; }
-        .nav-cta:hover { background: var(--green-2) !important; }
+        .nav-cta {
+          transition: background 0.2s, border 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+          border: 2px solid #D4AF37;
+          position: relative;
+        }
+        .nav-cta:hover {
+          background: var(--green-2) !important;
+          border-color: #D4AF37;
+          box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 4px 16px rgba(212, 175, 55, 0.2);
+          transform: translateY(-2px);
+        }
+        .nav-cta:focus {
+          outline: none;
+          box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
         .ft-link { transition: color 0.15s; }
         .ft-link:hover { color: var(--text) !important; }
         .btn-ghost { transition: color 0.15s; }
@@ -543,12 +569,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       <section className="sf stats-section" style={{ padding: '80px 40px', background: 'var(--surface)' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{
-              fontFamily: 'var(--fi)', fontWeight: 600,
+            <h2 className="stats-title" style={{
+              fontFamily: 'var(--fi)', fontWeight: 400,
               fontSize: 'clamp(28px, 4vw, 40px)', color: 'var(--text)',
               letterSpacing: '-.02em', lineHeight: 1.2,
             }}>
-              Le problème que NV résout
+              Il ya un problème.
             </h2>
           </div>
 
