@@ -110,11 +110,11 @@ function AuthPageInner() {
       return
     }
 
-    // 3️⃣ Not a founder: check candidature status
+    // 3️⃣ Not a founder: check candidature status (use same flexible phone matching as above)
     const { data: candidature } = await supabase
       .from('candidatures')
       .select('status, is_founder_mode')
-      .eq('phone', formatted)
+      .ilike('phone', `%${last9}`)
       .single()
 
     // 4️⃣ Provide specific error messages based on candidature status
