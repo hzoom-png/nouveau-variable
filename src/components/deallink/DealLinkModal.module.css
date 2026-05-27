@@ -1,0 +1,479 @@
+/* Modal Wrapper */
+.dealLinkModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+.dealLinkModalBox {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 1440px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Header */
+.dealLinkModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  border-bottom: 1px solid #E4EEEA;
+  flex-shrink: 0;
+  background: white;
+}
+
+.dealLinkModalTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #0F1C17;
+  margin: 0;
+}
+
+.dealLinkModalClose {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #9BB5AA;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.dealLinkModalClose:hover {
+  color: #0F1C17;
+}
+
+/* Content (Scrollable) */
+.dealLinkModalContent {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #C5DDD5 #F7FAF8;
+}
+
+.dealLinkModalContent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dealLinkModalContent::-webkit-scrollbar-track {
+  background: #F7FAF8;
+}
+
+.dealLinkModalContent::-webkit-scrollbar-thumb {
+  background: #C5DDD5;
+  border-radius: 4px;
+}
+
+.dealLinkModalContent::-webkit-scrollbar-thumb:hover {
+  background: #3D6B58;
+}
+
+/* Error Banner */
+.errorBanner {
+  padding: 12px;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 6px;
+  font-size: 13px;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 51;
+  font-family: 'Inter', sans-serif;
+  animation: slideIn 0.2s ease;
+}
+
+.toastSuccess {
+  background: #2F5446;
+}
+
+.toastError {
+  background: #dc2626;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Form Section */
+.dealLinkFormSection {
+  padding: 32px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.dealLinkFormTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #0F1C17;
+  margin: 0 0 24px 0;
+}
+
+.dealLinkFormGroup {
+  margin-bottom: 24px;
+}
+
+.dealLinkFormLabel {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B6358;
+  margin-bottom: 8px;
+}
+
+.dealLinkFormInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #E4EEEA;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: #0F1C17;
+  background: white;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.dealLinkFormInput:focus {
+  outline: none;
+  border-color: #2F5446;
+  box-shadow: 0 0 0 3px rgba(47, 84, 70, 0.1);
+}
+
+.dealLinkFormInput:disabled {
+  background: #F7FAF8;
+  color: #9BB5AA;
+  cursor: not-allowed;
+}
+
+.dealLinkFormSelect {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234B6358' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+/* Buttons */
+.dealLinkButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.dealLinkButtonPrimary {
+  background: #2F5446;
+  color: white;
+  width: 100%;
+}
+
+.dealLinkButtonPrimary:hover {
+  background: #1F3A2F;
+  box-shadow: 0 4px 12px rgba(47, 84, 70, 0.2);
+}
+
+.dealLinkButtonPrimary:active {
+  transform: translateY(1px);
+}
+
+.dealLinkButtonPrimary:disabled {
+  background: #C5DDD5;
+  color: #9BB5AA;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.dealLinkButtonSecondary {
+  background: transparent;
+  color: #2F5446;
+  border: 1px solid #E4EEEA;
+  width: auto;
+}
+
+.dealLinkButtonSecondary:hover {
+  background: #F7FAF8;
+  border-color: #C5DDD5;
+}
+
+/* Divider */
+.dealLinkDivider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #E4EEEA 20%, #E4EEEA 80%, transparent);
+  margin: 32px 0;
+}
+
+/* Historique Section */
+.dealLinkHistorySection {
+  padding: 32px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.dealLinkHistoryTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4B6358;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 16px 0;
+}
+
+.dealLinkHistoryItem {
+  padding: 16px;
+  border: 1px solid #E4EEEA;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dealLinkHistoryItem:hover {
+  border-color: #C5DDD5;
+  background: #F7FAF8;
+}
+
+.dealLinkHistoryItemName {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: #0F1C17;
+  margin: 0 0 8px 0;
+}
+
+.dealLinkHistoryItemMeta {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #9BB5AA;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dealLinkHistoryItemStatus {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dealbuttonStatusDraft {
+  background: #FEF3E2;
+  color: #C8790A;
+}
+
+.dealLinkHistoryItemStatusPublished {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+/* Editor Wrapper (Side-by-side) */
+.dealLinkEditorWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 32px;
+  padding: 32px;
+  min-height: 600px;
+}
+
+.dealLinkEditorLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dealLinkEditorRight {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Preview Controls */
+.dealLinkPreviewControls {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #E4EEEA;
+  padding-bottom: 16px;
+}
+
+.dealLinkPreviewControlButton {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: #4B6358;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.dealLinkPreviewControlButton.active {
+  color: #2F5446;
+  border-bottom-color: #2F5446;
+}
+
+/* Color Picker */
+.dealLinkColorGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dealLinkColorLabel {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B6358;
+}
+
+.dealLinkColorInputs {
+  display: flex;
+  gap: 12px;
+}
+
+.dealLinkColorPickerInput {
+  width: 64px;
+  height: 40px;
+  border: 1px solid #E4EEEA;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.dealLinkColorHexInput {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #E4EEEA;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #0F1C17;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.dealLinkColorHexInput:focus {
+  outline: none;
+  border-color: #2F5446;
+  box-shadow: 0 0 0 3px rgba(47, 84, 70, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .dealLinkModalBox {
+    max-width: 95vw;
+    max-height: 90vh;
+  }
+
+  .dealLinkEditorWrapper {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .dealLinkModalHeader {
+    padding: 16px 24px;
+  }
+
+  .dealLinkFormSection,
+  .dealLinkHistorySection {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dealLinkModal {
+    padding: 1rem;
+  }
+
+  .dealLinkModalBox {
+    border-radius: 8px;
+    max-height: 95vh;
+  }
+
+  .dealLinkModalHeader {
+    padding: 16px;
+  }
+
+  .dealLinkFormSection,
+  .dealLinkHistorySection {
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .dealLinkEditorWrapper {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .dealLinkButton {
+    padding: 11px 20px;
+    font-size: 14px;
+  }
+
+  .dealLinkFormInput {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}

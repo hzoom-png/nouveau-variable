@@ -1,393 +1,193 @@
 'use client'
 
 import { useState } from 'react'
+import styles from './DealLinkModal.module.css'
 
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '9px 13px',
-  border: '1.5px solid var(--border)',
-  borderRadius: 'var(--r-sm)',
-  fontSize: '13px',
-  color: 'var(--text)',
-  background: 'var(--white)',
-  outline: 'none',
-  fontFamily: 'Inter, sans-serif',
-  fontWeight: 400,
-  boxSizing: 'border-box',
-}
-
-const labelStyle: React.CSSProperties = {
-  fontSize: '11px',
-  fontWeight: 500,
-  color: 'var(--text-2)',
-  letterSpacing: '.06em',
-  textTransform: 'uppercase',
-  display: 'block',
-  marginBottom: '5px',
-  fontFamily: 'Inter, sans-serif',
+interface DealLinkFormProps {
+  onSubmit: (data: any) => Promise<void>
+  isLoading: boolean
+  historicalDeallinks: any[]
+  onSelectDeallink: (deallink: any) => void
 }
 
 export function DealLinkForm({
   onSubmit,
   isLoading,
-  error,
-  deallinks,
-  historicalLoading,
+  historicalDeallinks,
   onSelectDeallink,
-  onShowAllDeallinks,
-}: {
-  onSubmit: (formData: any) => void
-  isLoading: boolean
-  error: string
-  deallinks: any[]
-  historicalLoading: boolean
-  onSelectDeallink: (deallink: any) => void
-  onShowAllDeallinks: () => void
-}) {
-  const [form, setForm] = useState({
-    prospectName: '',
-    prospectCompany: '',
-    dealType: 'closing',
-    dealContext: '',
-    dealValue: '',
-    tone: 'Professionnel',
-    myWebsite: '',
-    clientWebsite: '',
-    sellerName: '',
+}: DealLinkFormProps) {
+  const [formData, setFormData] = useState({
+    prospect_name: '',
+    company_name: '',
+    deal_type: 'closing',
+    deal_context: '',
+    deal_value: '',
   })
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.prospectName.trim() || !form.dealContext.trim()) {
-      return
-    }
-    onSubmit({
-      prospect_name: form.prospectName,
-      company_name: form.prospectCompany,
-      deal_type: form.dealType,
-      deal_context: form.dealContext,
-      deal_value: form.dealValue ? parseFloat(form.dealValue) : null,
-      user_name: form.sellerName,
-      user_title: '',
-      tone: form.tone,
-      myWebsite: form.myWebsite,
-      clientWebsite: form.clientWebsite,
-    })
+    onSubmit(formData)
   }
 
-  const recentDeallinks = deallinks.slice(0, 3)
+  const recentDeallinks = historicalDeallinks.slice(0, 5)
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '16px' }}>
-        {/* Prospect Info Section */}
-        <div>
-          <h3
-            style={{
-              fontSize: '13px',
-              fontWeight: 500,
-              color: 'var(--text)',
-              marginBottom: '12px',
-              fontFamily: 'Inter, sans-serif',
-              margin: '0 0 12px 0',
-            }}
-          >
+    <div className={styles.dealLinkFormSection}>
+      <h3 className={styles.dealLinkFormTitle}>Créer un nouveau Deallink</h3>
+
+      <form onSubmit={handleSubmit}>
+        <div className={styles.dealLinkFormGroup}>
+          <label htmlFor="prospect_name" className={styles.dealLinkFormLabel}>
             Prospect
-          </h3>
-          <div style={{ display: 'grid', gap: '12px' }}>
-            <div>
-              <label style={labelStyle}>Nom du Prospect *</label>
-              <input
-                type="text"
-                placeholder="ex: Jean Dupont"
-                value={form.prospectName}
-                onChange={(e) =>
-                  setForm({ ...form, prospectName: e.target.value })
-                }
-                style={inputStyle}
-                required
-              />
-            </div>
-            <div>
-              <label style={labelStyle}>Entreprise</label>
-              <input
-                type="text"
-                placeholder="ex: TechFlow SAS"
-                value={form.prospectCompany}
-                onChange={(e) =>
-                  setForm({ ...form, prospectCompany: e.target.value })
-                }
-                style={inputStyle}
-              />
-            </div>
-          </div>
+          </label>
+          <input
+            id="prospect_name"
+            type="text"
+            name="prospect_name"
+            className={styles.dealLinkFormInput}
+            placeholder="Jean Dupont"
+            value={formData.prospect_name}
+            onChange={handleChange}
+            disabled={isLoading}
+            required
+          />
         </div>
 
-        {/* Deal Info Section */}
-        <div>
-          <h3
-            style={{
-              fontSize: '13px',
-              fontWeight: 500,
-              color: 'var(--text)',
-              marginBottom: '12px',
-              fontFamily: 'Inter, sans-serif',
-              margin: '0 0 12px 0',
-            }}
+        <div className={styles.dealLinkFormGroup}>
+          <label htmlFor="company_name" className={styles.dealLinkFormLabel}>
+            Entreprise
+          </label>
+          <input
+            id="company_name"
+            type="text"
+            name="company_name"
+            className={styles.dealLinkFormInput}
+            placeholder="TechFlow SAS"
+            value={formData.company_name}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </div>
+
+        <div className={styles.dealLinkFormGroup}>
+          <label htmlFor="deal_type" className={styles.dealLinkFormLabel}>
+            Type
+          </label>
+          <select
+            id="deal_type"
+            name="deal_type"
+            className={`${styles.dealLinkFormInput} ${styles.dealLinkFormSelect}`}
+            value={formData.deal_type}
+            onChange={handleChange}
+            disabled={isLoading}
           >
-            Deal
-          </h3>
-          <div style={{ display: 'grid', gap: '12px' }}>
-            <div>
-              <label style={labelStyle}>Type de Deal *</label>
-              <select
-                value={form.dealType}
-                onChange={(e) =>
-                  setForm({ ...form, dealType: e.target.value })
-                }
-                style={{
-                  ...inputStyle,
-                  cursor: 'pointer',
-                }}
-              >
-                <option value="closing">Closing</option>
-                <option value="upsell">Upsell</option>
-                <option value="partnership">Partnership</option>
-                <option value="referral">Referral</option>
-                <option value="other">Autre</option>
-              </select>
-            </div>
-            <div>
-              <label style={labelStyle}>Contexte du Deal *</label>
-              <textarea
-                placeholder="Décris l'opportunité du deal..."
-                value={form.dealContext}
-                onChange={(e) =>
-                  setForm({ ...form, dealContext: e.target.value })
-                }
-                style={{
-                  ...inputStyle,
-                  minHeight: '80px',
-                  fontFamily: 'Inter, sans-serif',
-                  resize: 'vertical',
-                }}
-                required
-              />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-              <div>
-                <label style={labelStyle}>Montant (€)</label>
-                <input
-                  type="number"
-                  placeholder="ex: 50000"
-                  value={form.dealValue}
-                  onChange={(e) =>
-                    setForm({ ...form, dealValue: e.target.value })
-                  }
-                  style={inputStyle}
-                />
-              </div>
-              <div>
-                <label style={labelStyle}>Ton</label>
-                <select
-                  value={form.tone}
-                  onChange={(e) => setForm({ ...form, tone: e.target.value })}
-                  style={{
-                    ...inputStyle,
-                    cursor: 'pointer',
-                  }}
-                >
-                  <option>Professionnel</option>
-                  <option>Amical</option>
-                  <option>Direct</option>
-                  <option>Inspirant</option>
-                  <option>Storytelling</option>
-                </select>
-              </div>
-            </div>
-          </div>
+            <option value="closing">Closing</option>
+            <option value="prospection">Prospection</option>
+            <option value="mission">Mission Freelance</option>
+            <option value="partenariat">Partenariat</option>
+          </select>
         </div>
 
-        {/* Optional Info Section */}
-        <div>
-          <h3
-            style={{
-              fontSize: '13px',
-              fontWeight: 500,
-              color: 'var(--text)',
-              marginBottom: '12px',
-              fontFamily: 'Inter, sans-serif',
-              margin: '0 0 12px 0',
-            }}
-          >
-            URLs et Contact
-          </h3>
-          <div style={{ display: 'grid', gap: '12px' }}>
-            <div>
-              <label style={labelStyle}>Votre Site Web</label>
-              <input
-                type="url"
-                placeholder="https://tondomain.com"
-                value={form.myWebsite}
-                onChange={(e) =>
-                  setForm({ ...form, myWebsite: e.target.value })
-                }
-                style={inputStyle}
-              />
-            </div>
-            <div>
-              <label style={labelStyle}>Site Web du Prospect</label>
-              <input
-                type="url"
-                placeholder="https://prospect-site.com"
-                value={form.clientWebsite}
-                onChange={(e) =>
-                  setForm({ ...form, clientWebsite: e.target.value })
-                }
-                style={inputStyle}
-              />
-            </div>
-            <div>
-              <label style={labelStyle}>Votre Nom</label>
-              <input
-                type="text"
-                placeholder="Ton nom"
-                value={form.sellerName}
-                onChange={(e) =>
-                  setForm({ ...form, sellerName: e.target.value })
-                }
-                style={inputStyle}
-              />
-            </div>
-          </div>
+        <div className={styles.dealLinkFormGroup}>
+          <label htmlFor="deal_context" className={styles.dealLinkFormLabel}>
+            Contexte
+          </label>
+          <textarea
+            id="deal_context"
+            name="deal_context"
+            className={styles.dealLinkFormInput}
+            placeholder="Décris le deal, le contexte, tes objectifs..."
+            rows={4}
+            value={formData.deal_context}
+            onChange={handleChange}
+            disabled={isLoading}
+            required
+            style={{ resize: 'vertical' }}
+          />
         </div>
 
-        {/* Submit Button */}
+        <div className={styles.dealLinkFormGroup}>
+          <label htmlFor="deal_value" className={styles.dealLinkFormLabel}>
+            Montant (optionnel)
+          </label>
+          <input
+            id="deal_value"
+            type="text"
+            name="deal_value"
+            className={styles.dealLinkFormInput}
+            placeholder="15 000"
+            value={formData.deal_value}
+            onChange={handleChange}
+            disabled={isLoading}
+          />
+        </div>
+
         <button
           type="submit"
-          disabled={isLoading || !form.prospectName.trim() || !form.dealContext.trim()}
-          style={{
-            padding: '12px 16px',
-            background:
-              isLoading || !form.prospectName.trim() || !form.dealContext.trim()
-                ? 'var(--surface)'
-                : 'var(--green)',
-            color:
-              isLoading || !form.prospectName.trim() || !form.dealContext.trim()
-                ? 'var(--text-2)'
-                : '#fff',
-            border: 'none',
-            borderRadius: 'var(--r-sm)',
-            fontSize: '13px',
-            fontWeight: 500,
-            cursor:
-              isLoading || !form.prospectName.trim() || !form.dealContext.trim()
-                ? 'not-allowed'
-                : 'pointer',
-            transition: '.2s',
-            fontFamily: 'Inter, sans-serif',
-          }}
+          className={`${styles.dealLinkButton} ${styles.dealLinkButtonPrimary}`}
+          disabled={isLoading || !formData.prospect_name.trim() || !formData.deal_context.trim()}
         >
-          {isLoading ? 'Génération en cours...' : 'Générer la Landing Page'}
+          {isLoading ? 'Génération en cours...' : 'Générer'}
         </button>
       </form>
 
-      {/* History Preview */}
-      {!historicalLoading && deallinks.length > 0 && (
-        <div style={{ marginTop: '16px', borderTop: '1px solid var(--border)', paddingTop: '16px' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-            }}
-          >
-            <h4
-              style={{
-                fontSize: '12px',
-                fontWeight: 500,
-                color: 'var(--text-2)',
-                textTransform: 'uppercase',
-                margin: 0,
-                fontFamily: 'Inter, sans-serif',
-              }}
-            >
-              Historique
-            </h4>
-            {deallinks.length > 3 && (
-              <button
-                onClick={onShowAllDeallinks}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--text-2)',
-                  cursor: 'pointer',
-                  fontSize: '11px',
-                  padding: 0,
-                  textDecoration: 'underline',
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: 500,
-                }}
+      {/* Divider */}
+      <div className={styles.dealLinkDivider} />
+
+      {/* Historique */}
+      <div className={styles.dealLinkHistorySection}>
+        <h4 className={styles.dealLinkHistoryTitle}>Historique</h4>
+
+        {historicalDeallinks.length === 0 ? (
+          <p style={{ color: '#9BB5AA', fontSize: '14px', fontFamily: 'Inter, sans-serif' }}>
+            Aucun deallink créé pour l'instant.
+          </p>
+        ) : (
+          <>
+            {recentDeallinks.map((deallink) => (
+              <div
+                key={deallink.id}
+                className={styles.dealLinkHistoryItem}
+                onClick={() => onSelectDeallink(deallink)}
               >
-                Voir tous les deallinks
-              </button>
-            )}
-          </div>
-          <div style={{ display: 'grid', gap: '8px' }}>
-            {recentDeallinks.map((dl) => (
-              <button
-                key={dl.id}
-                onClick={() => onSelectDeallink(dl)}
-                style={{
-                  background: 'var(--surface)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--r-sm)',
-                  padding: '10px 12px',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  transition: '.2s',
-                  fontFamily: 'Inter, sans-serif',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background =
-                    'var(--white)'
-                  ;(e.currentTarget as HTMLButtonElement).style.borderColor =
-                    'var(--text)'
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background =
-                    'var(--surface)'
-                  ;(e.currentTarget as HTMLButtonElement).style.borderColor =
-                    'var(--border)'
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: '12px',
-                    fontWeight: 500,
-                    color: 'var(--text)',
-                    margin: '0 0 4px 0',
-                    fontFamily: 'Inter, sans-serif',
-                  }}
-                >
-                  {dl.prospect_name}
-                </p>
-                <p
-                  style={{
-                    fontSize: '11px',
-                    color: 'var(--text-2)',
-                    margin: 0,
-                    fontFamily: 'Inter, sans-serif',
-                  }}
-                >
-                  {dl.company_name}
-                </p>
-              </button>
+                <div className={styles.dealLinkHistoryItemName}>
+                  {deallink.prospect_name}
+                </div>
+                <div className={styles.dealLinkHistoryItemMeta}>
+                  <span>{deallink.company_name}</span>
+                  <span
+                    className={`${styles.dealLinkHistoryItemStatus} ${
+                      deallink.status === 'draft'
+                        ? styles.dealbuttonStatusDraft
+                        : styles.dealLinkHistoryItemStatusPublished
+                    }`}
+                  >
+                    {deallink.status === 'draft' ? 'Brouillon' : 'Publié'}
+                  </span>
+                  <span>
+                    {new Date(deallink.created_at).toLocaleDateString('fr-FR')}
+                  </span>
+                </div>
+              </div>
             ))}
-          </div>
-        </div>
-      )}
+
+            {historicalDeallinks.length > 5 && (
+              <p style={{ color: '#9BB5AA', fontSize: '14px', fontFamily: 'Inter, sans-serif', textAlign: 'center', marginTop: '16px' }}>
+                +{historicalDeallinks.length - 5} autres deallinks
+              </p>
+            )}
+          </>
+        )}
+      </div>
     </div>
   )
 }
