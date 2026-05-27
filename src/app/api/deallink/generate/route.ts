@@ -133,84 +133,71 @@ export async function POST(req: Request) {
     })
     console.log('[10] Anthropic client created')
 
-    const valueStr = deal_value ? `${deal_value}€` : 'TBD'
+    const valueStr = deal_value ? `€${deal_value}` : 'TBD'
 
-    const prompt = `Tu es un expert en design de landing pages premium (Stripe, Vercel, Linear style).
+    const deallinkPrompt = `Tu génères une landing page PERSONNALISÉE pour un prospect spécifique.
 
-Génère une landing page HTML + CSS ultra-premium pour un deal/opportunité commerciale.
-
-CONTEXT:
-- Prospect: ${prospect_name}
+DONNÉES DU DEAL:
+- Prospect Name: ${prospect_name}
 - Company: ${safeCompanyName}
 - Deal Type: ${deal_type}
-- Deal Context: ${deal_context}
-- Deal Value: ${valueStr}
+- Context: ${deal_context}
+- Value: ${valueStr}
 
-REQUIREMENTS:
+RÈGLES:
 
-1. DESIGN:
-   - Modern, clean, premium aesthetic (Stripe/Vercel level)
-   - Dark mode friendly (responsive to system preference)
-   - Excellent whitespace management
-   - Sophisticated color palette (primary + accent)
-   - No borders unless essential, use shadows instead
-   - Smooth animations and transitions
+1. LA PAGE S'ADRESSE DIRECTEMENT AU PROSPECT
+   - Utilise son prénom (exemple: "${prospect_name.split(' ')[0]},")
+   - Parle de sa company comme si tu la connais
+   - Ton: personnel, professionnel, pas corporate
 
-2. TYPOGRAPHY:
-   - Use system fonts or Google Fonts (Inter, Poppins, Playfair)
-   - Strong hierarchy (H1 > H2 > H3)
-   - Perfect letter-spacing and line-height
-   - Sans-serif for body, can mix serif for headers
+2. STRUCTURE REQUISE (sections)
+   a) HERO: Nom du prospect + hook pertinent au deal
+   b) POURQUOI: Explique le contexte du deal
+   c) LA SOLUTION: Décris ce qu'on propose
+   d) IMPACT: Bénéfices concrets (bullet points)
+   e) CTA: "Prise RDV" ou "Discutons"
+   f) FOOTER: Info du fondateur (vague, on va remplir)
 
-3. LAYOUT:
-   - Mobile-first responsive
-   - 4 sections minimum:
-     a) Hero (prospect name + value prop)
-     b) Why This Deal (context + opportunity)
-     c) Key Points (3-5 bullet points)
-     d) CTA (contact/schedule call)
-   - Hero should be eye-catching
-   - Good use of color (primary on buttons/accents)
+3. DESIGN
+   - Premium, moderne, Stripe/Vercel level
+   - Use CSS variables for colors (--primary, --accent)
+   - Responsive mobile/tablet/desktop
+   - Whitespace generous
+   - No clutter
+   - Smooth animations
 
-4. RESPONSIVENESS:
-   - Mobile: Single column, touch-friendly
-   - Tablet: Optimized layout
-   - Desktop: Can use 2-column where needed
-   - No horizontal scroll
-
-5. TECHNICAL:
-   - Return ONLY valid JSON (no markdown, no explanations)
-   - Self-contained (no external dependencies)
-   - Inline CSS (in <style> tag)
-   - CSS variables for colors (easy customization)
-   - Smooth scrolling
-   - Optimized images/gradients
-
-6. CONTENT:
+4. CONTENU
+   - Clair et direct
+   - Pas de fluff
+   - Deal value visible
+   - CTA prominent
    - Professional tone
-   - Prospect name should be prominent
-   - Company name visible
-   - Deal context explained clearly
-   - Value proposition crystal clear
-   - CTA button prominent and compelling
 
-OUTPUT FORMAT (STRICT JSON):
+5. TECHNICAL
+   - Valid HTML + CSS
+   - Self-contained (no external deps)
+   - CSS in <style> tag
+   - Inline everything
+   - Optimized
+
+OUTPUT:
+
+Return ONLY this JSON (no markdown backticks):
 {
-  "html": "<!DOCTYPE html><html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><title>Deal</title></head><body>...</body></html>",
-  "css": "complete CSS here (will be inlined in <style>)",
+  "html": "<html>...</html>",
+  "css": "/* all CSS here, will be inlined */",
   "config": {
     "colors": {
       "primary": "#2F5446",
       "accent": "#C8790A"
-    },
-    "fonts": {
-      "heading": "Poppins",
-      "body": "Inter"
     }
   }
 }
 
-Make it STUNNING. This is a premium landing page that reflects professionalism.`
+Génère une landing page SUBLIME, PERSONNALISÉE, ADRESSÉE À CE PROSPECT.`
+
+    const prompt = deallinkPrompt
 
     console.log('[11] Prompt ready, length:', prompt.length)
 
