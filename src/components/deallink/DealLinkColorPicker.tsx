@@ -13,12 +13,13 @@ export function DealLinkColorPicker({
 }) {
   const lblStyle: React.CSSProperties = {
     fontSize: '11px',
-    fontWeight: 600,
+    fontWeight: 500,
     color: 'var(--text-2)',
     letterSpacing: '.06em',
     textTransform: 'uppercase',
     display: 'block',
     marginBottom: '8px',
+    fontFamily: 'Inter, sans-serif',
   }
 
   const inputStyle: React.CSSProperties = {
@@ -31,6 +32,7 @@ export function DealLinkColorPicker({
     background: 'var(--white)',
     outline: 'none',
     fontFamily: 'monospace',
+    fontWeight: 400,
     boxSizing: 'border-box',
   }
 

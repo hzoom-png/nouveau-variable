@@ -57,17 +57,20 @@ export async function POST(req: Request) {
 
     // Validation
     if (!prospect_name || typeof prospect_name !== 'string' || !prospect_name.trim()) {
-      return NextResponse.json({ error: 'prospect_name requis' }, { status: 400 })
-    }
-    if (!company_name || typeof company_name !== 'string' || !company_name.trim()) {
-      return NextResponse.json({ error: 'company_name requis' }, { status: 400 })
+      console.error('[deallink/generate] Missing prospect_name')
+      return NextResponse.json({ error: 'Nom du prospect requis' }, { status: 400 })
     }
     if (!deal_type || typeof deal_type !== 'string') {
-      return NextResponse.json({ error: 'deal_type requis' }, { status: 400 })
+      console.error('[deallink/generate] Missing deal_type')
+      return NextResponse.json({ error: 'Type de deal requis' }, { status: 400 })
     }
     if (!deal_context || typeof deal_context !== 'string' || !deal_context.trim()) {
-      return NextResponse.json({ error: 'deal_context requis' }, { status: 400 })
+      console.error('[deallink/generate] Missing deal_context')
+      return NextResponse.json({ error: 'Contexte du deal requis' }, { status: 400 })
     }
+
+    // company_name is optional
+    const safeCompanyName = (company_name && typeof company_name === 'string') ? company_name.trim() : 'N/A'
 
     // Fetch website contents if provided
     async function fetchSiteContent(url: string): Promise<string> {
@@ -94,6 +97,15 @@ export async function POST(req: Request) {
       fetchSiteContent((myWebsite as string) || ''),
       fetchSiteContent((clientWebsite as string) || ''),
     ])
+
+    // Check API key
+    if (!process.env.ANTHROPIC_API_KEY) {
+      console.error('[deallink/generate] ANTHROPIC_API_KEY not set')
+      return NextResponse.json(
+        { error: 'Erreur de configuration serveur' },
+        { status: 500 }
+      )
+    }
 
     // Anthropic generation
     const anthropic = new Anthropic({
@@ -158,16 +170,28 @@ OUTPUT (strictly JSON, no markdown backticks):
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 30000)
 
-    const message = await anthropic.messages.create(
-      {
-        model: 'claude-sonnet-4-6',
-        max_tokens: 4000,
-        messages: [{ role: 'user', content: prompt }],
-      },
-      {
-        signal: controller.signal,
-      } as Parameters<typeof anthropic.messages.create>[1]
-    )
+    let message
+    try {
+      console.log('[deallink/generate] Calling Anthropic API...')
+      message = await anthropic.messages.create(
+        {
+          model: 'claude-sonnet-4-6',
+          max_tokens: 4000,
+          messages: [{ role: 'user', content: prompt }],
+        },
+        {
+          signal: controller.signal,
+        } as Parameters<typeof anthropic.messages.create>[1]
+      )
+      console.log('[deallink/generate] Anthropic API response received')
+    } catch (apiErr) {
+      clearTimeout(timeout)
+      console.error('[deallink/generate] Anthropic API error:', apiErr)
+      return NextResponse.json(
+        { error: 'Erreur lors de la génération — réessaie.' },
+        { status: 500 }
+      )
+    }
 
     clearTimeout(timeout)
 
@@ -217,7 +241,7 @@ OUTPUT (strictly JSON, no markdown backticks):
       .select('id, public_slug')
       .eq('user_id', user.id)
       .eq('prospect_name', prospect_name)
-      .eq('company_name', company_name)
+      .eq('company_name', safeCompanyName)
       .maybeSingle()
 
     const publicSlug = existing?.public_slug || generatePublicSlug()
@@ -230,7 +254,7 @@ OUTPUT (strictly JSON, no markdown backticks):
             id: existing?.id,
             user_id: user.id,
             prospect_name,
-            company_name,
+            company_name: safeCompanyName,
             deal_type,
             deal_context,
             deal_value: deal_value ? parseFloat(deal_value as string) : null,

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { DealLinkHistoryPreview } from './DealLinkHistoryPreview'
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -12,18 +11,20 @@ const inputStyle: React.CSSProperties = {
   color: 'var(--text)',
   background: 'var(--white)',
   outline: 'none',
-  fontFamily: 'inherit',
+  fontFamily: 'Inter, sans-serif',
+  fontWeight: 400,
   boxSizing: 'border-box',
 }
 
 const labelStyle: React.CSSProperties = {
   fontSize: '11px',
-  fontWeight: 600,
+  fontWeight: 500,
   color: 'var(--text-2)',
   letterSpacing: '.06em',
   textTransform: 'uppercase',
   display: 'block',
   marginBottom: '5px',
+  fontFamily: 'Inter, sans-serif',
 }
 
 export function DealLinkForm({
@@ -74,6 +75,8 @@ export function DealLinkForm({
     })
   }
 
+  const recentDeallinks = deallinks.slice(0, 3)
+
   return (
     <div>
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '16px' }}>
@@ -82,19 +85,21 @@ export function DealLinkForm({
           <h3
             style={{
               fontSize: '13px',
-              fontWeight: 600,
+              fontWeight: 500,
               color: 'var(--text)',
               marginBottom: '12px',
+              fontFamily: 'Inter, sans-serif',
+              margin: '0 0 12px 0',
             }}
           >
-            👤 Prospect
+            Prospect
           </h3>
           <div style={{ display: 'grid', gap: '12px' }}>
             <div>
-              <label style={labelStyle}>Prospect Name *</label>
+              <label style={labelStyle}>Nom du Prospect *</label>
               <input
                 type="text"
-                placeholder="e.g., John Doe"
+                placeholder="ex: Jean Dupont"
                 value={form.prospectName}
                 onChange={(e) =>
                   setForm({ ...form, prospectName: e.target.value })
@@ -104,10 +109,10 @@ export function DealLinkForm({
               />
             </div>
             <div>
-              <label style={labelStyle}>Company Name</label>
+              <label style={labelStyle}>Entreprise</label>
               <input
                 type="text"
-                placeholder="e.g., Acme Corp"
+                placeholder="ex: TechFlow SAS"
                 value={form.prospectCompany}
                 onChange={(e) =>
                   setForm({ ...form, prospectCompany: e.target.value })
@@ -123,16 +128,18 @@ export function DealLinkForm({
           <h3
             style={{
               fontSize: '13px',
-              fontWeight: 600,
+              fontWeight: 500,
               color: 'var(--text)',
               marginBottom: '12px',
+              fontFamily: 'Inter, sans-serif',
+              margin: '0 0 12px 0',
             }}
           >
-            💼 Deal
+            Deal
           </h3>
           <div style={{ display: 'grid', gap: '12px' }}>
             <div>
-              <label style={labelStyle}>Deal Type *</label>
+              <label style={labelStyle}>Type de Deal *</label>
               <select
                 value={form.dealType}
                 onChange={(e) =>
@@ -147,13 +154,13 @@ export function DealLinkForm({
                 <option value="upsell">Upsell</option>
                 <option value="partnership">Partnership</option>
                 <option value="referral">Referral</option>
-                <option value="other">Other</option>
+                <option value="other">Autre</option>
               </select>
             </div>
             <div>
-              <label style={labelStyle}>Deal Context *</label>
+              <label style={labelStyle}>Contexte du Deal *</label>
               <textarea
-                placeholder="Describe the deal opportunity..."
+                placeholder="Décris l'opportunité du deal..."
                 value={form.dealContext}
                 onChange={(e) =>
                   setForm({ ...form, dealContext: e.target.value })
@@ -161,7 +168,7 @@ export function DealLinkForm({
                 style={{
                   ...inputStyle,
                   minHeight: '80px',
-                  fontFamily: 'inherit',
+                  fontFamily: 'Inter, sans-serif',
                   resize: 'vertical',
                 }}
                 required
@@ -169,10 +176,10 @@ export function DealLinkForm({
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <div>
-                <label style={labelStyle}>Deal Value (€)</label>
+                <label style={labelStyle}>Montant (€)</label>
                 <input
                   type="number"
-                  placeholder="e.g., 50000"
+                  placeholder="ex: 50000"
                   value={form.dealValue}
                   onChange={(e) =>
                     setForm({ ...form, dealValue: e.target.value })
@@ -181,7 +188,7 @@ export function DealLinkForm({
                 />
               </div>
               <div>
-                <label style={labelStyle}>Tone</label>
+                <label style={labelStyle}>Ton</label>
                 <select
                   value={form.tone}
                   onChange={(e) => setForm({ ...form, tone: e.target.value })}
@@ -206,19 +213,21 @@ export function DealLinkForm({
           <h3
             style={{
               fontSize: '13px',
-              fontWeight: 600,
+              fontWeight: 500,
               color: 'var(--text)',
               marginBottom: '12px',
+              fontFamily: 'Inter, sans-serif',
+              margin: '0 0 12px 0',
             }}
           >
-            🔗 URLs & Contact
+            URLs et Contact
           </h3>
           <div style={{ display: 'grid', gap: '12px' }}>
             <div>
-              <label style={labelStyle}>Your Website</label>
+              <label style={labelStyle}>Votre Site Web</label>
               <input
                 type="url"
-                placeholder="https://yoursite.com"
+                placeholder="https://tondomain.com"
                 value={form.myWebsite}
                 onChange={(e) =>
                   setForm({ ...form, myWebsite: e.target.value })
@@ -227,7 +236,7 @@ export function DealLinkForm({
               />
             </div>
             <div>
-              <label style={labelStyle}>Prospect Website</label>
+              <label style={labelStyle}>Site Web du Prospect</label>
               <input
                 type="url"
                 placeholder="https://prospect-site.com"
@@ -239,10 +248,10 @@ export function DealLinkForm({
               />
             </div>
             <div>
-              <label style={labelStyle}>Your Name</label>
+              <label style={labelStyle}>Votre Nom</label>
               <input
                 type="text"
-                placeholder="Your name"
+                placeholder="Ton nom"
                 value={form.sellerName}
                 onChange={(e) =>
                   setForm({ ...form, sellerName: e.target.value })
@@ -252,21 +261,6 @@ export function DealLinkForm({
             </div>
           </div>
         </div>
-
-        {/* Error */}
-        {error && (
-          <div
-            style={{
-              padding: '12px',
-              background: '#fee2e2',
-              color: '#991b1b',
-              borderRadius: 'var(--r-sm)',
-              fontSize: '13px',
-            }}
-          >
-            {error}
-          </div>
-        )}
 
         {/* Submit Button */}
         <button
@@ -285,25 +279,115 @@ export function DealLinkForm({
             border: 'none',
             borderRadius: 'var(--r-sm)',
             fontSize: '13px',
-            fontWeight: 600,
+            fontWeight: 500,
             cursor:
               isLoading || !form.prospectName.trim() || !form.dealContext.trim()
                 ? 'not-allowed'
                 : 'pointer',
             transition: '.2s',
+            fontFamily: 'Inter, sans-serif',
           }}
         >
-          {isLoading ? '✨ Generating...' : '✨ Generate Landing Page'}
+          {isLoading ? 'Génération en cours...' : 'Générer la Landing Page'}
         </button>
       </form>
 
       {/* History Preview */}
-      <DealLinkHistoryPreview
-        deallinks={deallinks}
-        onSelectDeallink={onSelectDeallink}
-        onShowAll={onShowAllDeallinks}
-        isLoading={historicalLoading}
-      />
+      {!historicalLoading && deallinks.length > 0 && (
+        <div style={{ marginTop: '16px', borderTop: '1px solid var(--border)', paddingTop: '16px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '12px',
+            }}
+          >
+            <h4
+              style={{
+                fontSize: '12px',
+                fontWeight: 500,
+                color: 'var(--text-2)',
+                textTransform: 'uppercase',
+                margin: 0,
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              Historique
+            </h4>
+            {deallinks.length > 3 && (
+              <button
+                onClick={onShowAllDeallinks}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-2)',
+                  cursor: 'pointer',
+                  fontSize: '11px',
+                  padding: 0,
+                  textDecoration: 'underline',
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 500,
+                }}
+              >
+                Voir tous les deallinks
+              </button>
+            )}
+          </div>
+          <div style={{ display: 'grid', gap: '8px' }}>
+            {recentDeallinks.map((dl) => (
+              <button
+                key={dl.id}
+                onClick={() => onSelectDeallink(dl)}
+                style={{
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--r-sm)',
+                  padding: '10px 12px',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  transition: '.2s',
+                  fontFamily: 'Inter, sans-serif',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    'var(--white)'
+                  ;(e.currentTarget as HTMLButtonElement).style.borderColor =
+                    'var(--text)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background =
+                    'var(--surface)'
+                  ;(e.currentTarget as HTMLButtonElement).style.borderColor =
+                    'var(--border)'
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: '12px',
+                    fontWeight: 500,
+                    color: 'var(--text)',
+                    margin: '0 0 4px 0',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  {dl.prospect_name}
+                </p>
+                <p
+                  style={{
+                    fontSize: '11px',
+                    color: 'var(--text-2)',
+                    margin: 0,
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  {dl.company_name}
+                </p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { DealLinkForm } from './DealLinkForm'
-import { DealLinkEditor } from './DealLinkEditor'
 import { DealLinkEditorLeft } from './DealLinkEditorLeft'
 import { DealLinkEditorRight } from './DealLinkEditorRight'
-import { DealLinkHistoryFull } from './DealLinkHistoryFull'
 
 type View = 'form' | 'editor' | 'history-full'
 
@@ -16,10 +14,9 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [historicalLoading, setHistoricalLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-  const [saveStatus, setSaveStatus] = useState<
-    'saved' | 'saving' | 'error' | ''
-  >('')
+  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error' | ''>('')
   const [isSaving, setIsSaving] = useState(false)
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 
   useEffect(() => {
     if (isOpen && view === 'form') {
@@ -42,6 +39,11 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
     }
   }
 
+  function showToast(message: string, type: 'success' | 'error') {
+    setToast({ message, type })
+    setTimeout(() => setToast(null), 3000)
+  }
+
   async function handleFormSubmit(formData: any) {
     setIsLoading(true)
     setError('')
@@ -55,7 +57,9 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
       if (!res.ok) {
         const err = (await res.json()) as { error?: string }
-        setError(err.error || 'Generation failed')
+        const errorMsg = err.error || 'Erreur lors de la génération'
+        setError(errorMsg)
+        showToast(errorMsg, 'error')
         return
       }
 
@@ -63,7 +67,9 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
       await fetchDeallink(data.deallink_id)
       setView('editor')
     } catch (err) {
-      setError('Network error — try again')
+      const errorMsg = 'Erreur réseau — réessaie.'
+      setError(errorMsg)
+      showToast(errorMsg, 'error')
       console.error(err)
     } finally {
       setIsLoading(false)
@@ -139,9 +145,10 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
         setSaveStatus('saved')
         setTimeout(() => setSaveStatus(''), 2000)
 
-        // Open the public URL in a new tab
+        showToast('Lien publié et copié en clipboard', 'success')
+
         if (data.public_url) {
-          window.open(data.public_url, '_blank')
+          navigator.clipboard.writeText(data.public_url)
         }
       }
     } catch (err) {
@@ -169,42 +176,68 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 40,
+        overflow: 'hidden',
       }}
       onClick={onClose}
     >
+      {/* Toast */}
+      {toast && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '24px',
+            right: '24px',
+            padding: '12px 24px',
+            borderRadius: '6px',
+            color: '#fff',
+            fontSize: '14px',
+            fontWeight: 500,
+            zIndex: 50,
+            background: toast.type === 'success' ? 'var(--green)' : '#dc2626',
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          {toast.message}
+        </div>
+      )}
+
+      {/* Modal Box */}
       <div
         style={{
           background: 'var(--white)',
-          borderRadius: 'var(--r-lg)',
+          borderRadius: '8px',
           width: '95vw',
           height: '90vh',
-          maxWidth: '1400px',
+          maxWidth: '1280px',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
+          boxShadow: '0 20px 25px rgba(0, 0, 0, 0.15)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* Header (sticky) */}
         {view !== 'editor' && (
           <div
             style={{
-              padding: '24px',
+              padding: '24px 32px',
               borderBottom: '1px solid var(--border)',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              flexShrink: 0,
             }}
           >
             <h1
               style={{
                 fontSize: '20px',
-                fontWeight: 700,
+                fontWeight: 500,
                 color: 'var(--text)',
                 margin: 0,
+                fontFamily: 'Inter, sans-serif',
               }}
             >
-              ✨ Create Deallink
+              Deallink
             </h1>
             <button
               onClick={onClose}
@@ -221,11 +254,12 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
           </div>
         )}
 
-        {/* Content */}
+        {/* Content (scrollable) */}
         <div
           style={{
             flex: 1,
-            overflow: 'hidden',
+            overflowY: 'auto',
+            overflowX: 'hidden',
             display: 'flex',
           }}
         >
@@ -233,12 +267,27 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
             <div
               style={{
                 flex: 1,
-                overflowY: 'auto',
                 padding: '32px',
                 maxWidth: '500px',
                 margin: '0 auto',
+                width: '100%',
               }}
             >
+              {error && (
+                <div
+                  style={{
+                    padding: '12px',
+                    background: '#fee2e2',
+                    color: '#991b1b',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    marginBottom: '24px',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  {error}
+                </div>
+              )}
               <DealLinkForm
                 onSubmit={handleFormSubmit}
                 isLoading={isLoading}
@@ -252,7 +301,7 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
           )}
 
           {view === 'editor' && deallink && (
-            <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+            <div style={{ flex: 1, display: 'flex', overflow: 'hidden', width: '100%' }}>
               <DealLinkEditorLeft
                 deallink={deallink}
                 onColorChange={handleColorChange}
@@ -266,133 +315,135 @@ export function DealLinkModal({ isOpen, onClose }: { isOpen: boolean; onClose: (
           )}
 
           {view === 'history-full' && (
-            <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-              <div
+            <div
+              style={{
+                flex: 1,
+                padding: '32px',
+                maxWidth: '500px',
+                margin: '0 auto',
+                width: '100%',
+              }}
+            >
+              <button
+                onClick={() => setView('form')}
                 style={{
-                  flex: 1,
-                  overflowY: 'auto',
-                  padding: '32px',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-2)',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  padding: 0,
+                  marginBottom: '24px',
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 500,
                 }}
               >
-                <div
-                  style={{
-                    maxWidth: '500px',
-                  }}
-                >
-                  <button
-                    onClick={() => setView('form')}
+                Retour
+              </button>
+              <h2
+                style={{
+                  fontSize: '18px',
+                  fontWeight: 500,
+                  color: 'var(--text)',
+                  margin: '0 0 24px 0',
+                  fontFamily: 'Inter, sans-serif',
+                }}
+              >
+                Historique
+              </h2>
+              <div style={{ display: 'grid', gap: '12px' }}>
+                {deallinks.length === 0 ? (
+                  <p
                     style={{
-                      background: 'none',
-                      border: 'none',
                       color: 'var(--text-2)',
-                      cursor: 'pointer',
-                      fontSize: '13px',
-                      padding: 0,
-                      marginBottom: '24px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
+                      textAlign: 'center',
+                      fontFamily: 'Inter, sans-serif',
                     }}
                   >
-                    ← Back
-                  </button>
-                  <h2
-                    style={{
-                      fontSize: '18px',
-                      fontWeight: 600,
-                      color: 'var(--text)',
-                      margin: '0 0 24px 0',
-                    }}
-                  >
-                    📋 All Deallinks
-                  </h2>
-                  <div style={{ display: 'grid', gap: '12px' }}>
-                    {deallinks.length === 0 ? (
-                      <p style={{ color: 'var(--text-2)', textAlign: 'center' }}>
-                        No deallinks yet
-                      </p>
-                    ) : (
-                      deallinks.map((dl) => (
-                        <button
-                          key={dl.id}
-                          onClick={() => handleSelectDeallink(dl)}
-                          style={{
-                            background: 'var(--surface)',
-                            border: '1px solid var(--border)',
-                            borderRadius: 'var(--r-sm)',
-                            padding: '16px',
-                            textAlign: 'left',
-                            cursor: 'pointer',
-                            transition: '.2s',
-                          }}
-                          onMouseEnter={(e) => {
-                            (e.currentTarget as HTMLButtonElement).style.background =
-                              'var(--white)'
-                            ;(e.currentTarget as HTMLButtonElement).style.borderColor =
-                              'var(--text)'
-                          }}
-                          onMouseLeave={(e) => {
-                            (e.currentTarget as HTMLButtonElement).style.background =
-                              'var(--surface)'
-                            ;(e.currentTarget as HTMLButtonElement).style.borderColor =
-                              'var(--border)'
-                          }}
-                        >
-                          <div
+                    Aucun deallink pour le moment
+                  </p>
+                ) : (
+                  deallinks.map((dl) => (
+                    <button
+                      key={dl.id}
+                      onClick={() => handleSelectDeallink(dl)}
+                      style={{
+                        background: 'var(--surface)',
+                        border: '1px solid var(--border)',
+                        borderRadius: '6px',
+                        padding: '16px',
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        transition: '.2s',
+                        fontFamily: 'Inter, sans-serif',
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.background =
+                          'var(--white)'
+                        ;(e.currentTarget as HTMLButtonElement).style.borderColor =
+                          'var(--text)'
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.background =
+                          'var(--surface)'
+                        ;(e.currentTarget as HTMLButtonElement).style.borderColor =
+                          'var(--border)'
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'flex-start',
+                          marginBottom: '8px',
+                        }}
+                      >
+                        <div>
+                          <p
                             style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              alignItems: 'flex-start',
-                              marginBottom: '8px',
+                              fontSize: '14px',
+                              fontWeight: 500,
+                              color: 'var(--text)',
+                              margin: 0,
+                              marginBottom: '4px',
+                              fontFamily: 'Inter, sans-serif',
                             }}
                           >
-                            <div>
-                              <p
-                                style={{
-                                  fontSize: '14px',
-                                  fontWeight: 600,
-                                  color: 'var(--text)',
-                                  margin: 0,
-                                  marginBottom: '4px',
-                                }}
-                              >
-                                {dl.prospect_name}
-                              </p>
-                              <p
-                                style={{
-                                  fontSize: '13px',
-                                  color: 'var(--text-2)',
-                                  margin: 0,
-                                }}
-                              >
-                                {dl.company_name}
-                              </p>
-                            </div>
-                            <span
-                              style={{
-                                fontSize: '11px',
-                                color:
-                                  dl.status === 'published'
-                                    ? '#fff'
-                                    : 'var(--text-2)',
-                                textTransform: 'uppercase',
-                                background:
-                                  dl.status === 'published'
-                                    ? 'var(--green)'
-                                    : 'var(--surface)',
-                                padding: '4px 8px',
-                                borderRadius: 'var(--r-sm)',
-                                fontWeight: 600,
-                              }}
-                            >
-                              {dl.status}
-                            </span>
-                          </div>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                </div>
+                            {dl.prospect_name}
+                          </p>
+                          <p
+                            style={{
+                              fontSize: '13px',
+                              color: 'var(--text-2)',
+                              margin: 0,
+                              fontFamily: 'Inter, sans-serif',
+                            }}
+                          >
+                            {dl.company_name}
+                          </p>
+                        </div>
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            color:
+                              dl.status === 'published' ? '#fff' : 'var(--text-2)',
+                            textTransform: 'uppercase',
+                            background:
+                              dl.status === 'published'
+                                ? 'var(--green)'
+                                : 'var(--surface)',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                            fontWeight: 500,
+                            fontFamily: 'Inter, sans-serif',
+                          }}
+                        >
+                          {dl.status}
+                        </span>
+                      </div>
+                    </button>
+                  ))
+                )}
               </div>
             </div>
           )}

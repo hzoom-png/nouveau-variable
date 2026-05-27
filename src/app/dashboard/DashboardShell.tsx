@@ -383,9 +383,10 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
                   border: 'none',
                   borderRadius: 'var(--r-sm)',
                   fontSize: '13px',
-                  fontWeight: 600,
+                  fontWeight: 500,
                   cursor: 'pointer',
                   transition: '.2s',
+                  fontFamily: 'Inter, sans-serif',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.opacity = '0.9'
@@ -394,7 +395,7 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
                   e.currentTarget.style.opacity = '1'
                 }}
               >
-                ✨ New DealLink
+                Nouveau Deallink
               </button>
             )}
             {profile.tokens_balance !== undefined && (

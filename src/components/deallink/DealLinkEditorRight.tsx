@@ -60,12 +60,13 @@ ${html}
         <span
           style={{
             fontSize: '12px',
-            fontWeight: 600,
+            fontWeight: 500,
             color: 'var(--text-2)',
             textTransform: 'uppercase',
+            fontFamily: 'Inter, sans-serif',
           }}
         >
-          Preview:
+          Aperçu:
         </span>
         {(['mobile', 'tablet', 'desktop'] as const).map((mode) => (
           <button
@@ -81,11 +82,12 @@ ${html}
               fontWeight: 500,
               cursor: 'pointer',
               transition: '.2s',
+              fontFamily: 'Inter, sans-serif',
             }}
           >
-            {mode === 'mobile' && '📱 Mobile (375px)'}
-            {mode === 'tablet' && '📱 Tablet (768px)'}
-            {mode === 'desktop' && '🖥️ Desktop'}
+            {mode === 'mobile' && 'Mobile (375px)'}
+            {mode === 'tablet' && 'Tablet (768px)'}
+            {mode === 'desktop' && 'Bureau'}
           </button>
         ))}
       </div>
@@ -112,7 +114,7 @@ ${html}
             background: '#fff',
             minHeight: '600px',
           }}
-          title="Preview"
+          title="Aperçu"
           sandbox="allow-same-origin"
         />
       </div>

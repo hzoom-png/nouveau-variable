@@ -50,19 +50,23 @@ export function DealLinkEditorLeft({
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 500,
           }}
         >
-          ← Back
+          Retour
         </button>
         <h2
           style={{
             fontSize: '15px',
-            fontWeight: 600,
+            fontWeight: 500,
             color: 'var(--text)',
             marginBottom: '4px',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
+            fontFamily: 'Inter, sans-serif',
+            margin: '0 0 4px 0',
           }}
         >
           {prospect_name}
@@ -75,19 +79,21 @@ export function DealLinkEditorLeft({
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
+            fontFamily: 'Inter, sans-serif',
+            margin: '0 0 12px 0',
           }}
         >
           {company_name}
         </p>
-        <div style={{ height: '20px', fontSize: '12px' }}>
+        <div style={{ height: '20px', fontSize: '12px', fontFamily: 'Inter, sans-serif' }}>
           {saveStatus === 'saving' && (
-            <p style={{ color: '#2563eb', margin: 0 }}>💾 Saving...</p>
+            <p style={{ color: '#2563eb', margin: 0, fontWeight: 500 }}>Enregistrement...</p>
           )}
           {saveStatus === 'saved' && (
-            <p style={{ color: 'var(--green)', margin: 0 }}>✓ Saved</p>
+            <p style={{ color: 'var(--green)', margin: 0, fontWeight: 500 }}>Enregistré</p>
           )}
           {saveStatus === 'error' && (
-            <p style={{ color: 'var(--red)', margin: 0 }}>✗ Error</p>
+            <p style={{ color: 'var(--red)', margin: 0, fontWeight: 500 }}>Erreur</p>
           )}
         </div>
       </div>
@@ -105,22 +111,24 @@ export function DealLinkEditorLeft({
           <h3
             style={{
               fontSize: '13px',
-              fontWeight: 600,
+              fontWeight: 500,
               color: 'var(--text)',
               marginBottom: '16px',
+              fontFamily: 'Inter, sans-serif',
+              margin: '0 0 16px 0',
             }}
           >
-            🎨 Colors
+            Couleurs
           </h3>
           <div style={{ display: 'grid', gap: '16px' }}>
             <DealLinkColorPicker
-              label="Primary Color"
+              label="Couleur Primaire"
               value={config.colors.primary}
               onChange={(val) => onColorChange('primary', val)}
               placeholder="#2F5446"
             />
             <DealLinkColorPicker
-              label="Accent Color"
+              label="Couleur Accent"
               value={config.colors.accent}
               onChange={(val) => onColorChange('accent', val)}
               placeholder="#C8790A"
@@ -133,12 +141,14 @@ export function DealLinkEditorLeft({
           <h3
             style={{
               fontSize: '13px',
-              fontWeight: 600,
+              fontWeight: 500,
               color: 'var(--text)',
               marginBottom: '12px',
+              fontFamily: 'Inter, sans-serif',
+              margin: '0 0 12px 0',
             }}
           >
-            📋 Infos
+            Infos
           </h3>
           <div style={{ display: 'grid', gap: '12px' }}>
             {deallink.deal_type && (
@@ -146,15 +156,17 @@ export function DealLinkEditorLeft({
                 <p
                   style={{
                     fontSize: '11px',
-                    fontWeight: 600,
+                    fontWeight: 500,
                     color: 'var(--text-2)',
                     textTransform: 'uppercase',
                     marginBottom: '4px',
+                    fontFamily: 'Inter, sans-serif',
+                    margin: '0 0 4px 0',
                   }}
                 >
-                  Deal Type
+                  Type de Deal
                 </p>
-                <p style={{ fontSize: '13px', color: 'var(--text)', margin: 0 }}>
+                <p style={{ fontSize: '13px', color: 'var(--text)', margin: 0, fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
                   {deallink.deal_type}
                 </p>
               </div>
@@ -164,15 +176,17 @@ export function DealLinkEditorLeft({
                 <p
                   style={{
                     fontSize: '11px',
-                    fontWeight: 600,
+                    fontWeight: 500,
                     color: 'var(--text-2)',
                     textTransform: 'uppercase',
                     marginBottom: '4px',
+                    fontFamily: 'Inter, sans-serif',
+                    margin: '0 0 4px 0',
                   }}
                 >
-                  Deal Value
+                  Montant
                 </p>
-                <p style={{ fontSize: '13px', color: 'var(--text)', margin: 0 }}>
+                <p style={{ fontSize: '13px', color: 'var(--text)', margin: 0, fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
                   {deal_value}€
                 </p>
               </div>
@@ -199,12 +213,13 @@ export function DealLinkEditorLeft({
             border: 'none',
             borderRadius: 'var(--r-sm)',
             fontSize: '13px',
-            fontWeight: 600,
+            fontWeight: 500,
             cursor: isSaving ? 'not-allowed' : 'pointer',
             transition: '.2s',
+            fontFamily: 'Inter, sans-serif',
           }}
         >
-          {isSaving ? '⏳ Publishing...' : '✓ Publish & Share'}
+          {isSaving ? 'Publication en cours...' : 'Publier et Partager'}
         </button>
         <p
           style={{
@@ -212,9 +227,12 @@ export function DealLinkEditorLeft({
             color: 'var(--text-3)',
             marginTop: '8px',
             textAlign: 'center',
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 400,
+            margin: '8px 0 0 0',
           }}
         >
-          Generates a unique, shareable link
+          Génère un lien unique et partageable
         </p>
       </div>
     </div>
