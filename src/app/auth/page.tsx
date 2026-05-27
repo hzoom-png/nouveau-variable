@@ -85,11 +85,15 @@ function AuthPageInner() {
 
     // 1️⃣ Check if user is a founder first or has founder mode enabled
     const last9 = formatted.replace(/\D/g, '').slice(-9)
-    const { data: founderCand } = await supabase
+    console.log('[DEBUG] Phone search:', { raw: phone, formatted, last9 })
+
+    const { data: founderCand, error: founderErr } = await supabase
       .from('candidatures')
       .select('status, is_founder, is_founder_mode')
       .ilike('phone', `%${last9}`)
       .single()
+
+    console.log('[DEBUG] First query (founder check):', { founderCand, founderErr })
 
     // 2️⃣ If founder or founder_mode, allow OTP send
     if (founderCand?.is_founder === true || founderCand?.is_founder_mode === true) {
@@ -111,15 +115,18 @@ function AuthPageInner() {
     }
 
     // 3️⃣ Not a founder: check candidature status (use same flexible phone matching as above)
-    const { data: candidature } = await supabase
+    const { data: candidature, error: candErr } = await supabase
       .from('candidatures')
       .select('status, is_founder_mode')
       .ilike('phone', `%${last9}`)
       .single()
 
+    console.log('[DEBUG] Second query (candidature check):', { candidature, candErr, last9 })
+
     // 4️⃣ Provide specific error messages based on candidature status
     if (!candidature) {
       setLoading(false)
+      console.error('[DEBUG] Candidature not found. Last 9 digits:', last9)
       setError('Aucune candidature trouvée. Merci de candidater d\'abord.')
       return
     }
