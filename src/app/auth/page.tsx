@@ -83,56 +83,43 @@ function AuthPageInner() {
 
     setLoading(true)
 
-    // 1️⃣ Check if user is a founder first or has founder mode enabled
-    const last9 = formatted.replace(/\D/g, '').slice(-9)
-    console.log('[DEBUG] Phone search:', { raw: phone, formatted, last9 })
+    // ADMIN BYPASS: 0650434090 gets OTP without any candidature checks
+    if (formatted === '+33650434090' || phone === '0650434090') {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: formatted }),
+      })
+      setLoading(false)
+      if (!res.ok) {
+        const d = await res.json()
+        setError(d.error ?? 'Impossible d\'envoyer le SMS.')
+        return
+      }
+      setStep('otp')
+      setCountdown(60)
+      setTimeout(() => otpRefs.current[0]?.focus(), 100)
+      return
+    }
 
-    const { data: founderCand, error: founderErr } = await supabase
+    // Normal flow: check candidature status
+    const last9 = formatted.replace(/\D/g, '').slice(-9)
+
+    const { data: candidature } = await supabase
       .from('candidatures')
       .select('status, is_founder, is_founder_mode')
       .ilike('phone', `%${last9}`)
       .single()
 
-    console.log('[DEBUG] First query (founder check):', { founderCand, founderErr })
-
-    // 2️⃣ If founder or founder_mode, allow OTP send
-    if (founderCand?.is_founder === true || founderCand?.is_founder_mode === true) {
-      const res = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: formatted }),
-      })
-      setLoading(false)
-      if (!res.ok) {
-        const d = await res.json()
-        setError(d.error ?? 'Impossible d\'envoyer le SMS.')
-        return
-      }
-      setStep('otp')
-      setCountdown(60)
-      setTimeout(() => otpRefs.current[0]?.focus(), 100)
-      return
-    }
-
-    // 3️⃣ Not a founder: check candidature status (use same flexible phone matching as above)
-    const { data: candidature, error: candErr } = await supabase
-      .from('candidatures')
-      .select('status, is_founder_mode')
-      .ilike('phone', `%${last9}`)
-      .single()
-
-    console.log('[DEBUG] Second query (candidature check):', { candidature, candErr, last9 })
-
-    // 4️⃣ Provide specific error messages based on candidature status
+    // Check if candidature exists
     if (!candidature) {
       setLoading(false)
-      console.error('[DEBUG] Candidature not found. Last 9 digits:', last9)
       setError('Aucune candidature trouvée. Merci de candidater d\'abord.')
       return
     }
 
-    // FOUNDER MODE BYPASS
-    if (candidature.is_founder_mode === true) {
+    // Founder mode or is_founder bypass status check
+    if (candidature.is_founder_mode === true || candidature.is_founder === true) {
       const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -150,6 +137,7 @@ function AuthPageInner() {
       return
     }
 
+    // Check candidature status
     if (candidature.status === 'pending' || candidature.status === 'pending_payment') {
       setLoading(false)
       setError('Candidature en cours de traitement. Vous recevrez un email dès validation.')
@@ -168,7 +156,7 @@ function AuthPageInner() {
       return
     }
 
-    // 5️⃣ Only send OTP if candidature is active
+    // Send OTP for active candidature
     const res = await fetch('/api/auth/send-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

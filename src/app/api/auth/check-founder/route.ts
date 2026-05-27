@@ -7,6 +7,11 @@ export async function POST() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user?.phone) return NextResponse.json({ isFounder: false })
 
+  // ADMIN BYPASS: 0650434090
+  if (user.phone === '+33650434090' || user.phone === '0650434090') {
+    return NextResponse.json({ isFounder: true, prenom: 'Admin', nom: 'User', email: user.email as string })
+  }
+
   // Match last 9 digits to handle any phone format stored in candidatures
   const last9 = user.phone.replace(/\D/g, '').slice(-9)
 
@@ -18,10 +23,9 @@ export async function POST() {
     .limit(1)
     .single()
 
-  // Check if founder or founder_mode, regardless of status
   if (!cand) return NextResponse.json({ isFounder: false })
 
-  // FOUNDER MODE BYPASS: accept if is_founder_mode = true OR (status = accepted AND is_founder = true)
+  // Accept if is_founder_mode = true OR (status = accepted AND is_founder = true)
   if (cand.is_founder_mode !== true && (cand.status !== 'accepted' || cand.is_founder !== true)) {
     return NextResponse.json({ isFounder: false })
   }
