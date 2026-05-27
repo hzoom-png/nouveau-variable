@@ -13,14 +13,18 @@ export async function POST() {
   const svc = createServiceClient()
   const { data: cand } = await svc
     .from('candidatures')
-    .select('full_name, email, phone')
-    .eq('status', 'accepted')
-    .eq('is_founder', true)
+    .select('full_name, email, phone, is_founder, is_founder_mode, status')
     .ilike('phone', `%${last9}`)
     .limit(1)
     .single()
 
+  // Check if founder or founder_mode, regardless of status
   if (!cand) return NextResponse.json({ isFounder: false })
+
+  // FOUNDER MODE BYPASS: accept if is_founder_mode = true OR (status = accepted AND is_founder = true)
+  if (cand.is_founder_mode !== true && (cand.status !== 'accepted' || cand.is_founder !== true)) {
+    return NextResponse.json({ isFounder: false })
+  }
 
   const nameParts = (cand.full_name as string).trim().split(' ')
   const prenom = nameParts[0] ?? ''
