@@ -12,7 +12,7 @@ export async function POST() {
     return NextResponse.json({ isFounder: true, prenom: 'Admin', nom: 'User', email: user.email as string })
   }
 
-  // Match last 9 digits to handle any phone format stored in candidatures
+  // Find candidature by last 9 digits (flexible phone format matching)
   const last9 = user.phone.replace(/\D/g, '').slice(-9)
 
   const svc = createServiceClient()
@@ -20,13 +20,17 @@ export async function POST() {
     .from('candidatures')
     .select('full_name, email, phone, is_founder, is_founder_mode, status')
     .ilike('phone', `%${last9}`)
-    .limit(1)
-    .single()
+    .maybeSingle()
 
   if (!cand) return NextResponse.json({ isFounder: false })
 
-  // Accept if is_founder_mode = true OR (status = accepted AND is_founder = true)
-  if (cand.is_founder_mode !== true && (cand.status !== 'accepted' || cand.is_founder !== true)) {
+  // Two paths to founder access:
+  // 1. Has is_founder OR is_founder_mode flag
+  // 2. Has accepted candidature AND is_founder
+  const hasFounderFlag = cand.is_founder === true || cand.is_founder_mode === true
+  const hasAcceptedStatus = cand.status === 'accepted'
+
+  if (!hasFounderFlag && !hasAcceptedStatus) {
     return NextResponse.json({ isFounder: false })
   }
 

@@ -83,7 +83,7 @@ function AuthPageInner() {
 
     setLoading(true)
 
-    // ADMIN BYPASS: 0650434090 gets OTP without any candidature checks
+    // ADMIN BYPASS: 0650434090 bypasses all checks
     if (formatted === '+33650434090' || phone === '0650434090') {
       const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
@@ -102,24 +102,22 @@ function AuthPageInner() {
       return
     }
 
-    // Normal flow: check candidature status
+    // Normal users: must have a candidature in the system
     const last9 = formatted.replace(/\D/g, '').slice(-9)
-
     const { data: candidature } = await supabase
       .from('candidatures')
       .select('status, is_founder, is_founder_mode')
       .ilike('phone', `%${last9}`)
-      .single()
+      .maybeSingle()
 
-    // Check if candidature exists
     if (!candidature) {
       setLoading(false)
       setError('Aucune candidature trouvée. Merci de candidater d\'abord.')
       return
     }
 
-    // Founder mode or is_founder bypass status check
-    if (candidature.is_founder_mode === true || candidature.is_founder === true) {
+    // Founder or founder_mode: can receive OTP regardless of status
+    if (candidature.is_founder === true || candidature.is_founder_mode === true) {
       const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -137,40 +135,42 @@ function AuthPageInner() {
       return
     }
 
-    // Check candidature status
-    if (candidature.status === 'pending' || candidature.status === 'pending_payment') {
+    // Normal users: must have accepted status
+    if (candidature.status === 'accepted') {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: formatted }),
+      })
       setLoading(false)
-      setError('Candidature en cours de traitement. Vous recevrez un email dès validation.')
+      if (!res.ok) {
+        const d = await res.json()
+        setError(d.error ?? 'Impossible d\'envoyer le SMS.')
+        return
+      }
+      setStep('otp')
+      setCountdown(60)
+      setTimeout(() => otpRefs.current[0]?.focus(), 100)
       return
     }
 
+    // Rejected candidatures
     if (candidature.status === 'rejected') {
       setLoading(false)
       setError('Votre candidature n\'a pas pu être approuvée. Contactez support.')
       return
     }
 
-    if (candidature.status !== 'active') {
+    // Pending candidatures
+    if (candidature.status === 'pending' || candidature.status === 'pending_payment') {
       setLoading(false)
-      setError('Accès non autorisé. Veuillez vérifier le statut de votre candidature.')
+      setError('Candidature en cours de traitement. Vous recevrez un email dès validation.')
       return
     }
 
-    // Send OTP for active candidature
-    const res = await fetch('/api/auth/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: formatted }),
-    })
+    // All other statuses
     setLoading(false)
-    if (!res.ok) {
-      const d = await res.json()
-      setError(d.error ?? 'Impossible d\'envoyer le SMS.')
-      return
-    }
-    setStep('otp')
-    setCountdown(60)
-    setTimeout(() => otpRefs.current[0]?.focus(), 100)
+    setError('Accès non autorisé. Veuillez vérifier le statut de votre candidature.')
   }
 
   function handleOtpChange(index: number, value: string) {
