@@ -12,6 +12,7 @@ import { DashboardContext } from '@/lib/dashboard-context'
 import { SupportWidget } from '@/components/SupportWidget'
 import { MobileBottomNav } from '@/components/MobileBottomNav'
 import { DrawerSidebar } from '@/components/DrawerSidebar'
+import { DealLinkModal } from '@/components/deallink/DealLinkModal'
 
 type SectionId = 'club' | 'outils' | 'moi'
 
@@ -156,6 +157,7 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isTablet, setIsTablet] = useState(false)
+  const [dealLinkModalOpen, setDealLinkModalOpen] = useState(false)
   const isInactive  = profile.subscription_status !== 'active'
     && !profile.is_manually_activated
     && !profile.is_founder
@@ -367,7 +369,34 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
             </button>
           )}
           <span style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', fontWeight: 600, color: 'var(--text)' }}>{pageTitle}</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {pathname === '/dashboard/tools/deallink' && (
+              <button
+                onClick={() => setDealLinkModalOpen(true)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 12px',
+                  background: 'var(--green)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 'var(--r-sm)',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: '.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = '0.9'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '1'
+                }}
+              >
+                ✨ New DealLink
+              </button>
+            )}
             {profile.tokens_balance !== undefined && (
               <TokenBalance balance={profile.tokens_balance} />
             )}
@@ -395,6 +424,8 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
         userName={[profile.first_name, profile.last_name].filter(Boolean).join(' ')}
         userId={profile.id}
       />
+
+      <DealLinkModal isOpen={dealLinkModalOpen} onClose={() => setDealLinkModalOpen(false)} />
     </div>
     </DashboardContext.Provider>
   )
