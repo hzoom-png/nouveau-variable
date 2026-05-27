@@ -35,12 +35,23 @@ export function DealLinkEditor({
   const html = deallink.html_rendered || ''
   const css = deallink.css_rendered || ''
 
+  // Inject custom colors via CSS variables override
+  const colorOverrides = `
+    <style>
+      :root {
+        --primary: ${primaryColor} !important;
+        --accent: ${accentColor} !important;
+      }
+    </style>
+  `
+
   const iframeContent = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 ${css}
+${colorOverrides}
 </head>
 <body>
 ${html}
