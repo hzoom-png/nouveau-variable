@@ -84,26 +84,7 @@ function AuthPageInner() {
 
     setLoading(true)
 
-    // ADMIN BYPASS: 0650434090 bypasses all checks
-    if (formatted === '+33650434090' || phone === '0650434090') {
-      const res = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: formatted }),
-      })
-      setLoading(false)
-      if (!res.ok) {
-        const d = await res.json()
-        setError(d.error ?? 'Impossible d\'envoyer le SMS.')
-        return
-      }
-      setStep('otp')
-      setCountdown(60)
-      setTimeout(() => otpRefs.current[0]?.focus(), 100)
-      return
-    }
-
-    // Normal users: must have a candidature in the system
+    // All users: must have a candidature in the system
     const last9 = formatted.replace(/\D/g, '').slice(-9)
     const { data: candidature } = await supabase
       .from('candidatures')

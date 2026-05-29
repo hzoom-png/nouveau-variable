@@ -5,6 +5,11 @@ import Anthropic from '@anthropic-ai/sdk'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
+function sanitizeInput(val: string | undefined | null, maxLen: number): string {
+  if (!val) return ''
+  return val.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').replace(/\n{3,}/g, '\n\n').slice(0, maxLen)
+}
+
 const STAGE_LABELS: Record<string, string> = {
   idea:       'Idée (pré-validation)',
   validation: 'Validation (interviews clients)',
@@ -36,15 +41,21 @@ export async function POST(req: NextRequest) {
       return new Response(JSON.stringify({ error: 'Champ "name" obligatoire' }), { status: 400 })
     }
 
+    const safeName       = sanitizeInput(body.name, 100)
+    const safeDescription = sanitizeInput(body.description, 500)
+    const safeObjective  = sanitizeInput(body.objective, 300)
+    const safeConcept    = sanitizeInput(body.concept, 1000)
+    const safeTargetDate = sanitizeInput(body.target_date, 20)
+
     const prompt = `Tu es un expert en stratégie entrepreneuriale et développement business.
 
 PROJET SIDE HUSTLE :
-- Nom : ${body.name}
-- Description : ${body.description || 'non précisée'}
-- Objectif principal : ${body.objective || 'non précisé'}
-- Date cible : ${body.target_date || 'non précisée'}
+- Nom : ${safeName}
+- Description : ${safeDescription || 'non précisée'}
+- Objectif principal : ${safeObjective || 'non précisé'}
+- Date cible : ${safeTargetDate || 'non précisée'}
 - Stade actuel : ${STAGE_LABELS[body.stage || 'idea']}
-- Concept détaillé : ${body.concept || 'non précisé'}
+- Concept détaillé : ${safeConcept || 'non précisé'}
 
 Génère un plan complet : roadmap par phases, Business Model Canvas complet (9 blocs), et prévisionnel 12 mois.
 

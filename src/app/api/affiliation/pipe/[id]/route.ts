@@ -12,9 +12,18 @@ export async function PATCH(
   const { id } = await params
   const body = await request.json()
 
+  const ALLOWED_PIPE_FIELDS = [
+    'first_name', 'last_name', 'email', 'phone', 'linkedin_url',
+    'role', 'has_project', 'notes', 'reminder_at', 'stage', 'company',
+  ]
+  const safeUpdate: Record<string, unknown> = { updated_at: new Date().toISOString() }
+  for (const field of ALLOWED_PIPE_FIELDS) {
+    if (field in body) safeUpdate[field] = body[field]
+  }
+
   const { data, error } = await supabase
     .from('affiliation_pipe')
-    .update({ ...body, updated_at: new Date().toISOString() })
+    .update(safeUpdate)
     .eq('id', id)
     .eq('user_id', user.id)
     .select()

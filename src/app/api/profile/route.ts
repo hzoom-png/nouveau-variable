@@ -26,7 +26,7 @@ export async function PATCH(request: Request) {
   }
 
   const allowedFields = [
-    'first_name', 'last_name', 'phone', 'bio', 'role_title',
+    'first_name', 'last_name', 'bio', 'role_title',
     'cities', 'sectors', 'commercial_type', 'meeting_types',
     'available_days', 'max_meetings_per_week',
     'notif_meeting_request', 'notif_new_referral', 'notif_commission', 'notif_newsletter',

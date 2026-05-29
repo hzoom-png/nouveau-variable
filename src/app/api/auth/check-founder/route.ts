@@ -7,9 +7,10 @@ export async function POST() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user?.phone) return NextResponse.json({ isFounder: false })
 
-  // ADMIN BYPASS: 0650434090
-  if (user.phone === '+33650434090' || user.phone === '0650434090') {
-    return NextResponse.json({ isFounder: true, prenom: 'Admin', nom: 'User', email: user.email as string })
+  // Admin phones — checked server-side only (never exposed to client)
+  const adminPhones = (process.env.ADMIN_PHONES ?? '').split(',').map(p => p.trim()).filter(Boolean)
+  if (adminPhones.length > 0 && adminPhones.includes(user.phone)) {
+    return NextResponse.json({ isFounder: true, prenom: 'Admin', nom: 'NV', email: user.email as string })
   }
 
   // Find candidature by last 9 digits (flexible phone format matching)

@@ -7,6 +7,20 @@ import { rateLimit } from '@/lib/rate-limit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
+function isSafeUrl(raw: string): boolean {
+  if (!raw) return false
+  try {
+    const u = new URL(raw)
+    if (!['http:', 'https:'].includes(u.protocol)) return false
+    const h = u.hostname.toLowerCase()
+    // Block private IPs, localhost, link-local (AWS metadata, internal services)
+    if (/^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.0\.0\.0|::1$|\[::1\])/.test(h)) return false
+    return true
+  } catch {
+    return false
+  }
+}
+
 function slugify(str: string): string {
   return str
     .toLowerCase()
@@ -18,7 +32,7 @@ function slugify(str: string): string {
 }
 
 async function fetchSiteContent(url: string): Promise<string> {
-  if (!url) return ''
+  if (!url || !isSafeUrl(url)) return ''
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NVBot/1.0)' },
@@ -50,7 +64,7 @@ async function extractBrandAssets(url: string): Promise<BrandAssets> {
     primaryColor: '#2F5446', secondaryColor: '#3D6B58',
     logoUrl: null, siteName: null, faviconUrl: null,
   }
-  if (!url) return DEFAULT
+  if (!url || !isSafeUrl(url)) return DEFAULT
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NVBot/1.0)', Accept: 'text/html' },
@@ -139,6 +153,20 @@ export async function POST(request: Request) {
   if (prospectName.length > 100 || productName.length > 200 || problem.length > 2000)
     return NextResponse.json({ error: 'Données trop longues' }, { status: 400 })
 
+  function sanitizeInput(val: string | undefined | null, maxLen: number): string {
+    if (!val) return ''
+    return val.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').replace(/\n{3,}/g, '\n\n').slice(0, maxLen)
+  }
+
+  const safeProspectName    = sanitizeInput(prospectName, 100)
+  const safeProspectCompany = sanitizeInput(prospectCompany, 100)
+  const safeProspectRole    = sanitizeInput(prospectRole, 100)
+  const safeSector          = sanitizeInput(sector, 100)
+  const safeProductName     = sanitizeInput(productName, 200)
+  const safeProblem         = sanitizeInput(problem, 2000)
+  const safeArgs            = sanitizeInput(args, 500)
+  const safeTone            = sanitizeInput(tone, 50)
+
   const [myContent, clientContent, autoBrand] = await Promise.all([
     fetchSiteContent(myWebsite || ''),
     fetchSiteContent(clientWebsite || ''),
@@ -157,12 +185,12 @@ Secteur cible : ${ctx.sector ?? 'non renseigné'}
   const prompt = `Tu es un expert en pages de vente B2B personnalisées.
 Tu génères UNIQUEMENT du JSON valide, sans markdown, sans backticks, sans texte autour.${ctxBlock}
 
-Prospect : ${prospectName}${prospectRole ? `, ${prospectRole}` : ''}${prospectCompany ? ` — ${prospectCompany}` : ''}
-Secteur : ${sector || 'non précisé'}
-Produit / service du vendeur : ${productName}
-Ton : ${tone}
-Problème principal : ${problem}
-Arguments fournis : ${args || 'aucun — détermine les plus pertinents'}
+Prospect : ${safeProspectName}${safeProspectRole ? `, ${safeProspectRole}` : ''}${safeProspectCompany ? ` — ${safeProspectCompany}` : ''}
+Secteur : ${safeSector || 'non précisé'}
+Produit / service du vendeur : ${safeProductName}
+Ton : ${safeTone}
+Problème principal : ${safeProblem}
+Arguments fournis : ${safeArgs || 'aucun — détermine les plus pertinents'}
 ${myContent ? `\nContexte site vendeur :\n${myContent}` : ''}
 ${clientContent ? `\nContexte site prospect :\n${clientContent}` : ''}
 
@@ -186,7 +214,7 @@ Réponds avec exactement ce schéma JSON :
 }
 
 Consignes :
-- Contenu adressé UNIQUEMENT à ${prospectName}${prospectCompany ? ` de ${prospectCompany}` : ''}
+- Contenu adressé UNIQUEMENT à ${safeProspectName}${safeProspectCompany ? ` de ${safeProspectCompany}` : ''}
 - Adapte le ton selon le secteur (formel pour finance/juridique, direct pour tech/startup)
 - Ne jamais mentionner un outil technologique dans le contenu
 - Ne jamais inventer de chiffres clients ou cas clients`

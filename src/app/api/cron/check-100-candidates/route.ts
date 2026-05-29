@@ -1,10 +1,20 @@
 import { createServiceClient } from '@/lib/supabase/service'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
 import { NextRequest, NextResponse } from 'next/server'
+import { timingSafeEqual } from 'crypto'
+
+function verifyCronSecret(req: NextRequest): boolean {
+  const secret = process.env.CRON_SECRET
+  if (!secret) return false
+  const authHeader = req.headers.get('authorization') ?? ''
+  const expected = Buffer.from(`Bearer ${secret}`)
+  const received = Buffer.from(authHeader)
+  if (expected.length !== received.length) return false
+  return timingSafeEqual(expected, received)
+}
 
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!verifyCronSecret(req)) {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   }
 

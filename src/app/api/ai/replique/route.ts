@@ -15,6 +15,11 @@ const OBJECTIVE_LABELS: Record<string, string> = {
   cold:          'faire un cold call et susciter l\'intérêt',
 }
 
+function sanitizeInput(val: string | undefined | null, maxLen: number): string {
+  if (!val) return ''
+  return val.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').replace(/\n{3,}/g, '\n\n').slice(0, maxLen)
+}
+
 const CONTACT_LABELS: Record<string, string> = {
   decision_maker: 'décideur (DG, PDG, DAF, directeur)',
   manager:        'manager intermédiaire',
@@ -53,6 +58,14 @@ export async function POST(req: NextRequest) {
     .single()
   const ctx = (profile?.commercial_context ?? {}) as Record<string, string>
 
+  const safeProduct      = sanitizeInput(config.product, 200)
+  const safeValueprop    = sanitizeInput(config.valueprop || ctx.value_prop, 300)
+  const safeContactRole  = sanitizeInput(config.contact_role, 100)
+  const safeCompanySector = sanitizeInput(config.company_sector, 100)
+  const safeCompanySize  = sanitizeInput(config.company_size, 50)
+  const safeContext      = sanitizeInput(config.context, 500)
+  const safeKnownPain    = sanitizeInput(config.known_pain, 300)
+
   const prompt = `Tu es un formateur commercial expert, auteur de scripts d'appels BtoB.
 Tu as formé des centaines de commerciaux français sur la prospection téléphonique.
 Tu connais les techniques SPIN Selling, MEDDIC, Challenger Sale et l'école française de la vente consultative.
@@ -61,16 +74,16 @@ MISSION : Générer un script d'appel complet, opérationnel, immédiatement uti
 Pas de théorie. Du concret. Chaque mot doit pouvoir être dit à voix haute.
 
 CONTEXTE COMMERCIAL :
-- Produit / service : ${config.product}
-- Proposition de valeur : ${config.valueprop || ctx.value_prop || 'non précisée'}
+- Produit / service : ${safeProduct}
+- Proposition de valeur : ${safeValueprop || 'non précisée'}
 - Interlocuteur : ${CONTACT_LABELS[config.contact_type]}
-- Titre exact : ${config.contact_role || 'non précisé'}
-- Secteur de l'entreprise cible : ${config.company_sector || 'non précisé'}
-- Taille entreprise : ${config.company_size || 'non précisée'}
+- Titre exact : ${safeContactRole || 'non précisé'}
+- Secteur de l'entreprise cible : ${safeCompanySector || 'non précisé'}
+- Taille entreprise : ${safeCompanySize || 'non précisée'}
 - Objectif de l'appel : ${OBJECTIVE_LABELS[config.objective]}
 - Premier contact : ${config.previous_contact ? 'Non, déjà en contact' : 'Oui, cold call'}
-- Contexte additionnel : ${config.context || 'aucun'}
-- Douleur connue : ${config.known_pain || 'aucune'}
+- Contexte additionnel : ${safeContext || 'aucun'}
+- Douleur connue : ${safeKnownPain || 'aucune'}
 
 RÈGLES :
 1. Script dit, pas lu — langage oral, naturel, jamais corporate

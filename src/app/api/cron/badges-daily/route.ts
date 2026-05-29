@@ -2,11 +2,20 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 import { checkBadgeConditions } from '@/lib/badges'
 import { sendEmail, TEMPLATE_IDS } from '@/lib/email'
+import { timingSafeEqual } from 'crypto'
+
+function verifyCronSecret(req: NextRequest): boolean {
+  const secret = process.env.CRON_SECRET
+  if (!secret) return false
+  const authHeader = req.headers.get('authorization') ?? ''
+  const expected = Buffer.from(`Bearer ${secret}`)
+  const received = Buffer.from(authHeader)
+  if (expected.length !== received.length) return false
+  return timingSafeEqual(expected, received)
+}
 
 export async function GET(request: NextRequest) {
-  // Verify CRON_SECRET
-  const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!verifyCronSecret(request)) {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   }
 
