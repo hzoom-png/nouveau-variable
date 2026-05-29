@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { NvLogo } from '@/components/NvLogo'
+import { motion, AnimatePresence } from 'framer-motion'
 
 type Step = 'phone' | 'otp' | 'referral' | 'done'
 
@@ -387,7 +388,9 @@ function AuthPageInner() {
 
         <div style={{ padding: '22px 28px' }}>
 
+          <AnimatePresence mode="wait">
           {step === 'phone' && (
+            <motion.div key="phone" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25, ease: 'easeInOut' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               {from === 'acceptance' && (
                 <div style={{
@@ -421,9 +424,11 @@ function AuthPageInner() {
                 {loading ? 'Envoi du SMS…' : 'Recevoir mon code →'}
               </button>
             </div>
+            </motion.div>
           )}
 
           {step === 'otp' && (
+            <motion.div key="otp" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25, ease: 'easeInOut' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                 {otp.map((digit, i) => (
@@ -485,9 +490,11 @@ function AuthPageInner() {
                 ← Changer de numéro
               </button>
             </div>
+            </motion.div>
           )}
 
           {step === 'referral' && (
+            <motion.div key="referral" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25, ease: 'easeInOut' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div style={{ background: GREEN_3, border: `1px solid ${GREEN_4}`, borderRadius: '10px', padding: '12px 14px', fontSize: '13px', color: TEXT_2, lineHeight: 1.55 }}>
                 Premier accès détecté. Pour rejoindre le club, tu as besoin d'un code parrain.
@@ -549,8 +556,10 @@ function AuthPageInner() {
                 {loading ? 'Création du compte…' : 'Rejoindre le club →'}
               </button>
             </div>
+            </motion.div>
           )}
 
+          </AnimatePresence>
         </div>
       </div>
 

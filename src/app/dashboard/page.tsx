@@ -25,9 +25,9 @@ const CARDS = [
     ),
   },
   {
-    href: '/dashboard/tools/keyaccount',
+    href: '/dashboard/tools',
     label: 'Outils',
-    subtitle: 'Keyaccount, Réplique, DealLink',
+    subtitle: 'Keyaccount, Réplique, DealLink, Side Hustle',
     icon: (
       <svg width="20" height="20" viewBox="0 0 15 15" fill="none" stroke="currentColor" strokeWidth="1.5">
         <circle cx="7.5" cy="4" r="2.5"/><circle cx="2.5" cy="12" r="1.5"/><circle cx="12.5" cy="12" r="1.5"/>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { NvLogo } from '@/components/NvLogo'
+import { motion, AnimatePresence } from 'framer-motion'
 
 type OnboardStep = 'identity' | 'parcours' | 'tutorial'
 
@@ -272,8 +273,10 @@ export default function OnboardingProfilePage() {
 
         <div style={{ padding: '22px 28px' }}>
 
+          <AnimatePresence mode="wait">
           {/* ── STEP 1 — identity ─────────────────────────── */}
           {step === 'identity' && (
+            <motion.div key="identity" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.25, ease: 'easeInOut' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
               {/* Avatar upload */}
@@ -339,10 +342,12 @@ export default function OnboardingProfilePage() {
                 {loading ? 'Enregistrement…' : 'Continuer →'}
               </button>
             </div>
+            </motion.div>
           )}
 
           {/* ── STEP 2 — parcours ─────────────────────────── */}
           {step === 'parcours' && (
+            <motion.div key="parcours" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.25, ease: 'easeInOut' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
 
               {/* LinkedIn */}
@@ -395,10 +400,12 @@ export default function OnboardingProfilePage() {
                 ← Retour
               </button>
             </div>
+            </motion.div>
           )}
 
           {/* ── STEP 3 — tutorial ─────────────────────────── */}
           {step === 'tutorial' && (
+            <motion.div key="tutorial" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.25, ease: 'easeInOut' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
               {/* Slide */}
@@ -469,8 +476,10 @@ export default function OnboardingProfilePage() {
                 ← Retour
               </button>
             </div>
+            </motion.div>
           )}
 
+          </AnimatePresence>
         </div>
       </div>
 

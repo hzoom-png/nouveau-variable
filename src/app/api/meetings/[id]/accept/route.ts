@@ -90,7 +90,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           sender:      { name: 'Nouveau Variable', email: 'noreply@nouveauvariable.fr' },
           to:          [{ email: requesterProfile.email }],
           subject:     '[NV] Ta demande de rencontre a été acceptée !',
-          htmlContent: `<h2>Bonne nouvelle !</h2><p>${safeName} a accepté ta demande de rencontre.</p><p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/meetings">Voir les détails →</a></p>`,
+          htmlContent: `<h2>Bonne nouvelle !</h2><p>${safeName} a accepté ta demande de rencontre.</p><p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/members">Voir les détails →</a></p>`,
         }),
       })
     }

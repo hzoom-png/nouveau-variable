@@ -9,7 +9,9 @@ import { SlidersHorizontal, Map, LayoutGrid, TrendingUp, Calendar, CheckCircle2,
 
 // ── Types ──────────────────────────────────────────────────────────
 type Stage = 'idea' | 'validation' | 'build' | 'launch' | 'growth'
+type HelpTagType = 'client_pilote' | 'apporteur' | 'partenaire' | 'revendeur' | 'associe' | 'investisseur' | 'mentor' | 'autre'
 
+interface HelpTag { type: HelpTagType; description?: string }
 interface Task   { id: string; text: string; done: boolean }
 interface Phase  { phase: string; duration: string; tasks: Task[] }
 interface BmcKey { value_proposition:string;customer_segments:string;channels:string;customer_relationships:string;revenue_streams:string;key_resources:string;key_activities:string;key_partnerships:string;cost_structure:string }
@@ -22,6 +24,7 @@ interface SHProject {
   name: string; description?: string; objective?: string
   target_date?: string; concept?: string; stage: Stage
   roadmap?: Phase[]; bmc?: BmcKey; forecast?: Forecast
+  help_needed?: HelpTag[]
 }
 
 interface MemberProject { id: string; title: string; description?: string }
@@ -31,6 +34,24 @@ interface Props {
   initialProjects: SHProject[]
   memberProjects: MemberProject[]
 }
+
+const HELP_TAG_CONFIG: Record<HelpTagType, { label: string; emoji: string; hint: string }> = {
+  client_pilote: { label: 'Clients pilotes',      emoji: '🎯', hint: 'Tester le produit, premiers retours…' },
+  apporteur:     { label: 'Apporteur d\'affaires', emoji: '🔗', hint: 'Ouvrir des portes, commissionné…' },
+  partenaire:    { label: 'Partenaire commercial', emoji: '🤝', hint: 'Co-vente, offre combinée, go-to-market…' },
+  revendeur:     { label: 'Revendeur / Distributeur', emoji: '📦', hint: 'Revente, canal indirect, réseau…' },
+  associe:       { label: 'Associé·e',             emoji: '🚀', hint: 'Co-fondateur, equity, long terme…' },
+  investisseur:  { label: 'Investisseur',           emoji: '💰', hint: 'Business angel, levée de fonds…' },
+  mentor:        { label: 'Mentor / Advisor',       emoji: '🧠', hint: 'Expérience sectorielle, conseil stratégique…' },
+  autre:         { label: 'Autre',                  emoji: '✨', hint: 'Précise ci-dessous…' },
+}
+
+const SECTORS = [
+  'SaaS B2B', 'Marketplace', 'Fintech', 'Healthtech', 'Edtech',
+  'Retail / E-commerce', 'RH / Recrutement', 'PropTech', 'LegalTech',
+  'Marketing / Growth', 'Data / IA', 'Cybersécurité', 'Logistique', 'Industrie',
+  'Consulting / Services', 'Media / Contenu', 'Dev web / Agence', 'Autre',
+]
 
 const STAGE_LABELS: Record<Stage, string> = {
   idea:       'Idée',
@@ -81,6 +102,7 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
   const [active,   setActive]     = useState<SHProject | null>(null)
   const [drawer,   setDrawer]     = useState<'bmc'|'forecast'|'ai'|'roadmap'|null>(null)
   const [pushing,  setPushing]    = useState(false)
+  const [pushModal, setPushModal] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [genError,   setGenError]   = useState('')
   const [genStep,    setGenStep]    = useState('')
@@ -299,10 +321,14 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
     }
   }
 
-  async function pushToProjects(projId: string) {
-    setPushing(true); setGenError('')
+  async function pushToProjects(projId: string, sector: string, helpNeeded: HelpTag[]) {
+    setPushing(true); setGenError(''); setPushModal(false)
     try {
-      const res = await fetch(`/api/side-hustle/${projId}/push-to-projects`, { method: 'POST' })
+      const res = await fetch(`/api/side-hustle/${projId}/push-to-projects`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sector, help_needed: helpNeeded }),
+      })
       const data = await res.json()
       if (!res.ok) { setGenError(data.error || 'Erreur'); return }
       if (data.project_id) {
@@ -312,6 +338,12 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
     } catch {
       setGenError('Erreur réseau')
     } finally { setPushing(false) }
+  }
+
+  async function saveHelpNeeded(projId: string, helpNeeded: HelpTag[]) {
+    setProjects(ps => ps.map(p => p.id === projId ? { ...p, help_needed: helpNeeded } : p))
+    setActive(prev => prev?.id === projId ? { ...prev, help_needed: helpNeeded } : prev)
+    await supabase.from('sidehustle_projects').update({ help_needed: helpNeeded, updated_at: new Date().toISOString() }).eq('id', projId)
   }
 
   async function unlinkFromProject(projId: string) {
@@ -662,10 +694,16 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
             </div>
           )}
 
+          {/* Help Wanted */}
+          <HelpWantedSection
+            tags={proj.help_needed ?? []}
+            onChange={tags => saveHelpNeeded(proj.id, tags)}
+          />
+
           {/* CTAs */}
-          <div style={{ display:'flex',gap:10,flexWrap:'wrap' }}>
+          <div style={{ display:'flex',gap:10,flexWrap:'wrap',marginTop:20 }}>
             {!proj.project_id ? (
-              <button onClick={() => pushToProjects(proj.id)} disabled={pushing}
+              <button onClick={() => setPushModal(true)} disabled={pushing}
                 style={{ padding:'10px 20px',borderRadius:'var(--r-sm)',background:'var(--green)',color:'#fff',border:'none',
                   fontFamily:'Inter, sans-serif',fontWeight:600,fontSize:13,cursor:pushing?'not-allowed':'pointer',
                   opacity:pushing?.7:1,display:'flex',alignItems:'center',gap:8 }}>
@@ -772,6 +810,16 @@ export default function SideHustleClient({ userId, initialProjects, memberProjec
         {/* Hypothèses & Prévisionnel */}
         {drawer === 'ai' && (
           <SideHustleHypothesesModal onClose={() => setDrawer(null)} />
+        )}
+
+        {/* Push confirm modal */}
+        {pushModal && (
+          <PushConfirmModal
+            proj={proj}
+            pushing={pushing}
+            onClose={() => setPushModal(false)}
+            onConfirm={(sector, helpNeeded) => pushToProjects(proj.id, sector, helpNeeded)}
+          />
         )}
 
         {/* Prévisionnel simple (accessible via forecast) */}
@@ -920,6 +968,176 @@ function Modal({ title, onClose, children, wide }: { title:string; onClose:()=>v
           <button onClick={onClose} style={{ width:30,height:30,borderRadius:'var(--r-sm)',background:'var(--surface)',border:'1px solid var(--border)',cursor:'pointer',fontSize:18,color:'var(--text-2)',lineHeight:1 }}>×</button>
         </div>
         <div style={{ flex:1,overflowY:'auto',padding:'20px 24px' }}>{children}</div>
+      </div>
+    </>
+  )
+}
+
+function HelpWantedSection({ tags, onChange }: { tags: HelpTag[]; onChange: (tags: HelpTag[]) => void }) {
+  const [expandedType, setExpandedType] = useState<HelpTagType | null>(null)
+
+  function toggle(type: HelpTagType) {
+    const exists = tags.find(t => t.type === type)
+    if (exists) {
+      setExpandedType(null)
+      onChange(tags.filter(t => t.type !== type))
+    } else {
+      setExpandedType(type)
+      onChange([...tags, { type }])
+    }
+  }
+
+  function setDesc(type: HelpTagType, description: string) {
+    onChange(tags.map(t => t.type === type ? { ...t, description: description.slice(0, 100) } : t))
+  }
+
+  return (
+    <div style={{ marginTop:20, marginBottom:4 }}>
+      <div style={{ fontSize:11,fontWeight:700,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:10 }}>
+        Cherche de l&apos;aide pour…
+      </div>
+      <div style={{ display:'flex',flexWrap:'wrap',gap:8 }}>
+        {(Object.keys(HELP_TAG_CONFIG) as HelpTagType[]).map(type => {
+          const cfg = HELP_TAG_CONFIG[type]
+          const active = tags.some(t => t.type === type)
+          return (
+            <div key={type}>
+              <button
+                onClick={() => toggle(type)}
+                title={cfg.hint}
+                style={{
+                  padding:'6px 14px',borderRadius:'var(--r-full)',border:'1.5px solid',
+                  borderColor: active ? 'var(--green)' : 'var(--border)',
+                  background: active ? 'var(--green-3)' : 'var(--white)',
+                  color: active ? 'var(--green)' : 'var(--text-2)',
+                  fontSize:12,fontWeight:active?700:500,cursor:'pointer',
+                  transition:'all .15s',display:'flex',alignItems:'center',gap:5,
+                }}
+              >
+                <span>{cfg.emoji}</span> {cfg.label}
+              </button>
+              {active && expandedType === type && (
+                <input
+                  autoFocus
+                  placeholder={cfg.hint}
+                  value={tags.find(t => t.type === type)?.description ?? ''}
+                  onChange={e => setDesc(type, e.target.value)}
+                  onBlur={() => setExpandedType(null)}
+                  maxLength={100}
+                  style={{
+                    marginTop:6,width:'100%',padding:'6px 10px',fontSize:12,
+                    border:'1.5px solid var(--green)',borderRadius:'var(--r-sm)',
+                    outline:'none',fontFamily:'inherit',color:'var(--text)',
+                    background:'var(--white)',
+                  }}
+                />
+              )}
+            </div>
+          )
+        })}
+      </div>
+      {tags.length > 0 && (
+        <p style={{ fontSize:11,color:'var(--text-3)',marginTop:8 }}>
+          {tags.length} profil{tags.length > 1 ? 's' : ''} recherché{tags.length > 1 ? 's' : ''} · Clique sur un tag pour ajouter une précision
+        </p>
+      )}
+    </div>
+  )
+}
+
+function PushConfirmModal({
+  proj, pushing, onClose, onConfirm,
+}: {
+  proj: SHProject
+  pushing: boolean
+  onClose: () => void
+  onConfirm: (sector: string, helpNeeded: HelpTag[]) => void
+}) {
+  const [sector, setSector] = useState('Autre')
+  const [tags, setTags] = useState<HelpTag[]>(proj.help_needed ?? [])
+
+  const fieldStyle: React.CSSProperties = {
+    width:'100%',padding:'10px 13px',border:'1.5px solid var(--border)',
+    borderRadius:'var(--r-sm)',fontSize:13,color:'var(--text)',
+    background:'var(--white)',outline:'none',fontFamily:'inherit',
+  }
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position:'fixed',inset:0,background:'rgba(1,39,34,.5)',zIndex:200 }}/>
+      <div style={{
+        position:'fixed',top:'50%',left:'50%',transform:'translate(-50%,-50%)',
+        width:'min(540px,94vw)',maxHeight:'90vh',background:'var(--white)',
+        borderRadius:'var(--r-lg)',boxShadow:'0 20px 60px rgba(0,0,0,.14)',
+        zIndex:201,display:'flex',flexDirection:'column',overflow:'hidden',
+      }}>
+        <div style={{ padding:'20px 24px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0 }}>
+          <div>
+            <h2 style={{ fontFamily:'Inter,sans-serif',fontWeight:700,fontSize:17,color:'var(--text)',margin:0 }}>Publier dans les Projets</h2>
+            <p style={{ fontSize:12,color:'var(--text-3)',margin:'4px 0 0' }}>Ce projet sera visible par tous les membres du club.</p>
+          </div>
+          <button onClick={onClose} style={{ width:30,height:30,borderRadius:'var(--r-sm)',background:'var(--surface)',border:'1px solid var(--border)',cursor:'pointer',fontSize:18,color:'var(--text-2)',lineHeight:1 }}>×</button>
+        </div>
+        <div style={{ flex:1,overflowY:'auto',padding:'20px 24px',display:'flex',flexDirection:'column',gap:20 }}>
+
+          {/* Preview */}
+          <div style={{ background:'var(--surface)',borderRadius:'var(--r-md)',padding:'14px 16px' }}>
+            <div style={{ fontSize:10,fontWeight:700,color:'var(--text-3)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:4 }}>Projet</div>
+            <div style={{ fontWeight:600,fontSize:15,color:'var(--text)' }}>{proj.name}</div>
+            {proj.description && <div style={{ fontSize:12,color:'var(--text-3)',marginTop:3,lineHeight:1.5 }}>{proj.description.slice(0, 120)}{proj.description.length > 120 ? '…' : ''}</div>}
+          </div>
+
+          {/* Sector */}
+          <div>
+            <label style={{ fontSize:11,fontWeight:600,color:'var(--text-2)',textTransform:'uppercase',letterSpacing:'.07em',display:'block',marginBottom:6 }}>
+              Secteur
+            </label>
+            <select value={sector} onChange={e => setSector(e.target.value)} style={fieldStyle}>
+              {SECTORS.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+
+          {/* Help needed */}
+          <div>
+            <label style={{ fontSize:11,fontWeight:600,color:'var(--text-2)',textTransform:'uppercase',letterSpacing:'.07em',display:'block',marginBottom:8 }}>
+              Profils recherchés <span style={{ fontWeight:400,textTransform:'none',color:'var(--text-3)' }}>— optionnel</span>
+            </label>
+            <div style={{ display:'flex',flexWrap:'wrap',gap:8 }}>
+              {(Object.keys(HELP_TAG_CONFIG) as HelpTagType[]).map(type => {
+                const cfg = HELP_TAG_CONFIG[type]
+                const active = tags.some(t => t.type === type)
+                return (
+                  <button key={type}
+                    onClick={() => {
+                      if (active) setTags(tags.filter(t => t.type !== type))
+                      else setTags([...tags, { type }])
+                    }}
+                    style={{
+                      padding:'6px 14px',borderRadius:'var(--r-full)',border:'1.5px solid',
+                      borderColor: active ? 'var(--green)' : 'var(--border)',
+                      background: active ? 'var(--green-3)' : 'var(--white)',
+                      color: active ? 'var(--green)' : 'var(--text-2)',
+                      fontSize:12,fontWeight:active?700:500,cursor:'pointer',transition:'all .15s',
+                    }}
+                  >
+                    {cfg.emoji} {cfg.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+        <div style={{ padding:'16px 24px',borderTop:'1px solid var(--border)',display:'flex',gap:10,flexShrink:0 }}>
+          <button onClick={onClose} style={{ padding:'10px 20px',borderRadius:'var(--r-full)',border:'1.5px solid var(--border)',background:'var(--white)',fontSize:13,fontWeight:600,color:'var(--text-2)',cursor:'pointer' }}>
+            Annuler
+          </button>
+          <button onClick={() => onConfirm(sector, tags)} disabled={pushing}
+            style={{ flex:1,padding:'11px',borderRadius:'var(--r-full)',background:'var(--green)',color:'#fff',border:'none',
+              fontFamily:'Inter,sans-serif',fontWeight:700,fontSize:14,cursor:pushing?'not-allowed':'pointer',
+              opacity:pushing?.7:1,display:'flex',alignItems:'center',justifyContent:'center',gap:8 }}>
+            <Share2 size={14} /> {pushing ? 'Publication…' : 'Publier le projet →'}
+          </button>
+        </div>
       </div>
     </>
   )

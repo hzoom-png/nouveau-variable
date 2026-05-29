@@ -73,7 +73,7 @@ function SubscribeContent() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: ${BG}; color: ${T}; font-family: Inter, sans-serif; }
         @media (max-width: 640px) {
@@ -94,11 +94,11 @@ function SubscribeContent() {
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 48, maxWidth: 560 }}>
           {prenom && (
-            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 14, color: G, fontWeight: 600, marginBottom: 10 }}>
+            <p style={{ fontFamily: "Inter, system-ui, sans-serif", fontSize: 14, color: G, fontWeight: 600, marginBottom: 10 }}>
               Bienvenue, {prenom} 👋
             </p>
           )}
-          <h1 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 'clamp(26px, 4vw, 36px)', color: T, lineHeight: 1.15, marginBottom: 14 }}>
+          <h1 style={{ fontFamily: "Inter, system-ui, sans-serif", fontWeight: 600, fontSize: 'clamp(26px, 4vw, 36px)', color: T, lineHeight: 1.15, marginBottom: 14 }}>
             Choisis ton accès au club
           </h1>
           <p style={{ fontSize: 15, color: T2, lineHeight: 1.7 }}>
@@ -111,9 +111,9 @@ function SubscribeContent() {
 
           {/* Mensuel */}
           <div className="plan-card" style={{ flex: 1, background: W, border: `1px solid ${BD}`, borderRadius: 20, padding: '36px 32px', display: 'flex', flexDirection: 'column' }}>
-            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, fontWeight: 600, color: T3, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 16 }}>MENSUEL</p>
+            <p style={{ fontFamily: "Inter, system-ui, sans-serif", fontSize: 11, fontWeight: 600, color: T3, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 16 }}>MENSUEL</p>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
-              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 42, fontWeight: 600, color: T }}>97 €</span>
+              <span style={{ fontFamily: "Inter, system-ui, sans-serif", fontSize: 42, fontWeight: 600, color: T }}>97 €</span>
             </div>
             <p style={{ fontSize: 13, color: T3, marginBottom: 28 }}>par mois · résiliable à tout moment</p>
 
@@ -129,7 +129,7 @@ function SubscribeContent() {
             <button className="cta-btn" onClick={() => handleSelect('monthly')} disabled={isDisabled} style={{
               width: '100%', padding: '14px', borderRadius: 99,
               background: T, color: W, border: 'none',
-              fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14,
+              fontFamily: "Inter, system-ui, sans-serif", fontWeight: 600, fontSize: 14,
               cursor: 'pointer', transition: 'opacity .2s, transform .15s',
             }}>
               {loading === 'monthly' ? 'Redirection vers le paiement…' : 'Commencer maintenant →'}
@@ -145,9 +145,9 @@ function SubscribeContent() {
               whiteSpace: 'nowrap',
             }}>Meilleure offre</span>
 
-            <p style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 11, fontWeight: 600, color: G, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 16 }}>ANNUEL</p>
+            <p style={{ fontFamily: "Inter, system-ui, sans-serif", fontSize: 11, fontWeight: 600, color: G, letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: 16 }}>ANNUEL</p>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
-              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: 42, fontWeight: 600, color: T }}>899 €</span>
+              <span style={{ fontFamily: "Inter, system-ui, sans-serif", fontSize: 42, fontWeight: 600, color: T }}>899 €</span>
             </div>
             <p style={{ fontSize: 13, color: T3, marginBottom: 4 }}>par an · soit 74,92 €/mois</p>
             <p style={{ fontSize: 13, fontWeight: 600, color: G, marginBottom: 28 }}>Économise 265 € vs mensuel</p>
@@ -164,7 +164,7 @@ function SubscribeContent() {
             <button className="cta-btn" onClick={() => handleSelect('annual')} disabled={isDisabled} style={{
               width: '100%', padding: '14px', borderRadius: 99,
               background: G, color: W, border: 'none',
-              fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 600, fontSize: 14,
+              fontFamily: "Inter, system-ui, sans-serif", fontWeight: 600, fontSize: 14,
               cursor: 'pointer', transition: 'opacity .2s, transform .15s',
             }}>
               {loading === 'annual' ? 'Redirection vers le paiement…' : 'Choisir l\'annuel →'}

@@ -27,7 +27,7 @@ export async function sendSMS(to: string, message: string): Promise<boolean> {
 
 export const SMS_TEMPLATES = {
   newMeetingRequest: (senderName: string) =>
-    `Nouveau Variable — ${senderName} souhaite te rencontrer. Réponds sur app.nouveauvariable.fr/dashboard/meetings`,
+    `Nouveau Variable — ${senderName} souhaite te rencontrer. Réponds sur app.nouveauvariable.fr/dashboard/members`,
 
   meetingAccepted: (receiverName: string, phone: string) =>
     `Nouveau Variable — ${receiverName} a accepté ta demande de RDV. Son numéro : ${phone}. Bonne rencontre 🤝`,

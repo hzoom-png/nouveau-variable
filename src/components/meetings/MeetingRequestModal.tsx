@@ -20,11 +20,18 @@ const MOMENT_OPTIONS = [
   { value: 'midi',   label: 'Milieu de journée' },
   { value: 'soir',   label: 'Fin de journée' },
 ]
+const TYPE_OPTIONS = [
+  { value: 'visio',     label: '💻 Visio',      desc: 'Appel vidéo ou vocal' },
+  { value: 'telephone', label: '📞 Téléphone',  desc: 'Appel téléphonique' },
+  { value: 'cafe',      label: '☕ Café',        desc: 'En personne autour d\'un café' },
+  { value: 'autre',     label: '📅 Autre',       desc: 'À préciser dans le message' },
+]
 
 const FIXED_COST = 8
 
 export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onClose, onSuccess }: Props) {
-  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
+  const [meetingType, setMeetingType] = useState<string>('cafe')
   const [days, setDays] = useState<string[]>([])
   const [moments, setMoments] = useState<string[]>([])
   const [message, setMessage] = useState('')
@@ -46,7 +53,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         recipient_id:      recipient.id,
-        meeting_type:      'coffee',
+        meeting_type:      meetingType,
         proposed_slots:    [],
         preferred_days:    days,
         preferred_moments: moments,
@@ -55,7 +62,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
     })
     setSending(false)
     if (res.ok) {
-      setStep(3)
+      setStep(4)
       setTimeout(() => { onSuccess(); onClose() }, 1800)
     } else {
       const d = await res.json()
@@ -64,7 +71,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
   }
 
   function reset() {
-    setStep(1); setDays([]); setMoments([]); setMessage(''); setError('')
+    setStep(1); setMeetingType('cafe'); setDays([]); setMoments([]); setMessage(''); setError('')
   }
 
   if (!isOpen) return null
@@ -97,15 +104,53 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
           <button onClick={() => { reset(); onClose() }} style={{ width: '28px', height: '28px', display: 'grid', placeItems: 'center', borderRadius: '8px', background: 'var(--surface)', border: '1px solid var(--border)', cursor: 'pointer', fontSize: '16px', color: 'var(--text-2)' }}>×</button>
         </div>
 
-        {/* Step dots */}
+        {/* Step dots (3 real steps) */}
         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '24px' }}>
-          {[1, 2].map(n => (
-            <div key={n} style={{ width: '8px', height: '8px', borderRadius: '50%', background: step >= n ? 'var(--green)' : 'var(--border)', transition: 'background .2s' }} />
+          {[1, 2, 3].map(n => (
+            <div key={n} style={{ width: '8px', height: '8px', borderRadius: '50%', background: step > n ? 'var(--green)' : step === n ? 'var(--green)' : 'var(--border)', transition: 'background .2s' }} />
           ))}
         </div>
 
-        {/* ÉTAPE 1 */}
+        {/* ÉTAPE 1 — Type de RDV */}
         {step === 1 && (
+          <div>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px' }}>
+              Quel type de RDV ?
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '28px' }}>
+              {TYPE_OPTIONS.map(o => (
+                <button
+                  key={o.value}
+                  onClick={() => setMeetingType(o.value)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '12px',
+                    padding: '12px 16px', borderRadius: '12px', textAlign: 'left', cursor: 'pointer',
+                    border: `1.5px solid ${meetingType === o.value ? 'var(--green)' : 'var(--border)'}`,
+                    background: meetingType === o.value ? 'var(--green-3)' : 'var(--white)',
+                    transition: 'all .14s',
+                  }}
+                >
+                  <span style={{ fontSize: '18px', lineHeight: 1 }}>{o.label.split(' ')[0]}</span>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 600, color: meetingType === o.value ? 'var(--green)' : 'var(--text)' }}>
+                      {o.label.split(' ').slice(1).join(' ')}
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '1px' }}>{o.desc}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setStep(2)}
+              style={{ width: '100%', background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', border: 'none', cursor: 'pointer', transition: '.15s' }}
+            >
+              Suivant →
+            </button>
+          </div>
+        )}
+
+        {/* ÉTAPE 2 — Disponibilités */}
+        {step === 2 && (
           <div>
             <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '16px' }}>
               Quand es-tu disponible ?
@@ -137,17 +182,22 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
               {recipient.first_name} précisera l'heure exacte lors de l'acceptation.
             </div>
 
-            <button
-              onClick={() => setStep(2)}
-              style={{ width: '100%', background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', border: 'none', cursor: 'pointer', transition: '.15s' }}
-            >
-              Suivant →
-            </button>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setStep(1)} style={{ flex: 1, padding: '12px', borderRadius: '99px', background: 'var(--surface)', color: 'var(--text-2)', fontWeight: 600, fontSize: '13px', border: '1.5px solid var(--border)', cursor: 'pointer' }}>
+                ← Retour
+              </button>
+              <button
+                onClick={() => setStep(3)}
+                style={{ flex: 2, background: 'var(--green)', color: '#fff', padding: '12px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', border: 'none', cursor: 'pointer', transition: '.15s' }}
+              >
+                Suivant →
+              </button>
+            </div>
           </div>
         )}
 
-        {/* ÉTAPE 2 */}
-        {step === 2 && (
+        {/* ÉTAPE 3 — Message + Envoi */}
+        {step === 3 && (
           <div>
             <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '14px' }}>
               Ajouter un message <span style={{ fontWeight: 400, color: 'var(--text-3)', fontSize: '12px' }}>(optionnel)</span>
@@ -171,7 +221,7 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
             )}
 
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={() => setStep(1)} style={{ flex: 1, padding: '12px', borderRadius: '99px', background: 'var(--surface)', color: 'var(--text-2)', fontWeight: 600, fontSize: '13px', border: '1.5px solid var(--border)', cursor: 'pointer' }}>
+              <button onClick={() => setStep(2)} style={{ flex: 1, padding: '12px', borderRadius: '99px', background: 'var(--surface)', color: 'var(--text-2)', fontWeight: 600, fontSize: '13px', border: '1.5px solid var(--border)', cursor: 'pointer' }}>
                 ← Retour
               </button>
               <button
@@ -185,8 +235,8 @@ export function MeetingRequestModal({ recipient, currentUserPoints, isOpen, onCl
           </div>
         )}
 
-        {/* ÉTAPE 3 — Succès */}
-        {step === 3 && (
+        {/* ÉTAPE 4 — Succès */}
+        {step === 4 && (
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'var(--green-3)', border: '2px solid var(--green-4)', display: 'grid', placeItems: 'center', margin: '0 auto 20px' }}>
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

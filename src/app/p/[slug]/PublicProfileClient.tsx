@@ -243,10 +243,19 @@ const CSS = `
     font-weight: 800;
     border: none;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     letter-spacing: 0.01em;
   }
-  .btn-primary-full:hover { background: #3D6B58; }
+  .btn-primary-full:hover {
+    background: #C8790A;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(200, 121, 10, 0.3);
+  }
+  .btn-primary-full:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(200, 121, 10, 0.2);
+    transition: all 0.1s ease;
+  }
 
   .btn-rdv-input:focus {
     border-color: #2F5446 !important;
@@ -469,7 +478,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
 
           {/* ── Left column ── */}
           <aside className="profile-left entry-animate">
-            <div style={{ background: '#fff', border: '1px solid #E4EEEA', borderRadius: '20px', padding: '28px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+            <div style={{ background: '#fff', border: '1px solid #E4EEEA', borderTop: '3px solid #C8790A', borderRadius: '20px', padding: '28px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', animation: 'slide-down-fade 0.5s ease-out' }}>
 
               {/* Watermark + avatar */}
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', marginBottom: '6px' }}>
@@ -526,8 +535,8 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
               {(profile.is_founder || profile.rank) && (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center' }}>
                   {profile.is_founder && (
-                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 10px', borderRadius: '99px', background: '#2F5446', color: '#fff', letterSpacing: '.03em' }}>
-                      Fondateur
+                    <span style={{ fontSize: '11px', fontWeight: 700, padding: '5px 12px', borderRadius: '99px', background: 'linear-gradient(135deg, #C8790A, #D4A017)', color: '#fff', letterSpacing: '.04em', boxShadow: '0 2px 10px rgba(200,121,10,0.35)', animation: 'pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards' }}>
+                      👑 Fondateur
                     </span>
                   )}
                   {profile.rank && (

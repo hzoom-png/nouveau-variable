@@ -12,5 +12,16 @@ export default async function ProfilePage() {
 
   if (!profile) redirect('/auth/login')
 
-  return <ProfileClient profile={profile} />
+  // Fallback: check is_founder_mode in candidatures if profiles.is_founder is false
+  let isFounder = profile.is_founder
+  if (!isFounder) {
+    const { data: cand } = await supabase
+      .from('candidatures')
+      .select('is_founder_mode')
+      .eq('user_id', user.id)
+      .maybeSingle()
+    if (cand?.is_founder_mode === true) isFounder = true
+  }
+
+  return <ProfileClient profile={{ ...profile, is_founder: isFounder }} />
 }

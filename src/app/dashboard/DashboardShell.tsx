@@ -129,8 +129,8 @@ const SECTIONS: NavSection[] = [
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard/affiliation':      'Affiliation',
   '/dashboard/members':          'Annuaire',
-  '/dashboard/meetings':         'Mes rencontres',
   '/dashboard/missions':         'Missions',
+  '/dashboard/tools':            'Outils',
   '/dashboard/tools/deallink':   'DealLink',
   '/dashboard/tools/replique':   'Réplique',
   '/dashboard/tools/keyaccount':  'Keyaccount',
@@ -373,29 +373,28 @@ export default function DashboardShell({ profile, children, stripeUrl }: Props) 
             {pathname === '/dashboard/tools/deallink' && (
               <button
                 onClick={() => setDealLinkModalOpen(true)}
+                title="Nouveau Deallink"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 12px',
+                  gap: isMobile ? 0 : '6px',
+                  padding: isMobile ? '0' : '6px 12px',
+                  width: isMobile ? '32px' : undefined,
+                  height: isMobile ? '32px' : undefined,
+                  justifyContent: isMobile ? 'center' : undefined,
                   background: 'var(--green)',
                   color: '#fff',
                   border: 'none',
-                  borderRadius: 'var(--r-sm)',
-                  fontSize: '13px',
+                  borderRadius: isMobile ? '50%' : 'var(--r-sm)',
+                  fontSize: isMobile ? '20px' : '13px',
                   fontWeight: 500,
                   cursor: 'pointer',
                   transition: '.2s',
                   fontFamily: 'Inter, sans-serif',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = '0.9'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = '1'
+                  flexShrink: 0,
                 }}
               >
-                Nouveau Deallink
+                {isMobile ? '+' : 'Nouveau Deallink'}
               </button>
             )}
             {profile.tokens_balance !== undefined && (

@@ -21,6 +21,8 @@ interface Meeting {
   availability_note?: string | null
   status: string
   responded_at?: string | null
+  location_name?: string | null
+  location_city?: string | null
   requester?: MeetingProfile
   recipient?: MeetingProfile
 }
@@ -65,6 +67,8 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
   const [received, setReceived] = useState<Meeting[]>([])
   const [loading, setLoading] = useState(true)
   const [actionMsg, setActionMsg] = useState('')
+  const [locationForms, setLocationForms] = useState<Record<string, { name: string; city: string }>>({})
+  const [confirmingId, setConfirmingId] = useState<string | null>(null)
 
   async function load() {
     setLoading(true)
@@ -96,10 +100,30 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
     load()
   }
 
+  async function confirmLocation(id: string) {
+    const form = locationForms[id]
+    if (!form?.name) return
+    setConfirmingId(id)
+    const res = await fetch(`/api/meetings/${id}/confirm`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ location_name: form.name, location_city: form.city || null }),
+    })
+    setConfirmingId(null)
+    if (res.ok) {
+      setActionMsg('Lieu confirmé — les deux parties ont été notifiées.')
+      load()
+      setTimeout(() => setActionMsg(''), 4000)
+    } else {
+      const d = await res.json()
+      setActionMsg(d.error || 'Erreur lors de la confirmation')
+    }
+  }
+
   const pendingReceived = received.filter(m => m.status === 'pending')
   const confirmed = [
-    ...sent.filter(m => m.status === 'accepted'),
-    ...received.filter(m => m.status === 'accepted'),
+    ...sent.filter(m => m.status === 'accepted' || m.status === 'confirmed'),
+    ...received.filter(m => m.status === 'accepted' || m.status === 'confirmed'),
   ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
   const tabBtn = (active: boolean): React.CSSProperties => ({
@@ -200,11 +224,11 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
             const receiver = m.recipient
             if (!receiver) return null
             const statusBadge = {
-              accepted:  { bg: '#e8f5ef', color: '#024f41', label: 'Accepté ✓' },
-              declined:  { bg: '#FEF2F2', color: '#991B1B', label: 'Décliné' },
-              cancelled: { bg: 'var(--surface)', color: 'var(--text-3)', label: 'Annulé' },
-              pending:   { bg: '#f4f9f9', color: '#9BB5AA', label: 'En attente' },
-            }[m.status] ?? { bg: 'var(--surface)', color: 'var(--text-3)', label: m.status }
+              accepted:  { bg: 'linear-gradient(135deg, #C8790A, #D4A017)', color: '#fff', label: 'Accepté ✓', gold: true },
+              declined:  { bg: '#FEF2F2', color: '#991B1B', label: 'Décliné', gold: false },
+              cancelled: { bg: 'var(--surface)', color: 'var(--text-3)', label: 'Annulé', gold: false },
+              pending:   { bg: '#f4f9f9', color: '#9BB5AA', label: 'En attente', gold: false },
+            }[m.status] ?? { bg: 'var(--surface)', color: 'var(--text-3)', label: m.status, gold: false }
 
             return (
               <div key={m.id} style={{ background: '#ffffff', border: '1.5px solid var(--border)', borderRadius: 14, padding: '20px 24px' }}>
@@ -214,7 +238,7 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
                     <div style={{ fontWeight: 600, fontSize: 15, color: '#012722' }}>{receiver.first_name} {receiver.last_name}</div>
                     <div style={{ fontSize: 13, color: '#4B6358' }}>{receiver.role_title}</div>
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: '99px', background: statusBadge.bg, color: statusBadge.color, flexShrink: 0 }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: '99px', background: statusBadge.bg, color: statusBadge.color, flexShrink: 0, boxShadow: statusBadge.gold ? '0 2px 8px rgba(200,121,10,0.3)' : undefined, animation: statusBadge.gold ? 'pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards' : undefined }}>
                     {statusBadge.label}
                   </span>
                 </div>
@@ -251,6 +275,9 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
             const isRequester = m.requester_id === currentUserId
             const other = isRequester ? m.recipient : m.requester
             if (!other) return null
+            const isRecipient = !isRequester
+            const canConfirmLocation = isRecipient && m.status === 'accepted'
+            const statusLabel = m.status === 'confirmed' ? 'Lieu confirmé ✓' : 'Numéros échangés ✓'
             return (
               <div key={m.id} style={{ background: '#ffffff', border: '1.5px solid #e8f5ef', borderRadius: 14, padding: '20px 24px' }}>
                 <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
@@ -258,16 +285,52 @@ export default function MeetingsTab({ currentUserId }: { currentUserId: string }
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 600, fontSize: 15, color: '#012722' }}>{other.first_name} {other.last_name}</div>
                     <div style={{ fontSize: 13, color: '#4B6358' }}>{other.role_title}</div>
+                    {m.status === 'confirmed' && m.location_name && (
+                      <div style={{ fontSize: 12, color: '#9BB5AA', marginTop: 2 }}>
+                        📍 {m.location_name}{m.location_city ? `, ${m.location_city}` : ''}
+                      </div>
+                    )}
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: '99px', background: '#e8f5ef', color: '#024f41', flexShrink: 0 }}>
-                    RDV confirmé ✓
+                  <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: '99px', background: 'linear-gradient(135deg, #C8790A, #D4A017)', color: '#fff', flexShrink: 0, boxShadow: '0 2px 8px rgba(200,121,10,0.3)', animation: 'pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards' }}>
+                    {statusLabel}
                   </span>
                 </div>
-                <p style={{ fontSize: 12, color: '#9BB5AA', marginTop: 12, marginBottom: other.slug ? 8 : 0 }}>
+                <p style={{ fontSize: 12, color: '#9BB5AA', marginTop: 12, marginBottom: (other.slug || canConfirmLocation) ? 8 : 0 }}>
                   Le numéro a été partagé par SMS
                 </p>
+
+                {/* Confirm location — recipient only, status accepted */}
+                {canConfirmLocation && (
+                  <div style={{ borderTop: '1px solid #E4EEEA', paddingTop: 12, marginTop: 4 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: '#4B6358', marginBottom: 8 }}>Préciser le lieu du RDV :</div>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      <input
+                        type="text"
+                        placeholder="Nom du lieu"
+                        value={locationForms[m.id]?.name ?? ''}
+                        onChange={e => setLocationForms(f => ({ ...f, [m.id]: { ...f[m.id], name: e.target.value, city: f[m.id]?.city ?? '' } }))}
+                        style={{ flex: 1, minWidth: 120, padding: '8px 12px', borderRadius: 8, border: '1.5px solid #E4EEEA', fontSize: 13, fontFamily: 'inherit', color: '#012722' }}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Ville"
+                        value={locationForms[m.id]?.city ?? ''}
+                        onChange={e => setLocationForms(f => ({ ...f, [m.id]: { ...f[m.id], city: e.target.value, name: f[m.id]?.name ?? '' } }))}
+                        style={{ width: 120, padding: '8px 12px', borderRadius: 8, border: '1.5px solid #E4EEEA', fontSize: 13, fontFamily: 'inherit', color: '#012722' }}
+                      />
+                      <button
+                        onClick={() => confirmLocation(m.id)}
+                        disabled={!locationForms[m.id]?.name || confirmingId === m.id}
+                        style={{ padding: '8px 16px', borderRadius: '99px', background: '#024f41', color: '#fff', fontWeight: 600, fontSize: 13, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                      >
+                        {confirmingId === m.id ? 'Envoi…' : 'Confirmer →'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {other.slug && (
-                  <Link href={`/p/${other.slug}`} style={{ fontSize: 12, color: '#024f41', textDecoration: 'none' }}>
+                  <Link href={`/p/${other.slug}`} style={{ fontSize: 12, color: '#024f41', textDecoration: 'none', display: 'block', marginTop: 8 }}>
                     Voir le profil →
                   </Link>
                 )}

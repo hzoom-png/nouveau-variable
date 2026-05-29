@@ -39,6 +39,18 @@ export default async function PublicProfilePage({ params }: Props) {
 
   if (!profile || profile.profile_visible === false) notFound()
 
+  // Fallback: is_founder_mode in candidatures may be true even if profiles.is_founder is false
+  if (!profile.is_founder) {
+    const { data: cand } = await supabase
+      .from('candidatures')
+      .select('is_founder_mode')
+      .eq('user_id', profile.id)
+      .maybeSingle()
+    if (cand?.is_founder_mode === true) {
+      (profile as typeof profile & { is_founder: boolean }).is_founder = true
+    }
+  }
+
   const avatarUrl = await resolveAvatar({
     avatar_url: (profile as unknown as Record<string, string | undefined>).avatar_url ?? undefined,
     avatar_path: (profile as unknown as Record<string, string | undefined>).avatar_path ?? undefined,

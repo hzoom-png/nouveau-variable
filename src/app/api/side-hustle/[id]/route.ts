@@ -3,6 +3,11 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
+const HelpTagSchema = z.object({
+  type: z.enum(['client_pilote', 'apporteur', 'partenaire', 'revendeur', 'associe', 'investisseur', 'mentor', 'autre']),
+  description: z.string().max(100).optional(),
+})
+
 const PatchSchema = z.object({
   name:        z.string().min(1).max(200).trim().optional(),
   description: z.string().max(2000).trim().optional(),
@@ -10,6 +15,7 @@ const PatchSchema = z.object({
   stage:       z.enum(['idea', 'validation', 'build', 'launch', 'growth']).optional(),
   concept:     z.string().max(5000).trim().optional(),
   target_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  help_needed: z.array(HelpTagSchema).max(8).optional(),
 })
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {

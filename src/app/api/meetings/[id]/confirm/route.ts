@@ -45,7 +45,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
               sender: { name: 'Nouveau Variable', email: 'noreply@nouveauvariable.fr' },
               to: [{ email: party.email }],
               subject: '[NV] Rencontre confirmée !',
-              htmlContent: `<h2>Rencontre confirmée !</h2><p>Votre rencontre est confirmée ${dateStr} à <strong>${locationStr}</strong>.</p><p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/meetings">Voir les détails →</a></p>`,
+              htmlContent: `<h2>Rencontre confirmée !</h2><p>Votre rencontre est confirmée ${dateStr} à <strong>${locationStr}</strong>.</p><p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/members">Voir les détails →</a></p>`,
             }),
           })
         }

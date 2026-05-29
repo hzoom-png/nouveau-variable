@@ -230,7 +230,7 @@ export default function ProfileClient({ profile }: Props) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
         {/* 1. Identité */}
-        <div style={{ background: 'var(--white)', borderRadius: 'var(--r-lg)', border: '1px solid var(--border)', overflow: 'hidden' }}>
+        <div style={{ background: 'var(--white)', borderRadius: 'var(--r-lg)', border: '1px solid var(--border)', borderTop: '3px solid var(--amber)', overflow: 'hidden', animation: 'slide-down-fade 0.5s ease-out' }}>
           <div style={{ height: '72px', background: 'var(--green)', position: 'relative' }}>
             {profile.slug && (
               <Link href={`/p/${profile.slug}`} target="_blank" rel="noopener noreferrer" style={{
@@ -265,6 +265,13 @@ export default function ProfileClient({ profile }: Props) {
             <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
           </div>
           <div style={{ padding: '32px 22px 22px' }}>
+            {profile.is_founder && (
+              <div style={{ marginBottom: '16px' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 13px', borderRadius: '99px', background: 'linear-gradient(135deg, #C8790A, #D4A017)', color: '#fff', fontSize: '11px', fontWeight: 700, letterSpacing: '.04em', boxShadow: '0 2px 10px rgba(200,121,10,0.35)', animation: 'pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards' }}>
+                  👑 Fondateur
+                </span>
+              </div>
+            )}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
               {([['Prénom', 'first_name'], ['Nom', 'last_name']] as const).map(([l, k]) => (
                 <div key={k}>

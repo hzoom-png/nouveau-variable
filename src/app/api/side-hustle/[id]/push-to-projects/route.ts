@@ -10,11 +10,27 @@ const STAGE_MAP: Record<string, string> = {
   growth:     'croissance',
 }
 
-export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+const VALID_SECTORS = [
+  'SaaS B2B', 'Marketplace', 'Fintech', 'Healthtech', 'Edtech',
+  'Retail / E-commerce', 'RH / Recrutement', 'PropTech', 'LegalTech',
+  'Marketing / Growth', 'Data / IA', 'Cybersécurité', 'Logistique', 'Industrie',
+  'Consulting / Services', 'Media / Contenu', 'Dev web / Agence', 'Autre',
+]
+
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
+
+  let body: { sector?: string; help_needed?: { type: string; description?: string }[] } = {}
+  try { body = await req.json() } catch { /* use defaults */ }
+
+  const sector = typeof body.sector === 'string' && VALID_SECTORS.includes(body.sector)
+    ? body.sector
+    : 'Autre'
+
+  const helpNeeded = Array.isArray(body.help_needed) ? body.help_needed : []
 
   const svc = createServiceClient()
 
@@ -31,15 +47,28 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     return NextResponse.json({ project_id: sh.project_id, action: 'already_linked' })
   }
 
+  // Map help_needed tags → project needs
+  const HELP_TO_NEED: Record<string, string> = {
+    client_pilote: 'client',
+    apporteur:     'partenaire',
+    partenaire:    'partenaire',
+    revendeur:     'partenaire',
+    associe:       'associe',
+    investisseur:  'investisseur',
+    mentor:        'conseil',
+    autre:         'partenaire',
+  }
+  const needs = [...new Set(helpNeeded.map(t => HELP_TO_NEED[t.type]).filter(Boolean))]
+
   const { data: project, error } = await svc
     .from('projects')
     .insert({
       user_id:     user.id,
       title:       sh.name,
       tagline:     sh.description ? String(sh.description).slice(0, 300) : null,
-      sector:      'Autre',
+      sector,
       stage:       STAGE_MAP[sh.stage] ?? 'idee',
-      needs:       [],
+      needs:       needs.length > 0 ? needs : [],
       cover_color: '#2F5446',
       is_active:   true,
       what:        sh.concept ?? null,

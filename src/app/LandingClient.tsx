@@ -6,10 +6,11 @@ function SectionGrid() {
   return <div className="section-grid" />
 }
 
-import { useMotionValueEvent } from 'framer-motion'
+import { useMotionValueEvent, motion } from 'framer-motion'
 import { useScrollProgress } from '@/components/RevenueAnimation/hooks/useScrollHijack'
 import { RevenueAnimation, USE_REVENUE_ANIMATION } from '@/components/RevenueAnimation'
 import { OneVsFive } from '@/components/OneVsFive'
+import { FloatingBadge } from '@/components/landing/FloatingBadge'
 
 const GOAL = 100
 
@@ -501,6 +502,115 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         .stats-grid .stat-card:nth-child(2) {
           animation-delay: 0.4s;
         }
+
+        /* ── HERO SCREENSHOT ── */
+        @keyframes shimmerSlide {
+          0%   { transform: translateX(-120%); }
+          100% { transform: translateX(220%); }
+        }
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.55; transform: scale(1); }
+          50%       { opacity: 0.80; transform: scale(1.04); }
+        }
+        @keyframes floatY {
+          0%, 100% { transform: translateY(0); }
+          50%       { transform: translateY(-10px); }
+        }
+        .hero-screenshot-wrap {
+          position: relative;
+          margin: 56px auto 0;
+          max-width: 980px;
+        }
+        .hero-glow {
+          position: absolute;
+          inset: -32px;
+          background: radial-gradient(ellipse at 50% 55%,
+            rgba(47,84,70,0.28) 0%,
+            rgba(47,84,70,0.10) 35%,
+            transparent 70%
+          );
+          filter: blur(44px);
+          border-radius: 24px;
+          z-index: 0;
+          pointer-events: none;
+          animation: glowPulse 4s ease-in-out infinite;
+        }
+        .hero-screenshot-outer {
+          position: relative;
+          z-index: 10;
+          border-radius: 16px;
+          overflow: hidden;
+        }
+        .hero-screenshot-img {
+          width: 100%;
+          height: auto;
+          display: block;
+          border-radius: 16px;
+          transform: perspective(1200px) rotateX(2deg) rotateY(-0.5deg);
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.30),
+            0 0 40px rgba(47,84,70,0.18),
+            0 30px 60px rgba(47,84,70,0.12),
+            0 0 50px rgba(200,121,10,0.07);
+          transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease;
+        }
+        .hero-screenshot-shimmer {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            105deg,
+            transparent 15%,
+            rgba(200,121,10,0.18) 50%,
+            transparent 85%
+          );
+          animation: shimmerSlide 3s ease-in-out infinite;
+          pointer-events: none;
+          z-index: 2;
+        }
+        .nv-floating-badge {
+          background: #ffffff;
+          border: 1.5px solid #E4EEEA;
+          border-radius: 99px;
+          padding: 8px 16px;
+          font-size: 12px;
+          font-weight: 600;
+          color: #2F5446;
+          font-family: var(--fi);
+          box-shadow: 0 4px 16px rgba(47,84,70,0.10);
+          white-space: nowrap;
+          animation: floatY 3s ease-in-out infinite;
+        }
+        @media (hover: hover) {
+          .hero-screenshot-img:hover {
+            transform: perspective(1200px) rotateX(1deg) rotateY(-0.5deg) translateY(-8px);
+            box-shadow:
+              inset 0 1px 0 rgba(255,255,255,0.40),
+              0 0 50px rgba(47,84,70,0.22),
+              0 40px 80px rgba(47,84,70,0.15),
+              0 0 60px rgba(200,121,10,0.10);
+          }
+        }
+        @media (max-width: 1023px) {
+          .hero-screenshot-img {
+            transform: perspective(1200px) rotateX(1deg);
+            box-shadow:
+              inset 0 1px 0 rgba(255,255,255,0.20),
+              0 0 30px rgba(47,84,70,0.14),
+              0 20px 40px rgba(47,84,70,0.08);
+          }
+        }
+        @media (max-width: 639px) {
+          .hero-screenshot-wrap { margin-top: 40px; }
+          .hero-screenshot-img  { transform: none; box-shadow: 0 0 20px rgba(47,84,70,0.09), 0 16px 32px rgba(47,84,70,0.06); }
+          .hero-glow            { display: none; }
+          .nv-floating-badge    { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-screenshot-img    { transform: none !important; transition: none !important; }
+          .hero-screenshot-shimmer { animation: none; opacity: 0; }
+          .hero-glow               { animation: none; opacity: 0; }
+          .nv-floating-badge       { animation: none; }
+        }
       `}</style>
 
       {/* ──────────────────────────────────────────────────────────────
@@ -670,6 +780,34 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               <span style={{ width: '100%', textAlign: 'center' }}>Rejoins les premiers membres</span>
             )}
           </div>
+        </div>
+
+        {/* ── DASHBOARD SCREENSHOT ── */}
+        <div className="hero-screenshot-wrap hero-el hero-el-4">
+          <div className="hero-glow" aria-hidden="true" />
+
+          <motion.div
+            className="hero-screenshot-outer"
+            initial={{ opacity: 0, y: 44 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/dashboard-screenshot.png"
+              alt="Dashboard Nouveau Variable — outils Réplique, Missions, Annuaire et suivi de revenus"
+              className="hero-screenshot-img"
+              loading="lazy"
+              decoding="async"
+            />
+            <div className="hero-screenshot-shimmer" aria-hidden="true" />
+          </motion.div>
+
+          {/* Floating badges — hidden on mobile via CSS */}
+          <FloatingBadge label="Réplique ✨"  position="top-left"     delay={0.35} />
+          <FloatingBadge label="Missions 🎯"  position="top-right"    delay={0.55} />
+          <FloatingBadge label="+3 membres"   position="bottom-right" delay={0.75} />
         </div>
         </div>
       </section>

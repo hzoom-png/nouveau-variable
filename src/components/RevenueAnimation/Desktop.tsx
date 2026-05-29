@@ -6,6 +6,8 @@ import { useScrollProgress } from './hooks/useScrollHijack'
 import { GraphCurves } from './components/GraphCurves'
 import { ContentPoints } from './components/ContentPoints'
 import { AppIcons } from './components/AppIcons'
+import { MissionBadges } from './components/MissionBadges'
+import { VirementNotifications } from './components/VirementNotifications'
 import { T, GREEN_DATA, SVG_W, SVG_H, toX, toY } from './constants'
 
 interface DesktopProps {
@@ -96,18 +98,30 @@ export function Desktop({ isMobile = false }: DesktopProps) {
     el.textContent    = Math.round(gv).toLocaleString('fr-FR') + ' €'
   })
 
-  // ── Content points — 5 steps × 0.076 = 0.38 scroll window ──────
-  // Step: 0.016 fade-in | 0.044 dwell | 0.016 fade-out
-  // p0    0.620 → 0.636 → (persists through icons) → 0.760 → 0.772
-  // icons 0.696 → 0.712 → 0.756 → 0.772  ← overlaps with p0
-  // p1    0.772 → 0.788 → 0.832 → 0.848
-  // p2    0.848 → 0.864 → 0.908 → 0.924
-  // p3    0.924 → 0.940 → 0.984 → 1.000
-  const p0op     = useTransform(progress, [0.620, 0.636, 0.760, 0.772], [0, 1, 1, 0])
-  const iconsOp  = useTransform(progress, [0.696, 0.712, 0.756, 0.772], [0, 1, 1, 0])
-  const p1op     = useTransform(progress, [0.772, 0.788, 0.832, 0.848], [0, 1, 1, 0])
-  const p2op     = useTransform(progress, [0.848, 0.864, 0.908, 0.924], [0, 1, 1, 0])
-  const p3op     = useTransform(progress, [0.924, 0.940, 0.984, 1.000], [0, 1, 1, 0])
+  // ── Content points — 4 beats = 0.38 scroll window ──────────────
+  //
+  // Content 1 [0.620→0.730] : p0 apparaît, puis icons +0.036
+  //   p0:    0.620 → 0.636 → 0.716 → 0.730
+  //   icons: 0.672 → 0.688 → 0.716 → 0.730
+  //
+  // Content 2 [0.730→0.840] : p1 seul, puis badges +0.036 (même pattern)
+  //   p1:     0.730 → 0.746 → 0.826 → 0.840
+  //   badges: 0.782 → 0.796 → 0.826 → 0.840
+  //
+  // Content 3 [0.840→0.890] : p2 seul (compressé pour laisser place au counter)
+  //   p2: 0.840 → 0.856 → 0.876 → 0.890
+  //
+  // Content 4 [0.890→1.000] : p3 seul, puis notifs +0.030, puis counter à 0.970
+  //   p3:     0.890 → 0.906 → 0.984 → 1.000
+  //   notifs: 0.936 → 0.950 → 0.984 → 1.000
+  //   counter trigger: 0.970 (reset en-dessous de 0.946)
+  const p0op     = useTransform(progress, [0.620, 0.636, 0.716, 0.730], [0, 1, 1, 0])
+  const iconsOp  = useTransform(progress, [0.672, 0.688, 0.716, 0.730], [0, 1, 1, 0])
+  const p1op     = useTransform(progress, [0.730, 0.746, 0.826, 0.840], [0, 1, 1, 0])
+  const badgesOp = useTransform(progress, [0.782, 0.796, 0.826, 0.840], [0, 1, 1, 0])
+  const p2op     = useTransform(progress, [0.840, 0.856, 0.876, 0.890], [0, 1, 1, 0])
+  const p3op     = useTransform(progress, [0.890, 0.906, 0.984, 1.000], [0, 1, 1, 0])
+  const notifsOp = useTransform(progress, [0.936, 0.950, 0.984, 1.000], [0, 1, 1, 0])
   const pointOpacities: MotionValue<number>[] = [p0op, p1op, p2op, p3op]
 
   return (
@@ -224,6 +238,26 @@ export function Desktop({ isMobile = false }: DesktopProps) {
 
         {/* ── App icons — full viewport overlay, 60px from each edge ─*/}
         <AppIcons opacity={iconsOp} progress={progress} isMobile={isMobile} />
+
+        {/* ── Mission badges — circulaires, apparaissent 1 scroll après content 2 ─*/}
+        <MissionBadges
+          opacity={badgesOp}
+          progress={progress}
+          isMobile={isMobile}
+          fadeInStart={0.782}
+          fadeInEnd={0.796}
+        />
+
+        {/* ── Virement notifications — circulaires, 1 scroll après content 4, counter à 0.970 ─*/}
+        <VirementNotifications
+          opacity={notifsOp}
+          progress={progress}
+          isMobile={isMobile}
+          fadeInStart={0.936}
+          fadeInEnd={0.950}
+          counterTriggerAt={0.970}
+          counterResetAt={0.946}
+        />
 
       </div>
     </div>

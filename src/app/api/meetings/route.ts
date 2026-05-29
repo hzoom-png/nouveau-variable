@@ -6,6 +6,7 @@ import type { MeetingType } from '@/lib/types'
 import { z } from 'zod'
 import { escHtml } from '@/lib/html-escape'
 import { sendSMS, SMS_TEMPLATES } from '@/lib/sms'
+import { encryptMeetingField, decryptMeetingField, isMeetingFieldEncrypted } from '@/lib/encryption'
 
 const VALID_NEW_TYPES = ['visio', 'telephone', 'cafe', 'autre'] as const
 
@@ -18,6 +19,13 @@ const Schema = z.object({
   message:           z.string().max(1000).trim().optional().nullable(),
   availability_note: z.string().max(500).trim().optional().nullable(),
 })
+
+function decryptRecord(m: Record<string, unknown>): Record<string, unknown> {
+  if (typeof m.message === 'string' && isMeetingFieldEncrypted(m.message)) {
+    try { m.message = decryptMeetingField(m.message) } catch { m.message = null }
+  }
+  return m
+}
 
 export async function GET() {
   const supabase = await createClient()
@@ -39,7 +47,10 @@ export async function GET() {
       .order('created_at', { ascending: false }),
   ])
 
-  return NextResponse.json({ sent: sent ?? [], received: received ?? [] })
+  const decryptedSent     = (sent     ?? []).map(decryptRecord)
+  const decryptedReceived = (received ?? []).map(decryptRecord)
+
+  return NextResponse.json({ sent: decryptedSent, received: decryptedReceived })
 }
 
 export async function POST(request: Request) {
@@ -71,6 +82,17 @@ export async function POST(request: Request) {
   const pointsCost = mt?.points ?? 8
 
   const service = createServiceClient()
+
+  // Rate limiting: max 5 demandes de RDV par 24h
+  const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+  const { count: recentCount } = await service
+    .from('meeting_requests')
+    .select('id', { count: 'exact', head: true })
+    .eq('requester_id', user.id)
+    .gte('created_at', since24h)
+  if ((recentCount ?? 0) >= 5) {
+    return NextResponse.json({ error: 'Limite atteinte — tu peux envoyer au maximum 5 demandes de RDV par 24h.' }, { status: 429 })
+  }
 
   const { data: recipientProfile } = await service
     .from('profiles')
@@ -106,6 +128,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Solde de points insuffisant' }, { status: 400 })
   }
 
+  const encryptedMessage = message ? encryptMeetingField(message) : null
+
   const { data: meeting, error: meetingError } = await service
     .from('meeting_requests')
     .insert({
@@ -115,7 +139,7 @@ export async function POST(request: Request) {
       proposed_slots:    proposed_slots ?? [],
       preferred_days:    preferred_days    ?? null,
       preferred_moments: preferred_moments ?? null,
-      message:           message ?? null,
+      message:           encryptedMessage,
       availability_note: availability_note ?? null,
       points_cost:       pointsCost,
       status:            'pending',
@@ -167,7 +191,7 @@ export async function POST(request: Request) {
           sender:      { name: 'Nouveau Variable', email: 'noreply@nouveauvariable.fr' },
           to:          [{ email: recipientProfile.email }],
           subject:     `[NV] Nouvelle demande de rencontre de ${safeFirst}`,
-          htmlContent: `<h2>Nouvelle demande de rencontre</h2><p>${safeFirst} ${safeLast} t'invite pour un(e) <strong>${safeLabel}</strong>.</p>${safeMsg}<p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/meetings">Voir la demande →</a></p>`,
+          htmlContent: `<h2>Nouvelle demande de rencontre</h2><p>${safeFirst} ${safeLast} t'invite pour un(e) <strong>${safeLabel}</strong>.</p>${safeMsg}<p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard/members">Voir la demande →</a></p>`,
         }),
       })
     }
