@@ -4,22 +4,9 @@ import { createServiceClient } from '@/lib/supabase/service'
 import Anthropic from '@anthropic-ai/sdk'
 import { consumeTokens } from '@/lib/tokens'
 import { rateLimit } from '@/lib/rate-limit'
+import { isSafeUrl } from '@/lib/url-validation'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-
-function isSafeUrl(raw: string): boolean {
-  if (!raw) return false
-  try {
-    const u = new URL(raw)
-    if (!['http:', 'https:'].includes(u.protocol)) return false
-    const h = u.hostname.toLowerCase()
-    // Block private IPs, localhost, link-local (AWS metadata, internal services)
-    if (/^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|169\.254\.|0\.0\.0\.0|::1$|\[::1\])/.test(h)) return false
-    return true
-  } catch {
-    return false
-  }
-}
 
 function slugify(str: string): string {
   return str
