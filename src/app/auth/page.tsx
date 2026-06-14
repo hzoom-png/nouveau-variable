@@ -81,78 +81,21 @@ function AuthPageInner() {
       setError('Numéro invalide. Format attendu : 06 12 34 56 78')
       return
     }
-
     setLoading(true)
-
-    // All users: must have a candidature in the system
-    const last9 = formatted.replace(/\D/g, '').slice(-9)
-    const { data: candidature } = await supabase
-      .from('candidatures')
-      .select('status, is_founder, is_founder_mode')
-      .ilike('phone', `%${last9}`)
-      .maybeSingle()
-
-    if (!candidature) {
-      setLoading(false)
-      setError('Aucune candidature trouvée. Merci de candidater d\'abord.')
-      return
-    }
-
-    // Founder or founder_mode: can receive OTP regardless of status
-    if (candidature.is_founder === true || candidature.is_founder_mode === true) {
-      const res = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: formatted }),
-      })
-      setLoading(false)
-      if (!res.ok) {
-        const d = await res.json()
-        setError(d.error ?? 'Impossible d\'envoyer le SMS.')
-        return
-      }
-      setStep('otp')
-      setCountdown(60)
-      setTimeout(() => otpRefs.current[0]?.focus(), 100)
-      return
-    }
-
-    // Normal users: must have accepted status
-    if (candidature.status === 'accepted') {
-      const res = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: formatted }),
-      })
-      setLoading(false)
-      if (!res.ok) {
-        const d = await res.json()
-        setError(d.error ?? 'Impossible d\'envoyer le SMS.')
-        return
-      }
-      setStep('otp')
-      setCountdown(60)
-      setTimeout(() => otpRefs.current[0]?.focus(), 100)
-      return
-    }
-
-    // Rejected candidatures
-    if (candidature.status === 'rejected') {
-      setLoading(false)
-      setError('Votre candidature n\'a pas pu être approuvée. Contactez support.')
-      return
-    }
-
-    // Pending candidatures
-    if (candidature.status === 'pending' || candidature.status === 'pending_payment') {
-      setLoading(false)
-      setError('Candidature en cours de traitement. Vous recevrez un email dès validation.')
-      return
-    }
-
-    // All other statuses
+    const res = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: formatted }),
+    })
     setLoading(false)
-    setError('Accès non autorisé. Veuillez vérifier le statut de votre candidature.')
+    if (!res.ok) {
+      const d = await res.json()
+      setError(d.error ?? 'Impossible d\'envoyer le SMS.')
+      return
+    }
+    setStep('otp')
+    setCountdown(60)
+    setTimeout(() => otpRefs.current[0]?.focus(), 100)
   }
 
   function handleOtpChange(index: number, value: string) {

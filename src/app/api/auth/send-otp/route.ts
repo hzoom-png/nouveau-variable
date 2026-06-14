@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { rateLimit } from '@/lib/rate-limit'
@@ -30,9 +31,50 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Service temporairement indisponible.' }, { status: 503 })
   }
 
+  // Access gate — server-side avec service client (bypass RLS)
+  const last9 = phone.replace(/\D/g, '').slice(-9)
+  const svc = createServiceClient()
+
+  const { data: candidature } = await svc
+    .from('candidatures')
+    .select('status, is_founder, is_founder_mode')
+    .ilike('phone', `%${last9}`)
+    .maybeSingle()
+
+  // Founders can also exist in profiles without a candidature row
+  const { data: profile } = !candidature
+    ? await svc.from('profiles').select('is_founder').ilike('phone', `%${last9}`).maybeSingle()
+    : { data: null }
+
+  const isFounder =
+    candidature?.is_founder === true ||
+    candidature?.is_founder_mode === true ||
+    profile?.is_founder === true
+
+  const isAccepted = candidature?.status === 'accepted'
+
+  if (!isFounder && !isAccepted) {
+    if (!candidature) {
+      return NextResponse.json(
+        { error: 'Aucune candidature trouvée. Merci de candidater d\'abord.' },
+        { status: 403 }
+      )
+    }
+    if (candidature.status === 'rejected') {
+      return NextResponse.json(
+        { error: 'Votre candidature n\'a pas pu être approuvée. Contactez support.' },
+        { status: 403 }
+      )
+    }
+    return NextResponse.json(
+      { error: 'Candidature en cours de traitement. Vous recevrez un email dès validation.' },
+      { status: 403 }
+    )
+  }
+
   const masked = phone.slice(0, 6) + '****'
 
-  console.log('[OTP] Send attempt', { phone: masked, ts: new Date().toISOString() })
+  console.log('[OTP] Send attempt', { phone: masked, isFounder, ts: new Date().toISOString() })
 
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
