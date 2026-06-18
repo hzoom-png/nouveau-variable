@@ -65,8 +65,7 @@ export default async function AffiliationPage() {
           <div>
             <div style={{ fontWeight: 600, color: '#C8790A', fontSize: '14px' }}>Niveau 3 non encore débloqué</div>
             <div style={{ fontSize: '13px', color: '#8B6914' }}>
-              Le N3 se débloque après 6 mois d&apos;abonnement consécutif. Plus tu restes, plus tu gagnes.{' '}
-              <a href="/dashboard/network/n3" style={{ color: '#C8790A', fontWeight: 600 }}>Voir les détails →</a>
+              Le N3 se débloque après 6 mois d&apos;abonnement consécutif. Plus tu restes, plus tu gagnes.
             </div>
           </div>
         </div>
@@ -78,8 +77,7 @@ export default async function AffiliationPage() {
           <div>
             <div style={{ fontWeight: 600, color: '#024f41', fontSize: '14px' }}>Niveau 3 débloqué !</div>
             <div style={{ fontSize: '13px', color: '#1a7b5e' }}>
-              Tu touches 5% du HT sur chaque filleul N3 actif.{' '}
-              <a href="/dashboard/network/n3" style={{ color: '#024f41', fontWeight: 600 }}>Voir mon réseau N3 →</a>
+              Tu touches 5% du HT sur chaque filleul N3 actif.
             </div>
           </div>
         </div>
