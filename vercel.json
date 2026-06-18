@@ -18,7 +18,7 @@
     },
     {
       "path": "/api/cron/n3-eligibility-update",
-      "schedule": "0 */6 * * *"
+      "schedule": "0 2 * * *"
     }
   ]
 }
