@@ -12,7 +12,7 @@ export default async function AffiliationPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('referral_code, subscription_start, n3_eligible_since')
+    .select('referral_code, subscription_start, n3_eligible_since, is_founder')
     .eq('id', user.id)
     .single()
   if (!profile) redirect('/auth/login')
@@ -27,7 +27,7 @@ export default async function AffiliationPage() {
   const n2 = n2Count ?? 0
   const n3 = n3Count ?? 0
 
-  const isN3Eligible = !!profile.n3_eligible_since
+  const isN3Eligible = !!profile.n3_eligible_since || !!profile.is_founder
 
   const commN1 = n1 * SUBSCRIPTION_HT * N1_RATE
   const commN2 = n2 * SUBSCRIPTION_HT * N2_RATE

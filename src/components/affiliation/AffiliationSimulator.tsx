@@ -39,8 +39,11 @@ export function AffiliationSimulator({ n1Actifs = 0, isN3Eligible = false, n3Eli
   const commN3   = parseFloat((base * N3_RATE).toFixed(2))
   const revenuN1 = n1 * commN1
   const revenuN2 = n2 * commN2
-  const revenuN3 = isN3Eligible ? n3 * commN3 : 0
-  const total    = revenuN1 + revenuN2 + revenuN3
+  // N3 toujours calculé — le simulateur montre le potentiel même avant déblocage (FOMO)
+  const revenuN3 = n3 * commN3
+  const totalReel   = revenuN1 + revenuN2 + (isN3Eligible ? revenuN3 : 0)
+  const totalSimule = revenuN1 + revenuN2 + revenuN3
+  const total    = totalSimule
   const annuel   = plan === 'annual' ? total : total * 12
 
   const monthsSubscribed = monthsSince(subscriptionStart)
@@ -152,8 +155,8 @@ export function AffiliationSimulator({ n1Actifs = 0, isN3Eligible = false, n3Eli
           style={{ background: `linear-gradient(to right, #4B7BF5 ${n2 / 5}%, var(--border) ${n2 / 5}%)` }} />
       </div>
 
-      {/* Slider N3 */}
-      <div style={{ marginBottom: '28px', opacity: isN3Eligible ? 1 : 0.5 }}>
+      {/* Slider N3 — toujours actif pour la simulation FOMO */}
+      <div style={{ marginBottom: '28px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>Filleuls profonds N3</span>
@@ -162,29 +165,24 @@ export function AffiliationSimulator({ n1Actifs = 0, isN3Eligible = false, n3Eli
                 Débloqué ✓
               </span>
             ) : (
-              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 99, background: 'var(--surface)', color: 'var(--muted)', fontWeight: 600, border: '1px solid var(--border)' }}>
-                {monthsLeft > 0 ? `Dans ${monthsLeft} mois` : 'Bientôt disponible'}
+              <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 99, background: '#FEF3E2', color: '#C8790A', fontWeight: 600, border: '1px solid #F0C07A' }}>
+                {monthsLeft > 0 ? `🔒 Dans ${monthsLeft} mois` : '🔒 Bientôt'}
               </span>
             )}
           </div>
-          <span style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '20px', color: '#C8790A', minWidth: 40, textAlign: 'right' }}>
-            {isN3Eligible ? n3 : '–'}
-          </span>
+          <span style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '20px', color: '#C8790A', minWidth: 40, textAlign: 'right' }}>{n3}</span>
         </div>
         <input
           type="range" min={0} max={1000} step={1}
-          value={isN3Eligible ? n3 : 0}
+          value={n3}
           onChange={handleN3}
-          disabled={!isN3Eligible}
           className="sim-slider sim-slider-gold"
-          style={{ background: isN3Eligible ? `linear-gradient(to right, #C8790A ${n3 / 10}%, var(--border) ${n3 / 10}%)` : 'var(--border)', cursor: isN3Eligible ? 'pointer' : 'not-allowed' }}
+          style={{ background: `linear-gradient(to right, #C8790A ${n3 / 10}%, var(--border) ${n3 / 10}%)` }}
         />
-        {!isN3Eligible && (
-          <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>
-            Le N3 se débloque automatiquement après 6 mois d&apos;abonnement consécutif.
-            {subscriptionStart && monthsLeft > 0 && (
-              <> Tu es à {monthsSubscribed} mois / 6.</>
-            )}
+        {!isN3Eligible && monthsLeft > 0 && (
+          <div style={{ fontSize: 12, color: '#8B6914', marginTop: 6 }}>
+            🔒 Simulation — débloqué après 6 mois d&apos;abonnement.
+            {subscriptionStart && <> Tu es à <strong>{monthsSubscribed}/6 mois</strong>.</>}
           </div>
         )}
         {isN3Eligible && n3EligibleSince && (
@@ -206,17 +204,27 @@ export function AffiliationSimulator({ n1Actifs = 0, isN3Eligible = false, n3Eli
           <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '22px', color: '#4B7BF5' }}>{fmt(revenuN2)} €</div>
           <div style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>/{plan === 'annual' ? 'an' : 'mois'}</div>
         </div>
-        <div style={{ background: isN3Eligible ? '#FEF3E2' : 'var(--surface)', borderRadius: '10px', padding: '14px 16px', border: isN3Eligible ? '1.5px solid #F0C07A' : '1.5px solid var(--border)' }}>
-          <div style={{ fontSize: '11px', color: isN3Eligible ? '#C8790A' : 'var(--muted)', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Revenus N3</div>
-          <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '22px', color: isN3Eligible ? '#C8790A' : 'var(--muted)' }}>
-            {isN3Eligible ? `${fmt(revenuN3)} €` : '–'}
+        <div style={{ background: '#FEF3E2', borderRadius: '10px', padding: '14px 16px', border: '1.5px solid #F0C07A' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: '6px' }}>
+            <div style={{ fontSize: '11px', color: '#C8790A', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Revenus N3</div>
+            {!isN3Eligible && <div style={{ fontSize: 10, padding: '1px 6px', borderRadius: 99, background: '#C8790A', color: '#fff', fontWeight: 700 }}>SIMULÉ</div>}
           </div>
-          <div style={{ fontSize: '11px', color: isN3Eligible ? '#C8790A' : 'var(--muted)', marginTop: '2px' }}>/{plan === 'annual' ? 'an' : 'mois'}</div>
+          <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '22px', color: '#C8790A' }}>{fmt(revenuN3)} €</div>
+          <div style={{ fontSize: '11px', color: '#C8790A', marginTop: '2px' }}>/{plan === 'annual' ? 'an' : 'mois'}</div>
         </div>
         <div style={{ background: '#e8f5ef', borderRadius: '10px', padding: '14px 16px', border: '1.5px solid #56b791' }}>
-          <div style={{ fontSize: '11px', color: '#1a7b5e', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Total</div>
-          <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '22px', color: '#024f41' }}>{fmt(total)} €</div>
-          <div style={{ fontSize: '11px', color: '#1a7b5e', marginTop: '2px' }}>/{plan === 'annual' ? 'an' : 'mois'}</div>
+          <div style={{ fontSize: '11px', color: '#1a7b5e', fontWeight: 600, marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            {isN3Eligible ? 'Total' : 'Total simulé'}
+          </div>
+          <div style={{ fontFamily: 'var(--font-inter, Inter, sans-serif)', fontWeight: 600, fontSize: '22px', color: '#024f41' }}>{fmt(totalSimule)} €</div>
+          {!isN3Eligible && totalReel !== totalSimule && (
+            <div style={{ fontSize: '11px', color: '#43695A', marginTop: '2px' }}>
+              Réel actuel : {fmt(totalReel)} €
+            </div>
+          )}
+          {isN3Eligible && (
+            <div style={{ fontSize: '11px', color: '#1a7b5e', marginTop: '2px' }}>/{plan === 'annual' ? 'an' : 'mois'}</div>
+          )}
         </div>
       </div>
 
@@ -235,9 +243,9 @@ export function AffiliationSimulator({ n1Actifs = 0, isN3Eligible = false, n3Eli
 
       {/* Note légale */}
       <div style={{ fontSize: '11px', color: 'var(--muted)', lineHeight: '1.6', padding: '10px 14px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' }}>
-        Simulation indicative. Commissions calculées sur le montant HT ({fmtDec(base)} €) de l&apos;abonnement {plan === 'annual' ? 'annuel' : 'mensuel'} à {baseTTC} € TTC — TVA 20%.
-        N1 : 30 % du HT · N2 : 5 % du HT · N3 : 5 % du HT (débloqué à 6 mois d&apos;abonnement consécutif).
-        Les revenus réels dépendent du maintien des abonnements de tes filleuls.
+        Simulation indicative. Commissions sur le HT ({fmtDec(base)} €) — TVA 20%.
+        N1 : 30 % · N2 : 5 % · N3 : 5 % (actif à 6 mois d&apos;abonnement).
+        {!isN3Eligible && <> Les revenus N3 affichés sont <strong>simulés</strong> — ils seront réels une fois le niveau débloqué.</>}
       </div>
     </div>
   )

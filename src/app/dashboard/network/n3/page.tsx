@@ -17,11 +17,11 @@ export default async function N3Page() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('subscription_start, n3_eligible_since')
+    .select('subscription_start, n3_eligible_since, is_founder')
     .eq('id', user.id)
     .single()
 
-  const isN3Eligible    = !!profile?.n3_eligible_since
+  const isN3Eligible    = !!profile?.n3_eligible_since || !!profile?.is_founder
   const monthsSubscribed = monthsSince(profile?.subscription_start)
   const monthsLeft       = Math.max(0, N3_UNLOCK_MONTHS - monthsSubscribed)
   const commPerN3        = SUBSCRIPTION_HT * N3_RATE
