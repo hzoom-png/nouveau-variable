@@ -8,6 +8,7 @@ interface Props {
   n3EligibleSince?: string | null
   subscriptionStart?: string | null
   n3Actifs?: number
+  embedded?: boolean
 }
 
 const TVA               = 1.20
@@ -25,7 +26,7 @@ function monthsSince(dateStr: string | null | undefined): number {
   return Math.floor(ms / (1000 * 60 * 60 * 24 * 30.44))
 }
 
-export function AffiliationSimulator({ n1Actifs = 0, isN3Eligible = false, n3EligibleSince, subscriptionStart, n3Actifs = 0 }: Props) {
+export function AffiliationSimulator({ n1Actifs = 0, isN3Eligible = false, n3EligibleSince, subscriptionStart, n3Actifs = 0, embedded = false }: Props) {
   const [plan, setPlan]   = useState<'monthly' | 'annual'>('monthly')
   const [n1, setN1]       = useState(n1Actifs)
   const [n2, setN2]       = useState(0)
@@ -57,7 +58,7 @@ export function AffiliationSimulator({ n1Actifs = 0, isN3Eligible = false, n3Eli
   const handleN3 = useCallback((e: React.ChangeEvent<HTMLInputElement>) => setN3(Number(e.target.value)), [])
 
   return (
-    <div style={{
+    <div style={embedded ? {} : {
       background: 'var(--white)', borderRadius: '14px',
       padding: '24px', marginBottom: '24px',
       boxShadow: '0 1px 6px rgba(67,105,90,0.07)',

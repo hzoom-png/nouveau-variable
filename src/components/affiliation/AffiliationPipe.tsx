@@ -55,7 +55,7 @@ const lbl: React.CSSProperties = {
   textTransform: 'uppercase', letterSpacing: '.06em', display: 'block', marginBottom: 5,
 }
 
-export function AffiliationPipe() {
+export function AffiliationPipe({ embedded = false }: { embedded?: boolean }) {
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading]   = useState(true)
   const [modal, setModal]       = useState<{ open: boolean; contact?: Contact } | null>(null)
@@ -143,7 +143,7 @@ export function AffiliationPipe() {
         @media (max-width: 900px) { .pipe-board { overflow-x: auto !important; } .pipe-col { min-width: 220px !important; } }
       `}</style>
 
-      <div style={{ background: 'var(--white)', borderRadius: 14, padding: '20px 24px', boxShadow: '0 1px 6px rgba(2,79,65,.07)', marginBottom: 24 }}>
+      <div style={embedded ? {} : { background: 'var(--white)', borderRadius: 14, padding: '20px 24px', boxShadow: '0 1px 6px rgba(2,79,65,.07)', marginBottom: 24 }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18, flexWrap: 'wrap', gap: 10 }}>
           <div>
