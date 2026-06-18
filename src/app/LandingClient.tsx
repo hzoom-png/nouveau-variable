@@ -6,11 +6,10 @@ function SectionGrid() {
   return <div className="section-grid" />
 }
 
-import { useMotionValueEvent, motion } from 'framer-motion'
+import { useMotionValueEvent } from 'framer-motion'
 import { useScrollProgress } from '@/components/RevenueAnimation/hooks/useScrollHijack'
 import { RevenueAnimation, USE_REVENUE_ANIMATION } from '@/components/RevenueAnimation'
 import { OneVsFive } from '@/components/OneVsFive'
-import { FloatingBadge } from '@/components/landing/FloatingBadge'
 
 const GOAL = 100
 
@@ -503,113 +502,104 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           animation-delay: 0.4s;
         }
 
-        /* ── HERO SCREENSHOT ── */
-        @keyframes shimmerSlide {
-          0%   { transform: translateX(-120%); }
-          100% { transform: translateX(220%); }
+        /* ── BLUR REVEAL (réplique animation titre "À qui s'adresse") ── */
+        .blur-reveal {
+          filter: blur(8px) !important;
+          transform: none !important;
         }
-        @keyframes glowPulse {
-          0%, 100% { opacity: 0.55; transform: scale(1); }
-          50%       { opacity: 0.80; transform: scale(1.04); }
+        .blur-reveal.sf-v {
+          filter: blur(0px) !important;
         }
-        @keyframes floatY {
-          0%, 100% { transform: translateY(0); }
-          50%       { transform: translateY(-10px); }
+        .sf.blur-reveal {
+          transition: opacity 1.1s cubic-bezier(0.16,1,0.3,1),
+                      filter 1.1s cubic-bezier(0.16,1,0.3,1) !important;
         }
-        .hero-screenshot-wrap {
-          position: relative;
-          margin: 56px auto 0;
-          max-width: 980px;
+
+        /* ── TOOLS SHOWCASE — TABS ── */
+        @keyframes toolFadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
-        .hero-glow {
-          position: absolute;
-          inset: -32px;
-          background: radial-gradient(ellipse at 50% 55%,
-            rgba(47,84,70,0.28) 0%,
-            rgba(47,84,70,0.10) 35%,
-            transparent 70%
-          );
-          filter: blur(44px);
-          border-radius: 24px;
-          z-index: 0;
-          pointer-events: none;
-          animation: glowPulse 4s ease-in-out infinite;
+        .tools-tab-bar {
+          position: sticky;
+          top: 64px;
+          z-index: 20;
+          background: rgba(255,255,255,0.96);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          border-bottom: 1px solid var(--border);
         }
-        .hero-screenshot-outer {
-          position: relative;
-          z-index: 10;
-          border-radius: 16px;
-          overflow: hidden;
+        .tools-tab-inner {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 0 40px;
+          display: flex;
+          overflow-x: auto;
+          scrollbar-width: none;
         }
-        .hero-screenshot-img {
-          width: 100%;
-          height: auto;
-          display: block;
-          border-radius: 16px;
-          transform: perspective(1200px) rotateX(2deg) rotateY(-0.5deg);
-          box-shadow:
-            inset 0 1px 0 rgba(255,255,255,0.30),
-            0 0 40px rgba(47,84,70,0.18),
-            0 30px 60px rgba(47,84,70,0.12),
-            0 0 50px rgba(200,121,10,0.07);
-          transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease;
-        }
-        .hero-screenshot-shimmer {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            105deg,
-            transparent 15%,
-            rgba(200,121,10,0.18) 50%,
-            transparent 85%
-          );
-          animation: shimmerSlide 3s ease-in-out infinite;
-          pointer-events: none;
-          z-index: 2;
-        }
-        .nv-floating-badge {
-          background: #ffffff;
-          border: 1.5px solid #E4EEEA;
-          border-radius: 99px;
-          padding: 8px 16px;
-          font-size: 12px;
-          font-weight: 600;
-          color: #2F5446;
+        .tools-tab-inner::-webkit-scrollbar { display: none; }
+        .tool-tab-btn {
+          padding: 16px 24px;
+          border: none;
+          border-bottom: 2px solid transparent;
+          background: none;
           font-family: var(--fi);
-          box-shadow: 0 4px 16px rgba(47,84,70,0.10);
+          font-size: 14px;
+          color: var(--text-2);
+          cursor: pointer;
           white-space: nowrap;
-          animation: floatY 3s ease-in-out infinite;
+          transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+          flex-shrink: 0;
         }
-        @media (hover: hover) {
-          .hero-screenshot-img:hover {
-            transform: perspective(1200px) rotateX(1deg) rotateY(-0.5deg) translateY(-8px);
-            box-shadow:
-              inset 0 1px 0 rgba(255,255,255,0.40),
-              0 0 50px rgba(47,84,70,0.22),
-              0 40px 80px rgba(47,84,70,0.15),
-              0 0 60px rgba(200,121,10,0.10);
-          }
+        .tool-tab-btn:hover { color: var(--text); background: var(--surface); }
+        .tool-tab-btn.active {
+          color: var(--green);
+          border-bottom-color: var(--green);
+          font-weight: 600;
         }
-        @media (max-width: 1023px) {
-          .hero-screenshot-img {
-            transform: perspective(1200px) rotateX(1deg);
-            box-shadow:
-              inset 0 1px 0 rgba(255,255,255,0.20),
-              0 0 30px rgba(47,84,70,0.14),
-              0 20px 40px rgba(47,84,70,0.08);
-          }
+        .tool-content { animation: toolFadeIn 0.32s cubic-bezier(0.16,1,0.3,1); }
+        .tool-img-frame {
+          transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
-        @media (max-width: 639px) {
-          .hero-screenshot-wrap { margin-top: 40px; }
-          .hero-screenshot-img  { transform: none; box-shadow: 0 0 20px rgba(47,84,70,0.09), 0 16px 32px rgba(47,84,70,0.06); }
-          .hero-glow            { display: none; }
-          .nv-floating-badge    { display: none; }
+        .tool-img-frame:hover {
+          border-color: var(--green-4) !important;
+          box-shadow: 0 8px 32px rgba(47,84,70,0.11) !important;
         }
-        @media (prefers-reduced-motion: reduce) {
-          .hero-screenshot-img    { transform: none !important; transition: none !important; }
-          .hero-screenshot-shimmer { animation: none; opacity: 0; }
-          .hero-glow               { animation: none; opacity: 0; }
-          .nv-floating-badge       { animation: none; }
+        .tool-img-frame img {
+          transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
+          will-change: transform;
+        }
+        .tool-img-frame:hover img { transform: scale(1.012); }
+        .tool-tag {
+          transition: background 0.18s, color 0.18s, border-color 0.18s;
+          cursor: default;
+        }
+        .tool-tag:hover {
+          background: var(--green-3) !important;
+          color: var(--green) !important;
+          border-color: var(--green-4) !important;
+        }
+        /* Effets hover — affiliation cards */
+        .aff-card {
+          transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+        }
+        .aff-card:hover {
+          transform: translateY(-4px) !important;
+          box-shadow: 0 10px 28px rgba(47,84,70,0.13) !important;
+        }
+        @media (max-width: 768px) {
+          .tools-header { padding: 48px 20px 0 !important; }
+          .tools-content-area { padding: 32px 20px 56px !important; }
+          .tool-tags { justify-content: flex-start !important; }
+          .tool-img-frame { max-width: 100% !important; }
+        }
+        @media (max-width: 640px) {
+          .tools-tab-bar { top: 56px; }
+          .tools-tab-inner { padding: 0 12px; }
+          .tool-tab-btn { padding: 12px 14px; font-size: 12px; }
+          .tool-img-frame:hover img { transform: none; }
+          .aff-card:hover { transform: none !important; }
+          .stats-section { padding: 56px 20px !important; }
         }
       `}</style>
 
@@ -689,7 +679,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       {/* ──────────────────────────────────────────────────────────────
           [B] HERO
       ────────────────────────────────────────────────────────────── */}
-      <section style={{ position: 'relative', overflow: 'hidden', marginBottom: 80 }}>
+      <section style={{ position: 'relative', overflow: 'hidden', marginBottom: 0 }}>
         <SectionGrid />
         <div className="hero-sec" style={{
           padding: '120px 40px 80px', maxWidth: 1200,
@@ -782,33 +772,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           </div>
         </div>
 
-        {/* ── DASHBOARD SCREENSHOT ── */}
-        <div className="hero-screenshot-wrap hero-el hero-el-4">
-          <div className="hero-glow" aria-hidden="true" />
-
-          <motion.div
-            className="hero-screenshot-outer"
-            initial={{ opacity: 0, y: 44 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/dashboard-screenshot.png"
-              alt="Dashboard Nouveau Variable — outils Réplique, Missions, Annuaire et suivi de revenus"
-              className="hero-screenshot-img"
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="hero-screenshot-shimmer" aria-hidden="true" />
-          </motion.div>
-
-          {/* Floating badges — hidden on mobile via CSS */}
-          <FloatingBadge label="Réplique ✨"  position="top-left"     delay={0.35} />
-          <FloatingBadge label="Missions 🎯"  position="top-right"    delay={0.55} />
-          <FloatingBadge label="+3 membres"   position="bottom-right" delay={0.75} />
-        </div>
         </div>
       </section>
 
@@ -935,6 +898,11 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           [D] A QUI S'ADRESSE NV — scroll-driven sticky
       ────────────────────────────────────────────────────────────── */}
       <TargetAudienceScrollSection />
+
+      {/* ──────────────────────────────────────────────────────────────
+          [E] TOOLS SHOWCASE — tabs
+      ────────────────────────────────────────────────────────────── */}
+      <ToolsShowcase />
 
       {/* ──────────────────────────────────────────────────────────────
           [E] REVENUE ANIMATION (ou fallback outils classique)
@@ -1086,7 +1054,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                   desc: "Ton lien d'affiliation reste actif même après expiration de ton abonnement. Pas de pay-to-play.",
                 },
               ] as const).map(m => (
-                <div key={m.label} style={{
+                <div key={m.label} className="aff-card" style={{
                   background: '#fff', borderRadius: 16, padding: 24,
                   boxShadow: '0 2px 16px rgba(2,79,65,0.06)',
                 }}>
@@ -1841,6 +1809,142 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         </div>
       )}
     </div>
+  )
+}
+
+const TOOLS = [
+  {
+    img: '/screens/Projets.png',
+    title: 'Projets',
+    description: "Filtre les projets du réseau selon le besoin exact — associé, investisseur, clients pilotes, partenaire, talent ou prestataire.",
+    tags: ["Associé·e", "Investisseur", "Clients pilotes"],
+    wrapperStyle: undefined as React.CSSProperties | undefined,
+  },
+  {
+    img: '/screens/RDV.png',
+    title: 'RDV & Networking',
+    description: "Choisis ton format de rencontre avec un membre — visio, téléphone, café ou autre. Tu envoies la demande, il confirme.",
+    tags: ['Visio', 'Téléphone', 'Café'],
+    wrapperStyle: { maxWidth: '52%', margin: '0 auto' } as React.CSSProperties,
+  },
+  {
+    img: '/screens/SideHustle.png',
+    title: 'Side Hustle',
+    description: "Lance ton projet sans t'éparpiller. Planifie tes étapes, valide ton modèle économique et projette tes revenus — le tout dans un espace dédié, pensé pour avancer vite.",
+    tags: ['Roadmap', 'Prévisionnel', 'BMC'],
+    wrapperStyle: undefined as React.CSSProperties | undefined,
+  },
+  {
+    img: '/screens/KA2.png',
+    title: 'Key Account',
+    description: "Tu es commercial B2B et tu manques de visibilité sur tes comptes clés ? Key Account te donne une vue complète sur chaque deal — qui décide, qui bloque, qui influence — pour closer plus vite.",
+    tags: ['MEDDICC', 'Cartographie', 'Parties prenantes'],
+    wrapperStyle: { maxWidth: '440px', margin: '0 auto' } as React.CSSProperties,
+  },
+  {
+    img: '/screens/Missions.png',
+    title: 'Missions',
+    description: "Filtre les missions disponibles par catégorie — Closing, Apport d'affaires, Freelance, Conseil, Formation, Affiliation et plus.",
+    tags: ['Closing', "Apport d'affaires", 'Freelance'],
+    wrapperStyle: undefined as React.CSSProperties | undefined,
+  },
+]
+
+const imgFrame: React.CSSProperties = {
+  borderRadius: 14, overflow: 'hidden',
+  border: '1.5px solid var(--border)',
+  background: 'var(--surface)',
+  boxShadow: '0 2px 16px rgba(47,84,70,0.06)',
+}
+
+function ToolsShowcase() {
+  const [active, setActive] = useState(0)
+  const tool = TOOLS[active]
+
+  return (
+    <section className="sf" style={{ background: '#fff', borderTop: '1px solid var(--border)' }}>
+
+      {/* Header */}
+      <div className="sf blur-reveal tools-header" style={{ textAlign: 'center', padding: '72px 40px 0' }}>
+        <h2 style={{
+          fontFamily: 'var(--fi)', fontWeight: 400,
+          fontSize: 'clamp(24px, 3.5vw, 40px)', color: 'var(--text)',
+          letterSpacing: '-.02em', marginBottom: 12,
+        }}>
+          As-tu déjà vu tout ça… au même endroit ?
+        </h2>
+        <p style={{
+          fontFamily: 'var(--fi)', fontSize: 16, color: 'var(--text-2)',
+          maxWidth: 480, margin: '0 auto', lineHeight: 1.7,
+        }}>
+          Un écosystème pensé pour ceux qui doivent vendre pour vivre :{' '}
+          <span style={{ color: '#36a64f', fontWeight: 600 }}>commerciaux</span>
+          {' '}&amp;{' '}
+          <span style={{ color: '#36a64f', fontWeight: 600 }}>entrepreneurs</span>.
+        </p>
+      </div>
+
+      {/* Tab bar — sticky sous la navbar */}
+      <div className="tools-tab-bar" style={{ marginTop: 40 }}>
+        <div className="tools-tab-inner">
+          {TOOLS.map((t, i) => (
+            <button
+              key={t.title}
+              className={`tool-tab-btn${active === i ? ' active' : ''}`}
+              onClick={() => setActive(i)}
+            >
+              {t.title}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Contenu — crossfade à chaque changement d'onglet */}
+      <div className="tools-content-area" style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 40px 80px' }}>
+        <div key={active} className="tool-content">
+
+          {/* Screenshot */}
+          <div className="tool-img-frame" style={{ ...imgFrame, ...(tool.wrapperStyle ?? {}) }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={tool.img}
+              alt={tool.title}
+              loading="lazy"
+              decoding="async"
+              style={{ width: '100%', height: 'auto', display: 'block' }}
+            />
+          </div>
+
+          {/* Description + tags */}
+          <div style={{
+            display: 'flex', alignItems: 'flex-start',
+            justifyContent: 'space-between', gap: 32, marginTop: 28,
+            flexWrap: 'wrap',
+          }}>
+            <p style={{
+              fontFamily: 'var(--fi)', fontSize: 15, color: 'var(--text-2)',
+              lineHeight: 1.75, margin: 0, maxWidth: 580,
+            }}>
+              {tool.description}
+            </p>
+            <div className="tool-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'flex-end' }}>
+              {tool.tags.map(tag => (
+                <span key={tag} className="tool-tag" style={{
+                  display: 'inline-block', padding: '6px 14px',
+                  borderRadius: 99, fontSize: 12, fontWeight: 500,
+                  background: 'var(--surface)', color: 'var(--text-2)',
+                  border: '1px solid var(--border)',
+                  fontFamily: 'var(--fi)',
+                }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
   )
 }
 
