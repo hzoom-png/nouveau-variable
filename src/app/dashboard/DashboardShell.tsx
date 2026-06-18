@@ -139,6 +139,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/dashboard/billing':          'Facturation',
   '/dashboard/network/n1':       'Filleuls N1',
   '/dashboard/network/n2':       'Filleuls N2',
+  '/dashboard/network/n3':       'Filleuls N3',
   '/dashboard/library':          'Ma bibliothèque',
   '/dashboard/projects':         'Projets',
 }

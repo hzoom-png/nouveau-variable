@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/tokens-reset",
       "schedule": "0 0 1 * *"
+    },
+    {
+      "path": "/api/cron/n3-eligibility-update",
+      "schedule": "0 */6 * * *"
     }
   ]
 }

@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
   const isGodmode = refCode ? bypassCodes.includes(refCode.toUpperCase()) : false
   let referrerId: string | null = null
   let referrerReferredBy: string | null = null
+  let n3ReferrerId: string | null = null
 
   if (!isGodmode && refCode) {
     const { data: referrer } = await admin
@@ -74,6 +75,20 @@ export async function POST(request: NextRequest) {
     if (referrer) {
       referrerId = referrer.id
       referrerReferredBy = referrer.referred_by ?? null
+
+      // N3: look up the N2 referrer's own referrer
+      if (referrerReferredBy) {
+        const { data: n2Profile } = await admin
+          .from('profiles')
+          .select('referred_by')
+          .eq('id', referrerReferredBy)
+          .single()
+        const candidate = n2Profile?.referred_by ?? null
+        // Ensure N3 referrer is distinct from N1 and N2 to avoid self-loops
+        if (candidate && candidate !== referrerId && candidate !== referrerReferredBy) {
+          n3ReferrerId = candidate
+        }
+      }
     }
   }
 
@@ -98,6 +113,9 @@ export async function POST(request: NextRequest) {
     await admin.from('referrals').insert({ referrer_id: referrerId, referee_id: user.id, level: 1, commission_rate: 40 })
     if (referrerReferredBy) {
       await admin.from('referrals').insert({ referrer_id: referrerReferredBy, referee_id: user.id, level: 2, commission_rate: 5 })
+    }
+    if (n3ReferrerId) {
+      await admin.from('referrals').insert({ referrer_id: n3ReferrerId, referee_id: user.id, level: 3, commission_rate: 5 })
     }
   }
 

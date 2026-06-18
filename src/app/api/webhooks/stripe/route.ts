@@ -115,6 +115,37 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      // Notify N3 referrer via referrals table (fire & forget — only if N3 eligible)
+      void (async () => {
+        try {
+          const { data: n3Row } = await svc
+            .from('referrals')
+            .select('referrer_id')
+            .eq('referee_id', profile.id)
+            .eq('level', 3)
+            .maybeSingle()
+          if (!n3Row?.referrer_id) return
+          const { data: n3Parrain } = await svc
+            .from('profiles')
+            .select('id, email, first_name, n3_eligible_since')
+            .eq('id', n3Row.referrer_id)
+            .single()
+          if (!n3Parrain?.n3_eligible_since) return
+          await sendEmail({
+            to: { email: n3Parrain.email as string, name: n3Parrain.first_name as string },
+            templateId: TEMPLATE_IDS.NOUVEAU_FILLEUL,
+            params: {
+              prenom:           n3Parrain.first_name as string,
+              filleul_prenom:   prenom,
+              commission:       'N3',
+              date_versement:   '',
+              lien_affiliation: 'https://app.nouveauvariable.fr/dashboard/network/n3',
+            },
+            tags: ['affiliation', 'nouveau-filleul-n3'],
+          })
+        } catch { /* fire & forget — non bloquant */ }
+      })()
+
       notifySlack({
         title: '💳 Paiement reçu',
         description: `${profile.first_name ?? email}`,

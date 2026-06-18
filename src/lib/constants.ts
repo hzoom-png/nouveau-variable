@@ -22,6 +22,8 @@ export function getN2Rate(n1Count: number): number {
 
 export const N1_RATE              = 0.30
 export const N2_RATE              = 0.05
+export const N3_RATE              = 0.05
+export const N3_UNLOCK_MONTHS     = 6
 export const TVA                  = 1.20
 export const SUBSCRIPTION         = 97          // TTC mensuel
 export const SUBSCRIPTION_ANNUAL  = 899         // TTC annuel
