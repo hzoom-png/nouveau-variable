@@ -1911,9 +1911,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 NOUVEAU VARIABLE
               </span>
             </div>
-            <p style={{ fontFamily: 'var(--fi)', fontSize: 13, color: '#9BB5AA' }}>
-              Club privé · Commerciaux ambitieux · Sur candidature
-            </p>
           </div>
 
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 24 }}>
