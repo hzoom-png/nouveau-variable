@@ -9,7 +9,6 @@ function SectionGrid() {
 import { useMotionValueEvent } from 'framer-motion'
 import { useScrollProgress } from '@/components/RevenueAnimation/hooks/useScrollHijack'
 import { RevenueAnimation, USE_REVENUE_ANIMATION } from '@/components/RevenueAnimation'
-import { OneVsFive } from '@/components/OneVsFive'
 
 const GOAL = 100
 
@@ -117,6 +116,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
     }, 400)
     return () => clearTimeout(t)
   }, [waitlistCount])
+
 
   const affSectionRef = useRef<HTMLElement>(null)
   const affTitleRef   = useRef<HTMLHeadingElement>(null)
@@ -465,28 +465,11 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .three-grid { grid-template-columns: 1fr !important; }
           .four-grid  { grid-template-columns: 1fr !important; }
         }
-        @keyframes chargeChar {
-          0% {
-            opacity: 0;
-            filter: blur(4px);
-            text-shadow: 0 0 0px rgba(54, 166, 79, 0.3);
-          }
-          50% {
-            filter: blur(2px);
-            text-shadow: 0 0 10px rgba(54, 166, 79, 0.6);
-          }
-          100% {
-            opacity: 1;
-            filter: blur(0px);
-            text-shadow: 0 0 20px rgba(54, 166, 79, 0.8), 0 0 40px rgba(54, 166, 79, 0.4);
-          }
-        }
-        .glow-char {
-          display: inline-block;
-          opacity: 0;
-          animation: chargeChar 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
-          min-width: 0.25em;
-        }
+        .stat-source { opacity: 0; transition: opacity 0.3s ease; margin-top: auto; }
+        .stat-card:hover .stat-source { opacity: 1; }
+        .pricing-li { display: flex; align-items: flex-start; gap: 10px; padding: 7px 10px; border-radius: 8px; cursor: default; transition: background 0.18s ease; }
+        .pricing-li:hover { background: rgba(47,84,70,0.07); }
+        .pricing-li:hover .pricing-li-text { color: var(--green) !important; font-weight: 500; }
         .hero-title { margin-bottom: 32px !important; }
         .hero-subtitle { margin-top: 32px !important; margin-bottom: 40px !important; }
         .hero-ctas { margin-top: 80px !important; }
@@ -603,7 +586,8 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .tool-img-frame:hover img { transform: none; }
           .aff-card:hover { transform: none !important; }
           .stats-section { padding: 56px 20px !important; }
-          .stats-grid.three-grid { grid-template-columns: 1fr !important; }
+          .stats-grid { grid-template-columns: 1fr !important; }
+          .pricing-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
@@ -690,47 +674,41 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           margin: '0 auto', textAlign: 'center',
           position: 'relative', zIndex: 1,
         }}>
-        <div className="hero-el hero-el-1">
-          <span style={{
-            display: 'inline-block',
-            fontFamily: 'var(--fi)', fontSize: 12, fontWeight: 600,
-            color: 'var(--green)', background: 'var(--green-3)',
-            borderRadius: 99, padding: '5px 16px', letterSpacing: '.04em',
-          }}>
-            Accès sur candidature · 1 000 places max
-          </span>
-        </div>
-
-        <h1 className="hero-el hero-el-2 mob-h1 hero-title" style={{
+        <h1 className="hero-el hero-el-1 mob-h1 hero-title" style={{
           fontFamily: 'var(--fj)', fontWeight: 600,
-          fontSize: 'clamp(36px, 5.5vw, 58px)', lineHeight: 1.1,
-          color: 'var(--text)', maxWidth: 720, margin: '24px auto 0',
+          fontSize: 'clamp(34px, 5vw, 56px)', lineHeight: 1.12,
+          color: 'var(--text)', maxWidth: 760, margin: '0 auto',
           letterSpacing: '-.025em',
         }}>
-          Construis un revenu parallèle<br />
-          <span className="animated-glow-text" style={{ color: '#36a64f', fontWeight: 600 }}>
-            {'sans quitter ton job'.split('').map((char, i) => (
-              <span
-                key={i}
-                className="glow-char"
-                style={{ animationDelay: `${0.5 + i * 0.055}s` }}
-              >
-                {char}
-              </span>
-            ))}
-          </span>.
+          Pour vendre ton idée,{' '}
+          <span style={{ color: '#36a64f', fontWeight: 600 }}>entoure-toi</span>{' '}
+          de ceux qui savent vendre
         </h1>
 
-        <p className="hero-el hero-el-3 hero-subtitle" style={{
-          fontFamily: 'var(--fi)', fontSize: 18, lineHeight: 1.7,
-          color: 'var(--text-2)', maxWidth: 600, margin: '20px auto 0',
+        <p className="hero-el hero-el-2 hero-subtitle" style={{
+          fontFamily: 'var(--fi)', fontSize: 18, fontWeight: 500,
+          color: 'var(--text-2)', maxWidth: 560, margin: '24px auto 0',
+          lineHeight: 1.65,
         }}>
-          Bénéficie d'outils exclusifs pensés spécialement pour booster tes ventes, greffe toi sur des projets, développe les tiens, et profite d'une affiliation récurrente sur ton réseau. Un système où chaque action se convertit en revenu potentiel.
+          Le club-outil qui rassemble les idées et les talents commerciaux
+        </p>
+
+        <p className="hero-el hero-el-3" style={{
+          fontFamily: 'var(--fi)', fontSize: 12, fontWeight: 500,
+          color: 'var(--text-3)', letterSpacing: '.08em', margin: '16px auto 0',
+          textTransform: 'uppercase', textAlign: 'center',
+        }}>
+          Outils{' '}<span style={{ margin: '0 6px', opacity: 0.5 }}>—</span>{' '}
+          SaaS{' '}<span style={{ margin: '0 6px', opacity: 0.5 }}>—</span>{' '}
+          Projets{' '}<span style={{ margin: '0 6px', opacity: 0.5 }}>—</span>{' '}
+          Missions{' '}<span style={{ margin: '0 6px', opacity: 0.5 }}>—</span>{' '}
+          Réseau{' '}<span style={{ margin: '0 6px', opacity: 0.5 }}>—</span>{' '}
+          Affiliation
         </p>
 
         <div className="hero-el hero-el-4 ctas-row hero-ctas" style={{
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          gap: 20, marginTop: 40, flexWrap: 'wrap',
+          gap: 16, marginTop: 40, flexWrap: 'wrap',
         }}>
           <a href="#candidature" className="btn-green" style={{
             fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 15,
@@ -740,7 +718,20 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             boxShadow: '0 4px 20px rgba(2,79,65,.18)',
             display: 'inline-block',
           }}>
-            Candidater au club →
+            Rejoindre le club →
+          </a>
+          <a href="/outils" style={{
+            fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 15,
+            color: 'var(--green)', background: 'transparent',
+            border: '1.5px solid var(--green-4)',
+            borderRadius: 99, padding: '15px 36px',
+            textDecoration: 'none', display: 'inline-block',
+            transition: 'border-color 0.18s ease, background 0.18s ease',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--green)'; e.currentTarget.style.background = 'var(--green-3)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--green-4)'; e.currentTarget.style.background = 'transparent'; }}
+          >
+            Explorer les outils
           </a>
         </div>
 
@@ -794,10 +785,99 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             </h2>
           </div>
 
-          <div className="stats-grid three-grid" style={{
-            display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 28,
+          <div className="stats-grid" style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28,
           }}>
-            {/* Stat 1: 57% */}
+            {/* Left column: 57% + 64% stacked */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+              {/* Stat 1: 57% */}
+              <div className="stat-card" style={{
+                borderRadius: 20, padding: '40px 32px',
+                display: 'flex', flexDirection: 'column', gap: 16,
+                background: 'var(--white)',
+                border: '1.5px solid var(--border)',
+                boxShadow: '0 2px 16px rgba(47, 84, 70, 0.05)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                cursor: 'default', flex: 1,
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(47, 84, 70, 0.12)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 16px rgba(47, 84, 70, 0.05)';
+              }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <div style={{
+                    fontFamily: 'var(--fj)', fontWeight: 900,
+                    fontSize: 'clamp(32px, 8vw, 56px)',
+                    color: 'var(--green)', lineHeight: 1,
+                    fontVariantNumeric: 'tabular-nums',
+                  }} className="stat-number" data-target="57">0</div>
+                  <span style={{
+                    fontFamily: 'var(--fj)', fontWeight: 900,
+                    fontSize: 'clamp(20px, 5vw, 32px)',
+                    color: 'var(--green)', lineHeight: 1,
+                  }}>%</span>
+                </div>
+                <p style={{
+                  fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
+                  color: 'var(--text)', lineHeight: 1.6, margin: 0, flexGrow: 1,
+                }}>
+                  57% des commerciaux citent l'instabilité des revenus comme frein majeur à une carrière commerciale
+                </p>
+                <p className="stat-source" style={{
+                  fontFamily: 'var(--fi)', fontSize: 11,
+                  color: '#9BB5AA', fontWeight: 400, letterSpacing: '0.02em', margin: 0,
+                }}>Source: Pipedrive / Salesodyssey</p>
+              </div>
+
+              {/* Stat 2: 64% */}
+              <div className="stat-card" style={{
+                borderRadius: 20, padding: '40px 32px',
+                display: 'flex', flexDirection: 'column', gap: 16,
+                background: 'var(--green)',
+                border: '1.5px solid var(--green-2)',
+                boxShadow: '0 4px 20px rgba(47, 84, 70, 0.2)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                cursor: 'default', flex: 1,
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(47, 84, 70, 0.3)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 20px rgba(47, 84, 70, 0.2)';
+              }}>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <div style={{
+                    fontFamily: 'var(--fj)', fontWeight: 900,
+                    fontSize: 'clamp(32px, 8vw, 56px)',
+                    color: 'var(--white)', lineHeight: 1,
+                    fontVariantNumeric: 'tabular-nums',
+                  }} className="stat-number" data-target="64">0</div>
+                  <span style={{
+                    fontFamily: 'var(--fj)', fontWeight: 900,
+                    fontSize: 'clamp(20px, 5vw, 32px)',
+                    color: 'var(--white)', lineHeight: 1,
+                  }}>%</span>
+                </div>
+                <p style={{
+                  fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
+                  color: 'var(--white)', lineHeight: 1.6, margin: 0, flexGrow: 1,
+                }}>
+                  64% des commerciaux sont prêts à quitter leur job pour un meilleur salaire
+                </p>
+                <p className="stat-source" style={{
+                  fontFamily: 'var(--fi)', fontSize: 11,
+                  color: 'rgba(255,255,255,0.7)', fontWeight: 400, letterSpacing: '0.02em', margin: 0,
+                }}>Source: Pipedrive / Salesodyssey</p>
+              </div>
+            </div>
+
+            {/* Right column: 71% tall card */}
             <div className="stat-card" style={{
               borderRadius: 20, padding: '40px 32px',
               display: 'flex', flexDirection: 'column', gap: 16,
@@ -806,104 +886,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               boxShadow: '0 2px 16px rgba(47, 84, 70, 0.05)',
               transition: 'transform 0.3s ease, box-shadow 0.3s ease',
               cursor: 'default',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.boxShadow = '0 8px 24px rgba(47, 84, 70, 0.12)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 2px 16px rgba(47, 84, 70, 0.05)';
-            }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'baseline',
-                gap: 4,
-              }}>
-                <div style={{
-                  fontFamily: 'var(--fj)', fontWeight: 900,
-                  fontSize: 'clamp(32px, 8vw, 56px)',
-                  color: 'var(--green)', lineHeight: 1,
-                  fontVariantNumeric: 'tabular-nums',
-                }} className="stat-number" data-target="57">0</div>
-                <span style={{
-                  fontFamily: 'var(--fj)', fontWeight: 900,
-                  fontSize: 'clamp(20px, 5vw, 32px)',
-                  color: 'var(--green)', lineHeight: 1,
-                }}>%</span>
-              </div>
-              <p style={{
-                fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
-                color: 'var(--text)', lineHeight: 1.6, margin: 0,
-                flexGrow: 1,
-              }}>
-                57% des commerciaux citent l'instabilité des revenus comme frein majeur à une carrière commerciale
-              </p>
-              <p style={{
-                fontFamily: 'var(--fi)', fontSize: 11,
-                color: '#9BB5AA', fontWeight: 400, letterSpacing: '0.02em',
-                margin: 0,
-              }}>Source: Pipedrive / Salesodyssey</p>
-            </div>
-
-            {/* Stat 2: 64% */}
-            <div className="stat-card" style={{
-              borderRadius: 20, padding: '40px 32px',
-              display: 'flex', flexDirection: 'column', gap: 16,
-              background: 'var(--green)',
-              border: '1.5px solid var(--green-2)',
-              boxShadow: '0 4px 20px rgba(47, 84, 70, 0.2)',
-              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-              cursor: 'default',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.boxShadow = '0 8px 32px rgba(47, 84, 70, 0.3)';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(47, 84, 70, 0.2)';
-            }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'baseline',
-                gap: 4,
-              }}>
-                <div style={{
-                  fontFamily: 'var(--fj)', fontWeight: 900,
-                  fontSize: 'clamp(32px, 8vw, 56px)',
-                  color: 'var(--white)', lineHeight: 1,
-                  fontVariantNumeric: 'tabular-nums',
-                }} className="stat-number" data-target="64">0</div>
-                <span style={{
-                  fontFamily: 'var(--fj)', fontWeight: 900,
-                  fontSize: 'clamp(20px, 5vw, 32px)',
-                  color: 'var(--white)', lineHeight: 1,
-                }}>%</span>
-              </div>
-              <p style={{
-                fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
-                color: 'var(--white)', lineHeight: 1.6, margin: 0,
-                flexGrow: 1,
-              }}>
-                64% des commerciaux sont prêts à quitter leur job pour un meilleur salaire
-              </p>
-              <p style={{
-                fontFamily: 'var(--fi)', fontSize: 11,
-                color: 'rgba(255, 255, 255, 0.7)', fontWeight: 400, letterSpacing: '0.02em',
-                margin: 0,
-              }}>Source: Pipedrive / Salesodyssey</p>
-            </div>
-
-            {/* Stat 3: 71% */}
-            <div className="stat-card" style={{
-              borderRadius: 20, padding: '40px 32px',
-              display: 'flex', flexDirection: 'column', gap: 16,
-              background: 'var(--white)',
-              border: '1.5px solid var(--border)',
-              boxShadow: '0 2px 16px rgba(47, 84, 70, 0.05)',
-              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-              cursor: 'default',
+              animationDelay: '0.5s',
             }}
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-4px)';
@@ -916,27 +899,25 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                 <div style={{
                   fontFamily: 'var(--fj)', fontWeight: 900,
-                  fontSize: 'clamp(32px, 8vw, 56px)',
+                  fontSize: 'clamp(40px, 10vw, 72px)',
                   color: 'var(--green)', lineHeight: 1,
                   fontVariantNumeric: 'tabular-nums',
                 }} className="stat-number" data-target="71">0</div>
                 <span style={{
                   fontFamily: 'var(--fj)', fontWeight: 900,
-                  fontSize: 'clamp(20px, 5vw, 32px)',
+                  fontSize: 'clamp(24px, 6vw, 40px)',
                   color: 'var(--green)', lineHeight: 1,
                 }}>%</span>
               </div>
               <p style={{
-                fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
-                color: 'var(--text)', lineHeight: 1.6, margin: 0,
-                flexGrow: 1,
+                fontFamily: 'var(--fi)', fontSize: 16, fontWeight: 500,
+                color: 'var(--text)', lineHeight: 1.7, margin: 0, flexGrow: 1,
               }}>
-                71% des indépendants déclarent que l'instabilité des revenus mensuels les empêche d'investir dans la croissance de leur entreprise
+                des indépendants déclarent que l'instabilité des revenus mensuels les empêche d'investir dans la croissance de leur entreprise
               </p>
-              <p style={{
+              <p className="stat-source" style={{
                 fontFamily: 'var(--fi)', fontSize: 11,
-                color: '#9BB5AA', fontWeight: 400, letterSpacing: '0.02em',
-                margin: 0,
+                color: '#9BB5AA', fontWeight: 400, letterSpacing: '0.02em', margin: 0,
               }}>Source: INSEE 2025 · Nexco Portage · Co-Entreprendre</p>
             </div>
           </div>
@@ -1053,9 +1034,164 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       )}
 
       {/* ──────────────────────────────────────────────────────────────
-          [F] COMPARAISON
+          [F] PRICING
       ────────────────────────────────────────────────────────────── */}
-      <OneVsFive />
+      <section className="sf" style={{ padding: '96px 40px', background: '#fff', borderTop: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 56 }}>
+            <h2 style={{
+              fontFamily: 'var(--fi)', fontWeight: 400,
+              fontSize: 'clamp(26px, 4vw, 40px)', color: 'var(--text)',
+              letterSpacing: '-.02em', lineHeight: 1.2, marginBottom: 16,
+            }}>
+              Accède au tremplin que tu cherchais
+            </h2>
+            <p style={{
+              fontFamily: 'var(--fi)', fontSize: 16, color: 'var(--text-2)',
+              maxWidth: 480, margin: '0 auto', lineHeight: 1.7,
+            }}>
+              Un seul abonnement. Tous les outils, l'annuaire et les opportunités du club.
+            </p>
+          </div>
+
+          <div className="pricing-grid" style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24,
+          }}>
+            {/* Mensuel */}
+            <div className="pricing-card" style={{
+              borderRadius: 20, padding: '40px 36px',
+              border: '1.5px solid var(--border)',
+              background: '#fff',
+              display: 'flex', flexDirection: 'column', gap: 0,
+              transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = 'var(--green-4)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(47,84,70,0.09)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'var(--border)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}>
+              <p style={{ fontFamily: 'var(--fi)', fontSize: 11, fontWeight: 600, color: 'var(--text-3)', letterSpacing: '.1em', textTransform: 'uppercase', margin: '0 0 20px' }}>
+                MENSUEL
+              </p>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
+                <span style={{ fontFamily: 'var(--fi)', fontWeight: 700, fontSize: 48, color: 'var(--text)', lineHeight: 1 }}>97</span>
+                <span style={{ fontFamily: 'var(--fi)', fontWeight: 500, fontSize: 20, color: 'var(--text-2)' }}>€</span>
+              </div>
+              <p style={{ fontFamily: 'var(--fi)', fontSize: 13, color: 'var(--text-3)', marginBottom: 32 }}>
+                par mois · résiliable à tout moment
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 36px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {[
+                  'Pilote ton projet perso sans efforts',
+                  'Présente-le à une communauté engagée',
+                  'Crée des RDV avec les membres du club',
+                  'Accède à des missions pour compléter ton salaire',
+                  "Gagne des commissions sur l'apport d'affaires",
+                  "Bénéficie d'outils d'aide à la vente",
+                  'Accède aux événements privés',
+                ].map(item => (
+                  <li key={item} className="pricing-li">
+                    <span style={{ color: 'var(--green)', fontWeight: 700, fontSize: 14, flexShrink: 0, marginTop: 1 }}>✓</span>
+                    <span className="pricing-li-text" style={{ fontFamily: 'var(--fi)', fontSize: 14, color: 'var(--text-2)', lineHeight: 1.5 }}>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href="/subscribe" style={{
+                display: 'block', textAlign: 'center',
+                fontFamily: 'var(--fi)', fontWeight: 600, fontSize: 15,
+                color: 'var(--green)', background: 'var(--green-3)',
+                border: '1.5px solid var(--green-4)',
+                borderRadius: 12, padding: '14px 24px',
+                textDecoration: 'none',
+                transition: 'background 0.18s ease, border-color 0.18s ease',
+                marginTop: 'auto',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--green-4)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--green-3)'; }}
+              >
+                Commencer maintenant →
+              </a>
+            </div>
+
+            {/* Annuel */}
+            <div className="pricing-card" style={{
+              borderRadius: 20, padding: '40px 36px',
+              border: '2px solid var(--green)',
+              background: '#fff',
+              display: 'flex', flexDirection: 'column', gap: 0,
+              position: 'relative',
+              boxShadow: '0 4px 24px rgba(47,84,70,0.10)',
+              transition: 'box-shadow 0.25s ease',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 12px 40px rgba(47,84,70,0.18)'; }}
+            onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 24px rgba(47,84,70,0.10)'; }}>
+              <div style={{
+                position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)',
+                background: 'var(--green)', color: '#fff',
+                fontFamily: 'var(--fi)', fontSize: 11, fontWeight: 600,
+                letterSpacing: '.06em', textTransform: 'uppercase',
+                borderRadius: 99, padding: '5px 16px', whiteSpace: 'nowrap',
+              }}>
+                Meilleure offre
+              </div>
+              <p style={{ fontFamily: 'var(--fi)', fontSize: 11, fontWeight: 600, color: 'var(--green)', letterSpacing: '.1em', textTransform: 'uppercase', margin: '0 0 20px' }}>
+                ANNUEL
+              </p>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
+                <span style={{ fontFamily: 'var(--fi)', fontWeight: 700, fontSize: 48, color: 'var(--text)', lineHeight: 1 }}>899</span>
+                <span style={{ fontFamily: 'var(--fi)', fontWeight: 500, fontSize: 20, color: 'var(--text-2)' }}>€</span>
+              </div>
+              <p style={{ fontFamily: 'var(--fi)', fontSize: 13, color: 'var(--text-3)', marginBottom: 4 }}>
+                par an
+              </p>
+              <p style={{ fontFamily: 'var(--fi)', fontSize: 13, fontWeight: 600, color: 'var(--green)', marginBottom: 32 }}>
+                soit 74,92 €/mois · Économise 265 €
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 36px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {[
+                  'Pilote ton projet perso sans efforts',
+                  'Présente-le à une communauté engagée',
+                  'Crée des RDV avec les membres du club',
+                  'Accède à des missions pour compléter ton salaire',
+                  "Gagne des commissions sur l'apport d'affaires",
+                  "Bénéficie d'outils d'aide à la vente",
+                  'Accède aux événements privés',
+                ].map(item => (
+                  <li key={item} className="pricing-li">
+                    <span style={{ color: 'var(--green)', fontWeight: 700, fontSize: 14, flexShrink: 0, marginTop: 1 }}>✓</span>
+                    <span className="pricing-li-text" style={{ fontFamily: 'var(--fi)', fontSize: 14, color: 'var(--text-2)', lineHeight: 1.5 }}>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <a href="/subscribe" style={{
+                display: 'block', textAlign: 'center',
+                fontFamily: 'var(--fi)', fontWeight: 600, fontSize: 15,
+                color: '#fff', background: 'var(--green)',
+                borderRadius: 12, padding: '14px 24px',
+                textDecoration: 'none',
+                transition: 'background 0.18s ease',
+                marginTop: 'auto',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--green-2)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--green)'; }}
+              >
+                Choisir l'annuel →
+              </a>
+            </div>
+          </div>
+
+          <p style={{
+            textAlign: 'center', fontFamily: 'var(--fi)', fontSize: 12,
+            color: 'var(--text-3)', marginTop: 28, lineHeight: 1.8,
+          }}>
+            Paiement sécurisé par Stripe · Sans engagement pour le mensuel<br />
+            * Lien d'affiliation actif même après expiration de l'abonnement
+          </p>
+        </div>
+      </section>
 
       {/* ──────────────────────────────────────────────────────────────
           [G] AFFILIATION

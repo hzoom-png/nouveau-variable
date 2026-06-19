@@ -5,7 +5,6 @@ import { motion, useTransform, MotionValue, useMotionValueEvent } from 'framer-m
 import { useScrollProgress } from './hooks/useScrollHijack'
 import { GraphCurves } from './components/GraphCurves'
 import { ContentPoints } from './components/ContentPoints'
-import { AppIcons } from './components/AppIcons'
 import { MissionBadges } from './components/MissionBadges'
 import { VirementNotifications } from './components/VirementNotifications'
 import { T, GREEN_DATA, SVG_W, SVG_H, toX, toY } from './constants'
@@ -116,7 +115,6 @@ export function Desktop({ isMobile = false }: DesktopProps) {
   //   notifs: 0.936 → 0.950 → 0.984 → 1.000
   //   counter trigger: 0.970 (reset en-dessous de 0.946)
   const p0op     = useTransform(progress, [0.620, 0.636, 0.716, 0.730], [0, 1, 1, 0])
-  const iconsOp  = useTransform(progress, [0.672, 0.688, 0.716, 0.730], [0, 1, 1, 0])
   const p1op     = useTransform(progress, [0.730, 0.746, 0.826, 0.840], [0, 1, 1, 0])
   const badgesOp = useTransform(progress, [0.782, 0.796, 0.826, 0.840], [0, 1, 1, 0])
   const p2op     = useTransform(progress, [0.840, 0.856, 0.876, 0.890], [0, 1, 1, 0])
@@ -235,9 +233,6 @@ export function Desktop({ isMobile = false }: DesktopProps) {
           position="center"
           isMobile={isMobile}
         />
-
-        {/* ── App icons — full viewport overlay, 60px from each edge ─*/}
-        <AppIcons opacity={iconsOp} progress={progress} isMobile={isMobile} />
 
         {/* ── Mission badges — circulaires, apparaissent 1 scroll après content 2 ─*/}
         <MissionBadges

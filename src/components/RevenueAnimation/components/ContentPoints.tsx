@@ -145,23 +145,6 @@ function PointCard({
       }}>
         {pt.desc}
       </p>
-      <div style={{
-        marginTop: dotMt,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 6,
-      }}>
-        <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#36a64f' }} />
-        <span style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontSize: tagSz,
-          color: '#36a64f',
-          fontWeight: 600,
-          letterSpacing: '.04em',
-        }}>
-          Nouveau Variable
-        </span>
-      </div>
     </div>
   )
 }
