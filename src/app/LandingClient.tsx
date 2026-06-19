@@ -1099,7 +1099,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                   </li>
                 ))}
               </ul>
-              <a href="/subscribe" style={{
+              <a href="#candidature" style={{
                 display: 'block', textAlign: 'center',
                 fontFamily: 'var(--fi)', fontWeight: 600, fontSize: 15,
                 color: 'var(--green)', background: 'var(--green-3)',
@@ -1166,7 +1166,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                   </li>
                 ))}
               </ul>
-              <a href="/subscribe" style={{
+              <a href="#candidature" style={{
                 display: 'block', textAlign: 'center',
                 fontFamily: 'var(--fi)', fontWeight: 600, fontSize: 15,
                 color: '#fff', background: 'var(--green)',
