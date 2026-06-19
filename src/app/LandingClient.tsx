@@ -501,6 +501,9 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         .stats-grid .stat-card:nth-child(2) {
           animation-delay: 0.4s;
         }
+        .stats-grid .stat-card:nth-child(3) {
+          animation-delay: 0.6s;
+        }
 
         /* ── BLUR REVEAL (réplique animation titre "À qui s'adresse") ── */
         .blur-reveal {
@@ -600,6 +603,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .tool-img-frame:hover img { transform: none; }
           .aff-card:hover { transform: none !important; }
           .stats-section { padding: 56px 20px !important; }
+          .stats-grid.three-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
 
@@ -786,12 +790,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               fontSize: 'clamp(28px, 4vw, 40px)', color: 'var(--text)',
               letterSpacing: '-.02em', lineHeight: 1.2,
             }}>
-              Il ya un problème.
+              Notre raison d'exister.
             </h2>
           </div>
 
-          <div className="stats-grid two-grid" style={{
-            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32,
+          <div className="stats-grid three-grid" style={{
+            display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 28,
           }}>
             {/* Stat 1: 57% */}
             <div className="stat-card" style={{
@@ -889,6 +893,51 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                 color: 'rgba(255, 255, 255, 0.7)', fontWeight: 400, letterSpacing: '0.02em',
                 margin: 0,
               }}>Source: Pipedrive / Salesodyssey</p>
+            </div>
+
+            {/* Stat 3: 71% */}
+            <div className="stat-card" style={{
+              borderRadius: 20, padding: '40px 32px',
+              display: 'flex', flexDirection: 'column', gap: 16,
+              background: 'var(--white)',
+              border: '1.5px solid var(--border)',
+              boxShadow: '0 2px 16px rgba(47, 84, 70, 0.05)',
+              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+              cursor: 'default',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(47, 84, 70, 0.12)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 16px rgba(47, 84, 70, 0.05)';
+            }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                <div style={{
+                  fontFamily: 'var(--fj)', fontWeight: 900,
+                  fontSize: 'clamp(32px, 8vw, 56px)',
+                  color: 'var(--green)', lineHeight: 1,
+                  fontVariantNumeric: 'tabular-nums',
+                }} className="stat-number" data-target="71">0</div>
+                <span style={{
+                  fontFamily: 'var(--fj)', fontWeight: 900,
+                  fontSize: 'clamp(20px, 5vw, 32px)',
+                  color: 'var(--green)', lineHeight: 1,
+                }}>%</span>
+              </div>
+              <p style={{
+                fontFamily: 'var(--fi)', fontSize: 15, fontWeight: 500,
+                color: 'var(--text)', lineHeight: 1.6, margin: 0,
+                flexGrow: 1,
+              }}>
+                71% des indépendants déclarent que l'instabilité des revenus mensuels les empêche d'investir dans la croissance de leur entreprise
+              </p>
+              <p style={{
+                fontFamily: 'var(--fi)', fontSize: 11,
+                color: '#9BB5AA', fontWeight: 400, letterSpacing: '0.02em',
+                margin: 0,
+              }}>Source: INSEE 2025 · Nexco Portage · Co-Entreprendre</p>
             </div>
           </div>
         </div>
