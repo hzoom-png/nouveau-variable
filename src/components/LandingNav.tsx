@@ -171,7 +171,6 @@ export function LandingNav({ candidateHref = '/#candidature' }: { candidateHref?
         {/* Desktop nav */}
         <div className="landing-nav-links">
           <a href="/outils" className="landing-nav-link">Outils</a>
-          <a href="/about" className="landing-nav-link">Qui sommes-nous</a>
           <a href="https://app.nouveauvariable.fr/auth" className="landing-nav-sec">Se connecter →</a>
           <a href={candidateHref} className="landing-nav-cta">Candidater →</a>
         </div>
@@ -204,7 +203,6 @@ export function LandingNav({ candidateHref = '/#candidature' }: { candidateHref?
 
         <div className="lnav-sidebar-body">
           <a href="/outils" className="lnav-sidebar-link" onClick={close}>Outils</a>
-          <a href="/about" className="lnav-sidebar-link" onClick={close}>Qui sommes-nous</a>
         </div>
 
         <div className="lnav-sidebar-ft">
