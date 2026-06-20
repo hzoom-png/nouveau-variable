@@ -27,7 +27,7 @@ export default function AboutClient() {
 
       <main className="bg-white">
 
-        {/* ========== HERO ========== */}
+        {/* HERO */}
         <section className="py-16 md:py-32 px-6 bg-gradient-to-b from-gray-50 to-white">
           <div className="max-w-3xl mx-auto text-center">
             <h1
@@ -41,21 +41,16 @@ export default function AboutClient() {
             <p
               className="text-lg md:text-xl text-gray-600 font-normal leading-relaxed max-w-2xl mx-auto"
               style={{ fontFamily: 'Inter' }}
-              data-observe
             >
               Nouveau Variable naît d'une simple observation : Les commerciaux et les entrepreneurs ont beaucoup de points communs, mais pas un lieu où se retrouver pour atteindre mutuellement leurs objectifs.
             </p>
           </div>
         </section>
 
-        {/* ========== HISTOIRE ========== */}
+        {/* HISTOIRE */}
         <section className="py-16 md:py-20 px-6" data-observe id="histoire">
           <div className="max-w-2xl mx-auto">
-            <div
-              className={`transition-all duration-700 ${
-                visibleSections['histoire'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
-            >
+            <div className={`transition-all duration-700 ${visibleSections['histoire'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="space-y-6 md:space-y-8">
                 <p className="text-base md:text-lg text-gray-700 leading-8" style={{ fontFamily: 'Inter' }}>
                   J'ai côtoyé des centaines de commerciaux au cours de ma carrière, et j'ai également fait la rencontre d'un très grand nombre d'entrepreneurs.
@@ -92,14 +87,10 @@ export default function AboutClient() {
           </div>
         </section>
 
-        {/* ========== VISION ========== */}
+        {/* VISION */}
         <section className="py-16 md:py-20 px-6 bg-gray-50" data-observe id="vision">
           <div className="max-w-2xl mx-auto">
-            <div
-              className={`transition-all duration-700 ${
-                visibleSections['vision'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
-            >
+            <div className={`transition-all duration-700 ${visibleSections['vision'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-8" style={{ fontFamily: 'Inter' }}>
                 La Vision
               </h2>
@@ -115,7 +106,7 @@ export default function AboutClient() {
           </div>
         </section>
 
-        {/* ========== CE QUI TE PERMET D'AVANCER ========== */}
+        {/* CE QUI TE PERMET D'AVANCER */}
         <section className="py-16 md:py-20 px-6" data-observe id="principes">
           <div className="max-w-3xl mx-auto">
             <h2
@@ -126,59 +117,57 @@ export default function AboutClient() {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {[
-                {
-                  title: 'La force du réseau',
-                  desc: "Plus le club grandira, plus ses services prendront de la valeur, plus il sera simple pour toi de le recommander, et donc de déclencher des commissions d'affiliation.",
-                },
-                {
-                  title: 'Des outils pratiques',
-                  desc: "Keyaccount, Réplique, Deallink et Side Hustle existent tous pour t'aider à vendre ou entreprendre. Ils ont été pensés par des commerciaux et sont nés d'échanges réguliers avec des entrepreneurs.",
-                },
-                {
-                  title: 'Des missions',
-                  desc: "Tu sais vendre et tu souhaites accéder à des opportunités sans prospecter ? Accède aux missions du club et développe une activité complémentaire.",
-                },
-                {
-                  title: 'Des projets',
-                  desc: "Tu souhaites faire la promotion de ton projet ou te greffer sur celui d'un des membres du club ? Cette section te permettra de trouver ce qu'il te manque pour passer à l'étape supérieure.",
-                },
-                {
-                  title: 'Annuaire et RDV',
-                  desc: "Café, visios, calls, toutes ces activités sont bien plus faciles à organiser avec la bonne interface. Choisis n'importe quel membre du club et fais des rencontres dans la vraie vie.",
-                },
-                {
-                  title: 'Événements',
-                  desc: "On fait des merveilles derrière un écran, mais se retrouver tous ensemble pour parler affaires est un excellent moyen d'avancer sereinement. Et de gagner de l'argent en participant à l'organisation, mais on en reparlera :)",
-                },
-              ].map((p) => (
-                <div
-                  key={p.title}
-                  className="group p-6 md:p-8 border border-gray-200 rounded-xl hover:border-green hover:bg-gray-50 transition-all duration-300 cursor-pointer"
-                >
-                  <h3
-                    className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-green transition"
-                    style={{ fontFamily: 'Inter' }}
-                  >
-                    {p.title}
-                  </h3>
-                  <p className="text-sm md:text-base text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter' }}>
-                    {p.desc}
-                  </p>
-                </div>
-              ))}
+
+              <div className="group p-6 md:p-8 border border-gray-200 rounded-xl hover:border-green hover:bg-gray-50 transition-all duration-300 cursor-pointer">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-green transition" style={{ fontFamily: 'Inter' }}>La force du réseau</h3>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+                  Plus le club grandira, plus ses services prendront de la valeur, plus il sera simple pour toi de le recommander, et donc de déclencher des commissions d'affiliation.
+                </p>
+              </div>
+
+              <div className="group p-6 md:p-8 border border-gray-200 rounded-xl hover:border-green hover:bg-gray-50 transition-all duration-300 cursor-pointer">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-green transition" style={{ fontFamily: 'Inter' }}>Des outils pratiques</h3>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+                  Keyaccount, Réplique, Deallink et Side Hustle existent tous pour t'aider à vendre ou entreprendre. Ils ont été pensés par des commerciaux et sont nés d'échanges réguliers avec des entrepreneurs.
+                </p>
+              </div>
+
+              <div className="group p-6 md:p-8 border border-gray-200 rounded-xl hover:border-green hover:bg-gray-50 transition-all duration-300 cursor-pointer">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-green transition" style={{ fontFamily: 'Inter' }}>Des missions</h3>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+                  Tu sais vendre et tu souhaites accéder à des opportunités sans prospecter ? Accède aux missions du club et développe une activité complémentaire.
+                </p>
+              </div>
+
+              <div className="group p-6 md:p-8 border border-gray-200 rounded-xl hover:border-green hover:bg-gray-50 transition-all duration-300 cursor-pointer">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-green transition" style={{ fontFamily: 'Inter' }}>Des projets</h3>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+                  Tu souhaites faire la promotion de ton projet ou te greffer sur celui d'un des membres du club ? Cette section te permettra de trouver ce qu'il te manque pour passer à l'étape supérieure.
+                </p>
+              </div>
+
+              <div className="group p-6 md:p-8 border border-gray-200 rounded-xl hover:border-green hover:bg-gray-50 transition-all duration-300 cursor-pointer">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-green transition" style={{ fontFamily: 'Inter' }}>Annuaire et RDV</h3>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+                  Café, visios, calls, toutes ces activités sont bien plus faciles à organiser avec la bonne interface. Choisis n'importe quel membre du club et fais des rencontres dans la vraie vie.
+                </p>
+              </div>
+
+              <div className="group p-6 md:p-8 border border-gray-200 rounded-xl hover:border-green hover:bg-gray-50 transition-all duration-300 cursor-pointer">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-green transition" style={{ fontFamily: 'Inter' }}>Événements</h3>
+                <p className="text-sm md:text-base text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter' }}>
+                  On fait des merveilles derrière un écran, mais se retrouver tous ensemble pour parler affaires (ou d'autres choses, aussi) est un excellent moyen d'avancer sereinement. Et de gagner de l'argent en participant à l'organisation, mais on en reparlera :)
+                </p>
+              </div>
+
             </div>
           </div>
         </section>
 
-        {/* ========== ESSENCE ========== */}
+        {/* ESSENCE */}
         <section className="py-16 md:py-20 px-6 bg-gray-50" data-observe id="essence">
           <div className="max-w-2xl mx-auto text-center">
-            <div
-              className={`transition-all duration-700 ${
-                visibleSections['essence'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
-            >
+            <div className={`transition-all duration-700 ${visibleSections['essence'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-8" style={{ fontFamily: 'Inter' }}>
                 Notre essence
               </h2>
@@ -197,14 +186,10 @@ export default function AboutClient() {
           </div>
         </section>
 
-        {/* ========== ENGAGEMENT ========== */}
+        {/* ENGAGEMENT */}
         <section className="py-16 md:py-20 px-6" data-observe id="engagement">
           <div className="max-w-2xl mx-auto">
-            <div
-              className={`transition-all duration-700 ${
-                visibleSections['engagement'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
-            >
+            <div className={`transition-all duration-700 ${visibleSections['engagement'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-8" style={{ fontFamily: 'Inter' }}>
                 Engagement
               </h2>
@@ -226,14 +211,10 @@ export default function AboutClient() {
           </div>
         </section>
 
-        {/* ========== CTA FINAL ========== */}
+        {/* CTA */}
         <section className="py-16 md:py-20 px-6 bg-green text-white" data-observe id="cta">
           <div className="max-w-2xl mx-auto text-center">
-            <div
-              className={`transition-all duration-700 ${
-                visibleSections['cta'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-              }`}
-            >
+            <div className={`transition-all duration-700 ${visibleSections['cta'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <h2 className="text-3xl md:text-4xl font-black mb-8" style={{ fontFamily: 'Inter' }}>
                 Rejoignez le Mouvement
               </h2>

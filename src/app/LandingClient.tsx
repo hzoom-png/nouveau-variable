@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, type CSSProperties } from 'react'
-import { LandingNav } from '@/components/LandingNav'
+import Header from '@/components/Header'
 
 function SectionGrid() {
   return <div className="section-grid" />
@@ -590,7 +590,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       {/* ──────────────────────────────────────────────────────────────
           [A] NAVBAR
       ────────────────────────────────────────────────────────────── */}
-      <LandingNav />
+      <Header />
 
       {/* ──────────────────────────────────────────────────────────────
           [B] HERO
