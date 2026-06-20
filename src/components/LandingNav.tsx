@@ -10,7 +10,7 @@ const NAV_STYLES = `
     border-bottom: 1px solid var(--border, #E4EEEA);
     transition: background 0.2s; gap: 12px;
   }
-  .landing-nav-links { display: flex; align-items: center; gap: 10px; }
+  .landing-nav-links { display: none; }
   .landing-nav-link {
     font-family: var(--font-inter, 'Inter', system-ui, sans-serif);
     font-weight: 500; font-size: 14px;
@@ -37,7 +37,7 @@ const NAV_STYLES = `
   }
   .landing-nav-cta:hover { background: #E8C547; border-color: #D4AF37; box-shadow: 0 0 20px rgba(212,175,55,0.4); }
   .landing-nav-burger {
-    display: none; flex-direction: column; gap: 5px;
+    display: flex; flex-direction: column; gap: 5px;
     cursor: pointer; padding: 4px; background: none; border: none;
   }
   .lnb-line {
@@ -57,8 +57,6 @@ const NAV_STYLES = `
   }
   @media (max-width: 640px) {
     .landing-nav { padding: 0 16px !important; height: 56px !important; }
-    .landing-nav-links { display: none !important; }
-    .landing-nav-burger { display: flex !important; }
     .landing-nav-mobile { top: 56px; }
     .landing-nav-sec { font-size: 12px !important; padding: 6px 14px !important; }
     .landing-nav-cta { font-size: 12px !important; padding: 6px 14px !important; }
