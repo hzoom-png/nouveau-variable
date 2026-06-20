@@ -38,7 +38,9 @@ export function MissionBadges({ opacity, progress, isMobile = false, fadeInStart
   const blurRaw = useTransform(progress, [fadeInStart, fadeInEnd], [10, 0])
   const filter  = useTransform(blurRaw, v => `blur(${Math.max(0, v).toFixed(1)}px)`)
 
-  const positions = isMobile ? MOBILE_POSITIONS : DESKTOP_POSITIONS
+  if (isMobile) return null
+
+  const positions = DESKTOP_POSITIONS
 
   const pill: React.CSSProperties = {
     padding:      isMobile ? '5px 13px' : '8px 18px',

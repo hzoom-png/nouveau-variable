@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, type CSSProperties } from 'react'
+import { LandingNav } from '@/components/LandingNav'
 
 function SectionGrid() {
   return <div className="section-grid" />
@@ -23,7 +24,6 @@ const inp: CSSProperties = {
 
 
 export default function LandingClient({ waitlistCount }: { waitlistCount: number }) {
-  const [scrolled, setScrolled] = useState(false)
   const [step, setStep] = useState<1 | 2>(1)
   const [form, setForm] = useState({
     firstname: '', lastname: '', email: '', phone: '', city: '',
@@ -53,12 +53,6 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
 
   useEffect(() => {
     setCookieBanner(localStorage.getItem('nv_cookie_consent') === null)
-  }, [])
-
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', fn, { passive: true })
-    return () => window.removeEventListener('scroll', fn)
   }, [])
 
   useEffect(() => {
@@ -456,7 +450,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
           .two-grid  { grid-template-columns: 1fr !important; }
           .three-grid { grid-template-columns: 1fr 1fr !important; }
           .four-grid  { grid-template-columns: 1fr 1fr !important; }
-          .nav-cta { font-size: 13px !important; padding: 12px 18px !important; font-weight: 700 !important; }
+          .nav-cta { font-size: 13px !important; padding: 8px 18px !important; }
           .outils-section,
           [data-page="outils"],
           .page-outils { display: none !important; }
@@ -581,88 +575,22 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
         }
         @media (max-width: 640px) {
           .tools-tab-bar { top: 56px; }
-          .tools-tab-inner { padding: 0 12px; }
-          .tool-tab-btn { padding: 12px 14px; font-size: 12px; }
+          .tools-tab-inner { padding: 6px 12px !important; flex-wrap: wrap !important; overflow-x: visible !important; justify-content: center !important; gap: 6px !important; }
+          .tool-tab-btn { padding: 7px 12px !important; font-size: 11px !important; flex-shrink: 1 !important; }
           .tool-img-frame:hover img { transform: none; }
           .aff-card:hover { transform: none !important; }
           .stats-section { padding: 56px 20px !important; }
           .stats-grid { grid-template-columns: 1fr !important; }
           .pricing-grid { grid-template-columns: 1fr !important; }
+          .target-sticky { padding: 16px !important; overflow-y: auto !important; align-items: flex-start !important; }
+          .target-title { margin-bottom: 20px !important; }
         }
       `}</style>
 
       {/* ──────────────────────────────────────────────────────────────
           [A] NAVBAR
       ────────────────────────────────────────────────────────────── */}
-      <nav className="nav-inner" style={{
-        position: 'sticky', top: 0, zIndex: 100,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 40px', height: 64,
-        background: scrolled ? 'rgba(255,255,255,0.92)' : '#fff',
-        backdropFilter: scrolled ? 'blur(8px)' : 'none',
-        WebkitBackdropFilter: scrolled ? 'blur(8px)' : 'none',
-        borderBottom: '1px solid var(--border)',
-        transition: 'background 0.2s',
-        gap: '12px',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <img
-            src="/icon_margin_transparent_customcolor.png" alt="NV"
-            style={{ height: 40, width: 40, objectFit: 'contain', minWidth: 40 }}
-            onError={e => (e.currentTarget.style.display = 'none')}
-          />
-          <span style={{
-            fontFamily: 'var(--fj)', fontWeight: 600, fontSize: 12,
-            letterSpacing: '.09em', color: 'var(--green)', textTransform: 'uppercase',
-            display: 'none',
-          }}>
-            NOUVEAU VARIABLE
-          </span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <a href="/outils" className="nav-outils" style={{
-            fontFamily: 'var(--fi)', fontWeight: 500, fontSize: 14,
-            color: 'var(--text-2)', textDecoration: 'none',
-            transition: 'color 0.15s',
-          }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#36a64f')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-2)')}
-          >
-            Outils
-          </a>
-          <a href="https://app.nouveauvariable.fr/auth" className="nav-secondary" style={{
-            fontFamily: 'var(--fj)', fontWeight: 600,
-            color: 'var(--green)', background: 'transparent',
-            border: '1.5px solid var(--green)',
-            borderRadius: 99,
-            textDecoration: 'none',
-            fontSize: '13px',
-            padding: '8px 18px',
-            transition: 'all 0.15s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = 'var(--green-3)'
-            e.currentTarget.style.borderColor = 'var(--green)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'transparent'
-            e.currentTarget.style.borderColor = 'var(--green)'
-          }}
-          >
-            Se connecter →
-          </a>
-          <a href="#candidature" className="nav-cta" style={{
-            fontFamily: 'var(--fj)', fontWeight: 600,
-            color: '#fff', background: 'var(--green)',
-            borderRadius: 99,
-            textDecoration: 'none',
-            fontSize: '13px',
-            padding: '9px 20px',
-          }}>
-            Candidater →
-          </a>
-        </div>
-      </nav>
+      <LandingNav />
 
       {/* ──────────────────────────────────────────────────────────────
           [B] HERO
@@ -810,13 +738,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <div style={{
-                    fontFamily: 'var(--fj)', fontWeight: 900,
+                    fontFamily: 'var(--fi)', fontWeight: 500,
                     fontSize: 'clamp(32px, 8vw, 56px)',
                     color: 'var(--green)', lineHeight: 1,
                     fontVariantNumeric: 'tabular-nums',
                   }} className="stat-number" data-target="57">0</div>
                   <span style={{
-                    fontFamily: 'var(--fj)', fontWeight: 900,
+                    fontFamily: 'var(--fi)', fontWeight: 500,
                     fontSize: 'clamp(20px, 5vw, 32px)',
                     color: 'var(--green)', lineHeight: 1,
                   }}>%</span>
@@ -853,13 +781,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
               }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                   <div style={{
-                    fontFamily: 'var(--fj)', fontWeight: 900,
+                    fontFamily: 'var(--fi)', fontWeight: 500,
                     fontSize: 'clamp(32px, 8vw, 56px)',
                     color: 'var(--white)', lineHeight: 1,
                     fontVariantNumeric: 'tabular-nums',
                   }} className="stat-number" data-target="64">0</div>
                   <span style={{
-                    fontFamily: 'var(--fj)', fontWeight: 900,
+                    fontFamily: 'var(--fi)', fontWeight: 500,
                     fontSize: 'clamp(20px, 5vw, 32px)',
                     color: 'var(--white)', lineHeight: 1,
                   }}>%</span>
@@ -898,13 +826,13 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
             }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
                 <div style={{
-                  fontFamily: 'var(--fj)', fontWeight: 900,
+                  fontFamily: 'var(--fi)', fontWeight: 500,
                   fontSize: 'clamp(40px, 10vw, 72px)',
                   color: 'var(--green)', lineHeight: 1,
                   fontVariantNumeric: 'tabular-nums',
                 }} className="stat-number" data-target="71">0</div>
                 <span style={{
-                  fontFamily: 'var(--fj)', fontWeight: 900,
+                  fontFamily: 'var(--fi)', fontWeight: 500,
                   fontSize: 'clamp(24px, 6vw, 40px)',
                   color: 'var(--green)', lineHeight: 1,
                 }}>%</span>
@@ -2199,7 +2127,7 @@ function TargetAudienceScrollSection() {
         borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
       }}
     >
-      <div style={{
+      <div className="target-sticky" style={{
         position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
         background: '#fff', display: 'flex', alignItems: 'center',
         justifyContent: 'center', padding: '0 40px',
@@ -2208,7 +2136,7 @@ function TargetAudienceScrollSection() {
         <div style={{ maxWidth: 1100, width: '100%' }}>
 
           {/* Title block */}
-          <div ref={titleRef} style={{ textAlign: 'center', marginBottom: 52, opacity: 0 }}>
+          <div ref={titleRef} className="target-title" style={{ textAlign: 'center', marginBottom: 52, opacity: 0 }}>
             <h2 style={{
               fontFamily: 'var(--fi)', fontWeight: 600,
               fontSize: 'clamp(22px, 3.5vw, 36px)', color: 'var(--text)',
