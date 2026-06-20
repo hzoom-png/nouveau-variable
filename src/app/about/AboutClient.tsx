@@ -35,7 +35,7 @@ export default function AboutClient() {
         <section className="py-16 md:py-32 px-6 bg-gradient-to-b from-gray-50 to-white">
           <div className="max-w-3xl mx-auto text-center">
             <h1
-              className="text-4xl md:text-6xl font-900 text-gray-900 mb-6 leading-tight"
+              className="text-4xl md:text-6xl font-black text-gray-900 mb-6 leading-tight"
               style={{ fontFamily: 'Inter' }}
               data-observe
               id="hero"
@@ -43,7 +43,7 @@ export default function AboutClient() {
               Qui sommes-nous ?
             </h1>
             <p
-              className="text-lg md:text-xl text-gray-600 font-400 leading-relaxed max-w-2xl mx-auto"
+              className="text-lg md:text-xl text-gray-600 font-normal leading-relaxed max-w-2xl mx-auto"
               style={{ fontFamily: 'Inter' }}
               data-observe
             >
@@ -79,7 +79,7 @@ export default function AboutClient() {
                 </p>
 
                 <p className="text-base md:text-lg text-gray-700 leading-8" style={{ fontFamily: 'Inter' }}>
-                  <span className="font-600">Survivre.</span> C'est bien de cela dont il s'agit.
+                  <span className="font-semibold">Survivre.</span> C'est bien de cela dont il s'agit.
                 </p>
 
                 <p className="text-base md:text-lg text-gray-700 leading-8" style={{ fontFamily: 'Inter' }}>
@@ -99,7 +99,7 @@ export default function AboutClient() {
                 </p>
 
                 <p className="text-base md:text-lg text-gray-700 leading-8" style={{ fontFamily: 'Inter' }}>
-                  Cet environnement, j'ai décidé de le nommer <span className="font-600">Nouveau Variable</span>, parce qu'il vient compléter l'ancien, le réinventer.
+                  Cet environnement, j'ai décidé de le nommer <span className="font-semibold">Nouveau Variable</span>, parce qu'il vient compléter l'ancien, le réinventer.
                 </p>
 
                 <p className="text-base md:text-lg text-gray-700 leading-8" style={{ fontFamily: 'Inter' }}>
@@ -124,7 +124,7 @@ export default function AboutClient() {
               }`}
             >
               <h2
-                className="text-3xl md:text-4xl font-900 text-gray-900 mb-8"
+                className="text-3xl md:text-4xl font-black text-gray-900 mb-8"
                 style={{ fontFamily: 'Inter' }}
               >
                 La Vision
@@ -161,7 +161,7 @@ export default function AboutClient() {
         >
           <div className="max-w-3xl mx-auto">
             <h2
-              className="text-3xl md:text-4xl font-900 text-gray-900 mb-10 md:mb-12 text-center"
+              className="text-3xl md:text-4xl font-black text-gray-900 mb-10 md:mb-12 text-center"
               style={{ fontFamily: 'Inter' }}
             >
               Les Principes Fondateurs
@@ -181,7 +181,7 @@ export default function AboutClient() {
                   key={p.title}
                   className="group p-6 md:p-8 border border-gray-200 rounded-xl hover:border-green hover:bg-gray-50 transition-all duration-300 cursor-default"
                 >
-                  <h3 className="text-lg font-600 text-gray-900 mb-3 group-hover:text-green transition" style={{ fontFamily: 'Inter' }}>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-green transition" style={{ fontFamily: 'Inter' }}>
                     {p.title}
                   </h3>
                   <p className="text-sm md:text-base text-gray-600 leading-relaxed" style={{ fontFamily: 'Inter' }}>
@@ -207,7 +207,7 @@ export default function AboutClient() {
               }`}
             >
               <h2
-                className="text-3xl md:text-4xl font-900 text-gray-900 mb-8"
+                className="text-3xl md:text-4xl font-black text-gray-900 mb-8"
                 style={{ fontFamily: 'Inter' }}
               >
                 Notre essence
@@ -245,7 +245,7 @@ export default function AboutClient() {
               }`}
             >
               <h2
-                className="text-3xl md:text-4xl font-900 text-gray-900 mb-8"
+                className="text-3xl md:text-4xl font-black text-gray-900 mb-8"
                 style={{ fontFamily: 'Inter' }}
               >
                 Engagement
@@ -287,7 +287,7 @@ export default function AboutClient() {
               }`}
             >
               <h2
-                className="text-3xl md:text-4xl font-900 mb-8"
+                className="text-3xl md:text-4xl font-black mb-8"
                 style={{ fontFamily: 'Inter' }}
               >
                 Rejoignez le Mouvement
@@ -311,7 +311,7 @@ export default function AboutClient() {
 
               <a
                 href="/#candidature"
-                className="inline-block px-8 py-4 bg-white text-green font-600 rounded-lg hover:bg-gray-50 transition-colors"
+                className="inline-block px-8 py-4 bg-white text-green font-semibold rounded-lg hover:bg-gray-50 transition-colors"
                 style={{ fontFamily: 'Inter', textDecoration: 'none' }}
               >
                 Candidater au club →
