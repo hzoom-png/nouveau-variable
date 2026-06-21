@@ -48,6 +48,7 @@ export const TEMPLATE_IDS = {
   CANDIDATURE_RECUE:    parseInt(process.env.BREVO_TPL_CANDIDATURE_RECUE    ?? '0'),
   CANDIDATURE_ACCEPTEE: parseInt(process.env.BREVO_TPL_CANDIDATURE_ACCEPTEE ?? '0'),
   CANDIDATURE_REFUSEE:  parseInt(process.env.BREVO_TPL_CANDIDATURE_REFUSEE  ?? '0'),
+  PAYMENT_RESEND:       parseInt(process.env.BREVO_TPL_PAYMENT_RESEND       ?? '0'),
   BIENVENUE_PAIEMENT:   parseInt(process.env.BREVO_TPL_BIENVENUE_PAIEMENT   ?? '0'),
   ECHEC_PAIEMENT_1:     parseInt(process.env.BREVO_TPL_ECHEC_PAIEMENT_1     ?? '0'),
   ECHEC_PAIEMENT_2:     parseInt(process.env.BREVO_TPL_ECHEC_PAIEMENT_2     ?? '0'),

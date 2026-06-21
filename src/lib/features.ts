@@ -8,6 +8,8 @@
 export const FEATURES = {
   /** Redirige /dashboard → /dashboard/profile si profil incomplet */
   ONBOARDING_REDIRECT: process.env.FEATURE_ONBOARDING_REDIRECT === 'true',
+  /** Endpoint + page self-service renvoi lien de paiement */
+  RESEND_PAYMENT: process.env.FEATURE_RESEND_PAYMENT === 'true',
 } as const
 
 if (typeof window === 'undefined') {
