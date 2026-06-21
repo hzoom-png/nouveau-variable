@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { FEATURES } from '@/lib/features'
 
 const CARDS = [
   {
@@ -86,6 +87,12 @@ export default async function DashboardHome({
   const firstName = profile?.first_name || 'toi'
   const isNew = !profile?.onboarding_completed
   const isFounderWelcome = !isNew && profile?.is_founder && params.welcome === '1'
+
+  // ── FEATURE: hard redirect vers profil si incomplet ───────────────
+  if (FEATURES.ONBOARDING_REDIRECT && isNew) {
+    redirect('/dashboard/profile?step=1')
+  }
+  // ── END FEATURE ───────────────────────────────────────────────────
 
   return (
     <div style={{ maxWidth: '820px' }}>

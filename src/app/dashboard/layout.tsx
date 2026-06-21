@@ -2,6 +2,9 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import DashboardShell from './DashboardShell'
+import { FEATURES } from '@/lib/features'
+import { getProfileCompletion } from '@/lib/onboarding/validation'
+import { OnboardingBanner } from '@/components/dashboard/OnboardingBanner'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -54,8 +57,21 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!profile) redirect('/auth/login')
 
+  // ── FEATURE: Onboarding banner ────────────────────────────────────
+  const completion = FEATURES.ONBOARDING_REDIRECT
+    ? getProfileCompletion(profile)
+    : { isComplete: true, percentComplete: 100, missingCount: 0 }
+  const showBanner = FEATURES.ONBOARDING_REDIRECT && !completion.isComplete
+  // ── END FEATURE ───────────────────────────────────────────────────
+
   return (
     <DashboardShell profile={profile} stripeUrl={process.env.STRIPE_PAYMENT_BASE_URL ?? ''}>
+      {showBanner && (
+        <OnboardingBanner
+          percentComplete={completion.percentComplete}
+          missingCount={completion.missingCount}
+        />
+      )}
       {children}
     </DashboardShell>
   )
