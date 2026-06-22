@@ -26,9 +26,11 @@ type Candidature = {
   company: string | null
   city: string | null
   role: string | null
+  sector: string | null
   experience: string | null
   motivation: string | null
   referral_code: string | null
+  code_parrain: string | null
   linkedin_url: string | null
   status: Status
   admin_note: string | null
@@ -36,6 +38,12 @@ type Candidature = {
   is_founder?: boolean
   founder_activated_at?: string | null
   blocked?: boolean
+  // Projet
+  projet_nom: string | null
+  projet_website: string | null
+  projet_concept: string | null
+  projet_avancement: 'idee' | 'mvp' | 'lancement' | 'croissance' | 'mature' | null
+  projet_besoins: string[] | null
 }
 
 const COLUMNS: { key: Status; label: string; color: string; bgHex: string }[] = [
@@ -428,6 +436,51 @@ export default function CandidaturesPage() {
               <div style={{ marginBottom: 20 }}>
                 <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Motivation</p>
                 <p style={{ fontSize: 13, color: C.text, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{selected.motivation}</p>
+              </div>
+            )}
+
+            {selected.projet_nom && (
+              <div style={{ marginBottom: 20, padding: '16px', background: 'rgba(47,84,70,0.12)', border: `1px solid ${C.green}`, borderRadius: 10 }}>
+                <p style={{ fontSize: 10, color: C.greenL, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 12 }}>
+                  🚀 Projet soumis
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                  <div>
+                    <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>Nom</p>
+                    <p style={{ fontSize: 13, color: C.text, fontWeight: 600 }}>{selected.projet_nom}</p>
+                  </div>
+                  {selected.projet_avancement && (
+                    <div>
+                      <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 2 }}>Avancement</p>
+                      <p style={{ fontSize: 13, color: C.greenL }}>
+                        {{ idee: 'Idée', mvp: 'MVP', lancement: 'Lancement', croissance: 'Croissance', mature: 'Mature' }[selected.projet_avancement]}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {selected.projet_concept && (
+                  <div style={{ marginBottom: 10 }}>
+                    <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 4 }}>Concept</p>
+                    <p style={{ fontSize: 13, color: C.text, lineHeight: 1.6 }}>{selected.projet_concept}</p>
+                  </div>
+                )}
+                {selected.projet_besoins && selected.projet_besoins.length > 0 && (
+                  <div style={{ marginBottom: 10 }}>
+                    <p style={{ fontSize: 10, color: C.text2, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Besoins</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {selected.projet_besoins.map(b => (
+                        <span key={b} style={{ fontSize: 11, padding: '3px 8px', borderRadius: 8, background: 'rgba(74,140,111,0.15)', color: C.greenL, fontWeight: 600 }}>
+                          {b}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {selected.projet_website && (
+                  <a href={selected.projet_website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: C.greenL }}>
+                    Voir le site →
+                  </a>
+                )}
               </div>
             )}
 
