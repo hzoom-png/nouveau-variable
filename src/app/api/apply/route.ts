@@ -37,7 +37,7 @@ const Schema = z.object({
   firstname:          z.string().min(1).max(100),
   lastname:           z.string().min(1).max(100),
   email:              z.string().email().max(254),
-  phone:              z.string().max(30).optional().or(z.literal('')),
+  phone:              z.string().min(1, 'Téléphone requis').max(30),
   city:               z.string().min(1).max(100),
   role:               z.string().min(1).max(100),
   sector:             z.string().min(1).max(200),

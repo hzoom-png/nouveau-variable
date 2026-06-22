@@ -1357,14 +1357,9 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                     </div>
 
                     <div>
-                      <label htmlFor="phone" style={lbl}>
-                        Téléphone{' '}
-                        <span style={{ color: 'var(--text-3)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>
-                          — optionnel
-                        </span>
-                      </label>
+                      <label htmlFor="phone" style={lbl}>Téléphone *</label>
                       <input
-                        id="phone" type="tel" className="lp-input"
+                        id="phone" type="tel" required className="lp-input"
                         value={form.phone}
                         onChange={e => setField('phone', e.target.value)}
                         placeholder="06 12 34 56 78" style={inp}
