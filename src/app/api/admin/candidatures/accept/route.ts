@@ -32,36 +32,23 @@ export async function POST(request: NextRequest) {
   const nom = nameParts.slice(1).join(' ')
   const email = cand.email as string
   const telephone = (cand.phone as string | null) ?? ''
-  const isFounder = !!(cand.is_founder as boolean | null)
 
   const expiration = new Date(Date.now() + 48 * 60 * 60 * 1000)
     .toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
 
-  if (isFounder) {
-    await sendEmail({
-      to: { email, name: `${prenom} ${nom}`.trim() },
-      templateId: TEMPLATE_IDS.FOUNDER_ACCES_VIP,
-      params: {
-        prenom,
-        lien_connexion: `https://app.nouveauvariable.fr/onboarding/profile`,
-      },
-      tags: ['fondateur', 'acces-vip'],
-    })
-  } else {
-    await sendEmail({
-      to: { email, name: `${prenom} ${nom}`.trim() },
-      templateId: TEMPLATE_IDS.CANDIDATURE_ACCEPTEE,
-      params: {
-        prenom,
-        lien_paiement: `https://app.nouveauvariable.fr/subscribe?email=${encodeURIComponent(email)}&prenom=${encodeURIComponent(prenom)}`,
-        lien_connexion: `https://app.nouveauvariable.fr/auth?from=acceptance`,
-        expiration,
-      },
-      tags: ['candidature', 'acceptation'],
-    })
-  }
+  await sendEmail({
+    to: { email, name: `${prenom} ${nom}`.trim() },
+    templateId: TEMPLATE_IDS.CANDIDATURE_ACCEPTEE,
+    params: {
+      prenom,
+      lien_paiement: `https://app.nouveauvariable.fr/subscribe?email=${encodeURIComponent(email)}&prenom=${encodeURIComponent(prenom)}`,
+      lien_connexion: `https://app.nouveauvariable.fr/auth?from=acceptance`,
+      expiration,
+    },
+    tags: ['candidature', 'acceptation'],
+  })
 
-  if (telephone && !isFounder) {
+  if (telephone) {
     await sendSMS(
       telephone,
       `Nouveau Variable — Ta candidature a été acceptée, ${prenom} ! Consulte ta boîte email pour finaliser ton accès.`
@@ -77,7 +64,7 @@ export async function POST(request: NextRequest) {
       { title: 'Email', value: email },
       { title: 'Rôle',  value: (cand.role as string | null) ?? '—' },
       { title: 'Ville', value: (cand.city as string | null) ?? '—' },
-      { title: 'Email envoyé', value: isFounder ? 'Accès VIP' : 'Acceptation' },
+      { title: 'Email envoyé', value: 'Acceptation' },
     ],
     color: '#36a64f',
   }).catch(() => null)

@@ -7,7 +7,7 @@ const RATE_LIMIT_PER_DAY = 3
 
 export type ResendResult =
   | { ok: true }
-  | { ok: false; code: 'NOT_FOUND' | 'NOT_ACCEPTED' | 'FOUNDER' | 'EXPIRED' | 'RATE_LIMITED' | 'INTERNAL' }
+  | { ok: false; code: 'NOT_FOUND' | 'NOT_ACCEPTED' | 'EXPIRED' | 'RATE_LIMITED' | 'INTERNAL' }
 
 export async function resendPaymentLink(
   email: string,
@@ -22,7 +22,7 @@ export async function resendPaymentLink(
   const svc = createServiceClient()
   const { data: cand, error } = await svc
     .from('candidatures')
-    .select('email, full_name, status, is_founder, created_at')
+    .select('email, full_name, status, created_at')
     .eq('email', normalizedEmail)
     .eq('code_parrain', normalizedCode)
     .maybeSingle()
@@ -34,7 +34,6 @@ export async function resendPaymentLink(
 
   if (!cand)                                       return { ok: false, code: 'NOT_FOUND' }
   if ((cand.status as string) !== 'accepted')      return { ok: false, code: 'NOT_ACCEPTED' }
-  if (cand.is_founder as boolean)                  return { ok: false, code: 'FOUNDER' }
 
   const ageMs   = Date.now() - new Date(cand.created_at as string).getTime()
   const ageDays = ageMs / (1_000 * 60 * 60 * 24)

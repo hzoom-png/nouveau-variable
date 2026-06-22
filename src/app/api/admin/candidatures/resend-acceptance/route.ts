@@ -14,16 +14,13 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: 'Payload invalide' }, { status: 400 })
 
   const svc = createServiceClient()
-  const { data: cand } = await svc.from('candidatures').select('id, email, full_name, is_founder').eq('id', parsed.data.candidatureId).single()
+  const { data: cand } = await svc.from('candidatures').select('id, email, full_name').eq('id', parsed.data.candidatureId).single()
   if (!cand) return NextResponse.json({ error: 'Candidature introuvable' }, { status: 404 })
 
   const nameParts = (cand.full_name as string).trim().split(' ')
   const prenom = nameParts[0] ?? ''
   const nom = nameParts.slice(1).join(' ')
   const email = cand.email as string
-  const isFounder = !!(cand.is_founder as boolean | null)
-
-  if (isFounder) return NextResponse.json({ error: 'Mode fondateur — pas de mail d\'acceptation standard' }, { status: 400 })
 
   const expiration = new Date(Date.now() + 48 * 60 * 60 * 1000)
     .toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })

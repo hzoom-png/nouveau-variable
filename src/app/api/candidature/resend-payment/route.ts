@@ -15,7 +15,6 @@ const Schema = z.object({
 const ERROR_MAP: Record<string, { status: number; message: string }> = {
   NOT_FOUND:    { status: 404, message: "Aucune candidature trouvée avec ces informations." },
   NOT_ACCEPTED: { status: 400, message: "Ta candidature n'est pas encore acceptée." },
-  FOUNDER:      { status: 400, message: "Les fondateurs accèdent directement sans paiement." },
   EXPIRED:      { status: 400, message: "Le délai de 15 jours pour finaliser ton inscription est dépassé. Contacte-nous à contact@nouveauvariable.fr" },
   RATE_LIMITED: { status: 429, message: "Tu as atteint la limite de 3 envois par jour. Réessaie demain." },
   INTERNAL:     { status: 500, message: "Erreur interne. Réessaie dans quelques instants." },
