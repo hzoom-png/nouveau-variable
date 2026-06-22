@@ -19,16 +19,13 @@ export async function POST() {
   const svc = createServiceClient()
   const { data: cand } = await svc
     .from('candidatures')
-    .select('full_name, email, phone, is_founder, is_founder_mode, status')
+    .select('full_name, email, phone, is_founder, status')
     .ilike('phone', `%${last9}`)
     .maybeSingle()
 
   if (!cand) return NextResponse.json({ isFounder: false })
 
-  // Two paths to founder access:
-  // 1. Has is_founder OR is_founder_mode flag
-  // 2. Has accepted candidature AND is_founder
-  const hasFounderFlag = cand.is_founder === true || cand.is_founder_mode === true
+  const hasFounderFlag = cand.is_founder === true
   const hasAcceptedStatus = cand.status === 'accepted'
 
   if (!hasFounderFlag && !hasAcceptedStatus) {
