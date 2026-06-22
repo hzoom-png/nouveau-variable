@@ -41,10 +41,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Erreur interne' }, { status: 500 })
   }
 
-  // Send VIP email when enabling founder mode on an already-accepted candidature.
-  // When acceptance happens first (button disappears after), the accept route never
-  // sees is_founder=true, so this is the only place the email can be triggered.
-  if (is_founder && cand.status === 'accepted') {
+  if (is_founder) {
     console.log('[toggle-founder] Envoi email VIP founder', { email: cand.email, status: cand.status })
     const prenom = (cand.full_name as string).trim().split(' ')[0] ?? ''
     sendEmail({
