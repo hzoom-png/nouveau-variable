@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
   const { data: candidature } = await svc
     .from('candidatures')
-    .select('status, is_founder, is_founder_mode')
+    .select('status, is_founder')
     .ilike('phone', `%${last9}`)
     .maybeSingle()
 
@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
 
   const isFounder =
     candidature?.is_founder === true ||
-    candidature?.is_founder_mode === true ||
     profile?.is_founder === true
 
   const isAccepted = candidature?.status === 'accepted'
