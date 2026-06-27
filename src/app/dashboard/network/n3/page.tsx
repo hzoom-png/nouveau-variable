@@ -28,14 +28,14 @@ export default async function N3Page() {
 
   const { data: referrals } = await supabase
     .from('referrals')
-    .select('*, profiles!referrals_referee_id_fkey(id, first_name, last_name, is_active, created_at)')
+    .select('*, profiles!referrals_referee_id_fkey(id, first_name, last_name, is_active, is_founder, created_at)')
     .eq('referrer_id', user.id)
     .eq('level', 3)
     .order('created_at', { ascending: false })
 
   const activeCount = (referrals ?? []).filter((r: Record<string, unknown>) => {
-    const p = r['profiles!referrals_referee_id_fkey'] as { is_active?: boolean } | null
-    return p?.is_active === true
+    const p = r['profiles!referrals_referee_id_fkey'] as { is_active?: boolean; is_founder?: boolean } | null
+    return p?.is_active === true || p?.is_founder === true
   }).length
 
   return (
@@ -137,7 +137,7 @@ export default async function N3Page() {
           const p = r['profiles!referrals_referee_id_fkey'] as Record<string, unknown> | null
           if (!p) return null
           const initials   = `${String(p.first_name ?? '')[0] ?? ''}${String(p.last_name ?? '')[0] ?? ''}`.toUpperCase()
-          const isActive   = p.is_active as boolean
+          const isActive   = (p.is_active as boolean) || (p.is_founder as boolean)
           const createdAt  = r.created_at as string
 
           return (

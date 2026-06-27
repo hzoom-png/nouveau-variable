@@ -22,12 +22,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
     const admin = createServiceClient()
     const email = user.email ?? ''
 
-    // Try to pre-fill from an accepted candidature matching this email
+    // Try to pre-fill from an accepted candidature or a founder candidature
     const { data: cand } = await admin
       .from('candidatures')
-      .select('full_name, city, role, phone, referral_code')
+      .select('full_name, city, role, phone, referral_code, is_founder')
       .eq('email', email)
-      .eq('status', 'accepted')
+      .or('status.eq.accepted,is_founder.eq.true')
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
@@ -36,6 +36,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     const firstName = nameParts[0] || email.split('@')[0]
     const lastName = nameParts.slice(1).join(' ')
     const generatedCode = `${firstName}${lastName}`.toLowerCase().replace(/[^a-z0-9]/g, '') || email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '')
+    const isFounder = (cand?.is_founder as boolean | null) === true
 
     await admin.from('profiles').insert({
       id: user.id,
@@ -50,6 +51,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
       referral_code: generatedCode,
       points_balance:       97,
       onboarding_completed: false,
+      is_founder:  isFounder,
+      is_active:   isFounder,
     })
     const { data: created } = await admin.from('profiles').select('*').eq('id', user.id).single()
     profile = created

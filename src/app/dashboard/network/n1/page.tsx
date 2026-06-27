@@ -11,7 +11,7 @@ export default async function N1Page() {
 
   const { data: referrals } = await supabase
     .from('referrals')
-    .select('*, profiles!referrals_referee_id_fkey(id, first_name, last_name, is_active, created_at, rank)')
+    .select('*, profiles!referrals_referee_id_fkey(id, first_name, last_name, is_active, is_founder, created_at, rank)')
     .eq('referrer_id', user.id)
     .eq('level', 1)
     .order('created_at', { ascending: false })
@@ -42,7 +42,7 @@ export default async function N1Page() {
           const profile = r.profiles as Record<string, unknown> | null
           if (!profile) return null
           const initials = `${String(profile.first_name ?? '')[0] ?? ''}${String(profile.last_name ?? '')[0] ?? ''}`.toUpperCase()
-          const isActive = profile.is_active as boolean
+          const isActive = (profile.is_active as boolean) || (profile.is_founder as boolean)
           const createdAt = profile.created_at as string
 
           return (

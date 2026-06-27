@@ -9,22 +9,24 @@ export default async function N2Page() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  // Count N1 to determine rate
-  const { count: n1Count } = await supabase
+  // Count active N1 (subscription active OR founder)
+  const { data: n1Rows } = await supabase
     .from('referrals')
-    .select('*', { count: 'exact', head: true })
+    .select('profiles!referrals_referee_id_fkey(is_active, is_founder)')
     .eq('referrer_id', user.id)
     .eq('level', 1)
-    .eq('is_active', true)
 
-  const n1 = n1Count ?? 0
+  const n1 = (n1Rows ?? []).filter((r: Record<string, unknown>) => {
+    const p = r['profiles!referrals_referee_id_fkey'] as { is_active?: boolean; is_founder?: boolean } | null
+    return p?.is_active === true || p?.is_founder === true
+  }).length
   const n2Rate = getN2Rate(n1)
   const commPerN2 = SUBSCRIPTION * (n2Rate / 100)
   const nextTier = N2_TIERS.find(t => t.min > n1)
 
   const { data: referrals } = await supabase
     .from('referrals')
-    .select('*, profiles!referrals_referee_id_fkey(id, first_name, last_name, is_active, created_at, referred_by), profiles!referrals_referrer_id_fkey(first_name, last_name)')
+    .select('*, profiles!referrals_referee_id_fkey(id, first_name, last_name, is_active, is_founder, created_at, referred_by), profiles!referrals_referrer_id_fkey(first_name, last_name)')
     .eq('referrer_id', user.id)
     .eq('level', 2)
     .order('created_at', { ascending: false })
@@ -75,7 +77,7 @@ export default async function N2Page() {
           const profile = r['profiles!referrals_referee_id_fkey'] as Record<string, unknown> | null
           if (!profile) return null
           const initials = `${String(profile.first_name ?? '')[0] ?? ''}${String(profile.last_name ?? '')[0] ?? ''}`.toUpperCase()
-          const isActive = profile.is_active as boolean
+          const isActive = (profile.is_active as boolean) || (profile.is_founder as boolean)
           const createdAt = r.created_at as string
 
           return (
