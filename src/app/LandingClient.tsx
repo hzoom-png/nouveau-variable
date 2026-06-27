@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, type CSSProperties } from 'react'
 import { LandingNav } from '@/components/LandingNav'
 import { PricingSection } from '@/components/PricingSection'
+import { FAQ } from '@/components/FAQ'
 
 function SectionGrid() {
   return <div className="section-grid" />
@@ -32,6 +33,7 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
   })
   const [referralReadonly, setReferralReadonly] = useState(false)
   const [cguAccepted, setCguAccepted] = useState(false)
+  const [ageConfirmed, setAgeConfirmed] = useState(false)
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [showProjectFields, setShowProjectFields] = useState(false)
   const [project, setProject] = useState({
@@ -1592,6 +1594,19 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
                       </span>
                     </label>
 
+                    <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
+                      <input
+                        type="checkbox" required
+                        checked={ageConfirmed}
+                        onChange={e => setAgeConfirmed(e.target.checked)}
+                        style={{ marginTop: 3, flexShrink: 0, accentColor: 'var(--green)' }}
+                        aria-required="true"
+                      />
+                      <span style={{ fontFamily: 'var(--fi)', fontSize: 13, color: 'var(--text-2)', lineHeight: 1.6 }}>
+                        Je certifie avoir <strong style={{ color: 'var(--text)', fontWeight: 500 }}>18 ans ou plus</strong> et être en capacité de contracter.
+                      </span>
+                    </label>
+
                     {(status === 'error' || !!errorMsg) && (
                       <div style={{
                         background: 'var(--red-2)', border: '1px solid #FECACA',
@@ -1657,7 +1672,12 @@ export default function LandingClient({ waitlistCount }: { waitlistCount: number
       </section>
 
       {/* ──────────────────────────────────────────────────────────────
-          [I] FOOTER
+          [I] FAQ
+      ────────────────────────────────────────────────────────────── */}
+      <FAQ />
+
+      {/* ──────────────────────────────────────────────────────────────
+          [J] FOOTER
       ────────────────────────────────────────────────────────────── */}
       <footer style={{
         background: '#0F1C17', padding: '48px 40px',
