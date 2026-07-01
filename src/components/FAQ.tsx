@@ -50,7 +50,7 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   return (
-    <section style={{ width: '100%', background: '#ffffff', padding: '80px 24px' }}>
+    <section className="faq-section" style={{ width: '100%', background: '#ffffff', padding: '80px 24px' }}>
       <style>{`
         @keyframes faqFadeIn {
           from { opacity: 0; transform: translateY(6px); }
@@ -66,6 +66,11 @@ export function FAQ() {
           background: #EAF2EE !important;
           color: #2F5446 !important;
         }
+        @media (max-width: 640px) {
+          .faq-section { padding: 48px 20px !important; }
+          .faq-heading { font-size: 20px !important; }
+          .faq-item-btn { font-size: 14px !important; padding: 14px !important; }
+        }
       `}</style>
 
       <div style={{ maxWidth: 700, margin: '0 auto' }}>
@@ -78,7 +83,7 @@ export function FAQ() {
           }}>
             Tes questions
           </p>
-          <h2 style={{
+          <h2 className="faq-heading" style={{
             fontFamily: 'var(--fi), Inter, sans-serif',
             fontSize: 24, fontWeight: 500,
             color: '#0F1C17', margin: 0,

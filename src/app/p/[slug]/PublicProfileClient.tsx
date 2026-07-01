@@ -310,6 +310,11 @@ const CSS = `
   .referrals-track:hover {
     animation-play-state: paused;
   }
+
+  @media (max-width: 480px) {
+    .pub-nav-text { display: none !important; }
+    .profile-layout { padding: 16px 12px 100px !important; }
+  }
 `
 
 function ReferralsCarousel({ referrals }: { referrals: ReferralProfile[] }) {
@@ -461,7 +466,7 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
         <header style={{ background: 'rgba(247,250,248,0.92)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #E4EEEA', padding: '0 24px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30 }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
             <NvLogo size={24} />
-            <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, color: '#2F5446', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</span>
+            <span className="pub-nav-text" style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, color: '#2F5446', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</span>
           </Link>
           {session === 'logged-in' ? (
             <Link
