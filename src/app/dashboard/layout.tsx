@@ -18,7 +18,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .eq('id', user.id)
     .single()
 
-  if (!profile) {
+  if (!profile || !profile.first_name) {
     const admin = createServiceClient()
     const email = user.email ?? ''
 
@@ -38,22 +38,38 @@ export default async function DashboardLayout({ children }: { children: React.Re
     const generatedCode = `${firstName}${lastName}`.toLowerCase().replace(/[^a-z0-9]/g, '') || email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '')
     const isFounder = (cand?.is_founder as boolean | null) === true
 
-    await admin.from('profiles').insert({
-      id: user.id,
-      email,
-      first_name: firstName,
-      last_name:  lastName,
-      role_title: (cand?.role as string | null) ?? '',
-      cities:     (cand?.city as string | null) ? [cand!.city] : [],
-      sectors:    [],
-      phone:      (cand?.phone as string | null) ?? '',
-      referred_by:   (cand?.referral_code as string | null) ?? '',
-      referral_code: generatedCode,
-      points_balance:       97,
-      onboarding_completed: false,
-      is_founder:  isFounder,
-      is_active:   isFounder,
-    })
+    if (!profile) {
+      await admin.from('profiles').insert({
+        id: user.id,
+        email,
+        first_name: firstName,
+        last_name:  lastName,
+        role_title: (cand?.role as string | null) ?? '',
+        cities:     (cand?.city as string | null) ? [cand!.city] : [],
+        sectors:    [],
+        phone:      (cand?.phone as string | null) ?? '',
+        referred_by:   (cand?.referral_code as string | null) ?? '',
+        referral_code: generatedCode,
+        points_balance:       97,
+        onboarding_completed: false,
+        is_founder:  isFounder,
+        is_active:   isFounder,
+      })
+    } else {
+      // Profile exists but was created minimally (no first_name) — fill from candidature
+      const profileUpdate: Record<string, unknown> = {
+        first_name: firstName,
+        last_name:  lastName,
+        role_title: (cand?.role as string | null) ?? '',
+        cities:     (cand?.city as string | null) ? [cand!.city] : [],
+        phone:      (cand?.phone as string | null) ?? '',
+        referred_by: (cand?.referral_code as string | null) ?? '',
+        is_founder:  isFounder,
+      }
+      if (isFounder) profileUpdate.is_active = true
+      await admin.from('profiles').update(profileUpdate).eq('id', user.id)
+    }
+
     const { data: created } = await admin.from('profiles').select('*').eq('id', user.id).single()
     profile = created
   }

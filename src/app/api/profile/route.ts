@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
 import { MAX_CITIES, MAX_SECTORS } from '@/lib/constants'
 
@@ -26,7 +27,7 @@ export async function PATCH(request: Request) {
   }
 
   const allowedFields = [
-    'first_name', 'last_name', 'bio', 'role_title',
+    'first_name', 'last_name', 'email', 'bio', 'role_title',
     'cities', 'sectors', 'commercial_type', 'meeting_types',
     'available_days', 'max_meetings_per_week',
     'notif_meeting_request', 'notif_new_referral', 'notif_commission', 'notif_newsletter',
@@ -45,9 +46,26 @@ export async function PATCH(request: Request) {
   // Auto-generate slug if the profile doesn't have one yet
   const { data: current } = await supabase
     .from('profiles')
-    .select('slug, first_name, last_name')
+    .select('slug, first_name, last_name, email')
     .eq('id', user.id)
     .single()
+
+  // Sync new email to Supabase Auth if changed
+  if (update.email && typeof update.email === 'string' && update.email !== current?.email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(update.email)) {
+      return NextResponse.json({ error: 'Email invalide' }, { status: 400 })
+    }
+    const svc = createServiceClient()
+    const { error: authError } = await svc.auth.admin.updateUserById(user.id, { email: update.email })
+    if (authError) {
+      const msg = authError.message.toLowerCase()
+      if (msg.includes('already') || msg.includes('exists')) {
+        return NextResponse.json({ error: 'Cet email est déjà utilisé' }, { status: 409 })
+      }
+      return NextResponse.json({ error: "Impossible de mettre à jour l'email" }, { status: 400 })
+    }
+  }
 
   if (!current?.slug) {
     const fn = (update.first_name as string) ?? current?.first_name ?? ''

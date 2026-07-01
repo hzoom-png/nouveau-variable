@@ -463,14 +463,24 @@ export default function PublicProfileClient({ profile, avatarUrl, referrals }: P
             <NvLogo size={24} />
             <span style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, color: '#2F5446', letterSpacing: '.05em', textTransform: 'uppercase' }}>Nouveau Variable</span>
           </Link>
-          <a
-            href="https://nouveauvariable.fr/"
-            target="_blank"
-            rel="noopener"
-            style={{ background: '#2F5446', color: '#fff', padding: '7px 18px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, textDecoration: 'none', letterSpacing: '.01em' }}
-          >
-            Accéder au club
-          </a>
+          {session === 'logged-in' ? (
+            <Link
+              href="/dashboard/members"
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#EAF2EE', color: '#2F5446', padding: '7px 16px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, textDecoration: 'none', letterSpacing: '.01em', border: '1px solid #D0E6DA' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 2L4 7l5 5"/></svg>
+              Annuaire
+            </Link>
+          ) : (
+            <a
+              href="https://nouveauvariable.fr/"
+              target="_blank"
+              rel="noopener"
+              style={{ background: '#2F5446', color: '#fff', padding: '7px 18px', borderRadius: '99px', fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, textDecoration: 'none', letterSpacing: '.01em' }}
+            >
+              Accéder au club
+            </a>
+          )}
         </header>
 
         {/* Main layout */}

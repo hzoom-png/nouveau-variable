@@ -44,6 +44,7 @@ export default function ProfileClient({ profile }: Props) {
   const [form, setForm] = useState({
     first_name: profile.first_name ?? '',
     last_name: profile.last_name ?? '',
+    email: profile.email ?? '',
     phone: profile.phone ?? '',
     role_title: profile.role_title ?? '',
     bio: profile.bio ?? '',
@@ -281,7 +282,7 @@ export default function ProfileClient({ profile }: Props) {
               ))}
               <div>
                 <label style={label}>Email</label>
-                <input style={{ ...input, background: 'var(--surface)', color: 'var(--text-3)' }} value={profile.email} disabled />
+                <input style={input} type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
               </div>
               <div>
                 <label style={label}>Téléphone</label>

@@ -41,6 +41,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Erreur interne' }, { status: 500 })
   }
 
+  // Sync is_founder to profiles table if a profile already exists
+  const { data: existingProfile } = await svc
+    .from('profiles')
+    .select('id')
+    .eq('email', cand.email as string)
+    .maybeSingle()
+
+  if (existingProfile) {
+    const profileUpdate: Record<string, unknown> = { is_founder }
+    if (is_founder) profileUpdate.is_active = true
+    await svc.from('profiles').update(profileUpdate).eq('id', existingProfile.id)
+  }
+
   if (is_founder) {
     console.log('[toggle-founder] Envoi email VIP founder', { email: cand.email, status: cand.status })
     const prenom = (cand.full_name as string).trim().split(' ')[0] ?? ''
